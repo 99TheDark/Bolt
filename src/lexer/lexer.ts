@@ -1,4 +1,4 @@
-import { Type, Token, patterns, longerPattern } from "./tokens"
+import { Type, Token, patterns, keywords, longerPattern } from "./tokens"
 import { isBinary } from "../parser/operators"
 
 export const modes: Type[] = [
@@ -59,9 +59,18 @@ export function tokenize(code: string): Token[] {
         if(i < code.length && !staticmodes.includes(mode)) {
             const before = temp.substring(0, temp.length - 1);
 
+            // Gotta work on this more…
+            /*
+            
+            '+':
+            +, +=, ++
+
+            */
             if(patterns[before] == Type.Operator && isBinary(before) && temp[temp.length - 1] == "=") {
                 past = Type.Assignment;
             } else if(patterns[temp] && !longerPattern(temp)) {
+                past = patterns[temp];
+            } else if(patterns[temp] && !(ch == "=" || longerPattern(temp + ch))) {
                 past = patterns[temp];
             }
         }
@@ -69,6 +78,8 @@ export function tokenize(code: string): Token[] {
         if(mode == past && i < code.length && modes.includes(mode)) {
             temp += ch;
         } else {
+            if(keywords[temp]) past = keywords[temp];
+
             tokens.push({
                 value: temp,
                 type: past,

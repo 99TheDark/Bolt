@@ -86,6 +86,10 @@ export class Parser {
 
             this.eat();
 
+            if(type == "if" && this.at().value == "else") {
+                // console.log(this.parseStatement());
+            }
+
             return {
                 kind: "Control",
                 type: type,

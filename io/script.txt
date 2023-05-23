@@ -1,19 +1,2 @@
-let x = 5 * (3 - 12) / 6
-let y = true | false & true
-let z = x
-
 z += 5
-
-// Always true
-if(x < z) {
-    y = !y
-}
-
-let evensum = 0
-number i = 0
-while(i < 10) {
-    if(i % 2 == 0) {
-        evensum += i
-    }
-    i += 1
-}
+x = 3 + 7

@@ -56,27 +56,6 @@ export interface Token {
 }
 
 export const patterns: Record<string, Type> = {
-    /* Boolean */
-    "true": Type.Boolean,
-    "false": Type.Boolean,
-
-    /* Keyword */
-    "return": Type.Keyword,
-    "if": Type.Keyword,
-    "while": Type.Keyword,
-    "for": Type.Keyword,
-
-    /* Datatype */
-    "let": Type.Datatype,
-    "number": Type.Datatype,
-    "bool": Type.Datatype,
-    "string": Type.Datatype,
-    "func": Type.Datatype,
-    "tree": Type.Datatype,
-    "date": Type.Datatype,
-    "time": Type.Datatype,
-    "enum": Type.Datatype,
-
     /* Operator */
     "+": Type.Operator,
     "-": Type.Operator,
@@ -96,14 +75,40 @@ export const patterns: Record<string, Type> = {
     "!=": Type.Comparator,
 }
 
+export const keywords: Record<string, Type> = {
+    /* Boolean */
+    "true": Type.Boolean,
+    "false": Type.Boolean,
+
+    /* Keyword */
+    "return": Type.Keyword,
+    "if": Type.Keyword,
+    "while": Type.Keyword,
+    "for": Type.Keyword,
+    "foreach": Type.Keyword,
+    "else": Type.Keyword,
+    "switch": Type.Keyword,
+
+    /* Datatype */
+    "let": Type.Datatype,
+    "number": Type.Datatype,
+    "bool": Type.Datatype,
+    "string": Type.Datatype,
+    "func": Type.Datatype,
+    "tree": Type.Datatype,
+    "date": Type.Datatype,
+    "time": Type.Datatype,
+    "enum": Type.Datatype
+}
+
 export function longerPattern(current: string): boolean {
     if(patterns[current] == Type.Operator && isBinary(current)) return true;
 
     const keys = Object.keys(patterns);
-    if(!keys.includes(current)) return false;
     for(const pattern of keys) {
         if(current.length >= pattern.length) continue;
         if(pattern.substring(0, current.length) == current) return true;
     }
+
     return false;
 }

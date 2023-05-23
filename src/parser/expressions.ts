@@ -85,7 +85,7 @@ export interface Control extends Expression {
     type: string
     test: Expression
     body: Expression[]
-    // next: Expression[]
+    next: Expression[]
 }
 
 export interface Empty extends Expression {

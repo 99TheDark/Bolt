@@ -7,6 +7,7 @@ fs.readFile("./io/script.txt", "utf8", (error, data) => {
     if(error) throw error;
 
     const tokens = clean(tokenize(data));
+    console.log(tokens);
     const parser = new Parser(tokens);
     const ast = parser.assembleAST();
 
