@@ -1,0 +1,109 @@
+import { isBinary } from "../parser/operators"
+
+export enum Type {
+    Identifier,
+    Number,
+    String,
+    Boolean,
+    Datatype,
+    Keyword,
+    OpenParenthesis,
+    CloseParenthesis,
+    OpenBrace,
+    CloseBrace,
+    OpenBracket,
+    CloseBracket,
+    Operator,
+    Comparator,
+    Assignment,
+    Whitespace,
+    Comment,
+    SOF,
+    EOF
+}
+
+export const typeRepresentations = Object.fromEntries([
+    [Type.Identifier, "identifier"],
+    [Type.Number, "number"],
+    [Type.String, "string"],
+    [Type.Boolean, "boolean"],
+    [Type.Datatype, "datatype"],
+    [Type.Keyword, "keyword"],
+    [Type.OpenParenthesis, "parenthesis"],
+    [Type.CloseParenthesis, "parenthesis"],
+    [Type.OpenBrace, "brace"],
+    [Type.CloseBrace, "brace"],
+    [Type.OpenBracket, "bracket"],
+    [Type.CloseBracket, "bracket"],
+    [Type.Operator, "operator"],
+    [Type.Comparator, "comparator"],
+    [Type.Assignment, "assignment"],
+    [Type.Whitespace, "whitespace"],
+    [Type.Comment, "comment"],
+    [Type.SOF, "start of file"],
+    [Type.EOF, "end of file"]
+]);
+
+export function typeString(type: Type): string {
+    return typeRepresentations[type] ?? "";
+}
+
+export interface Token {
+    value: string
+    type: Type
+    row: number
+    col: number
+}
+
+export const patterns: Record<string, Type> = {
+    /* Boolean */
+    "true": Type.Boolean,
+    "false": Type.Boolean,
+
+    /* Keyword */
+    "return": Type.Keyword,
+    "if": Type.Keyword,
+    "while": Type.Keyword,
+    "for": Type.Keyword,
+
+    /* Datatype */
+    "let": Type.Datatype,
+    "number": Type.Datatype,
+    "bool": Type.Datatype,
+    "string": Type.Datatype,
+    "func": Type.Datatype,
+    "tree": Type.Datatype,
+    "date": Type.Datatype,
+    "time": Type.Datatype,
+    "enum": Type.Datatype,
+
+    /* Operator */
+    "+": Type.Operator,
+    "-": Type.Operator,
+    "*": Type.Operator,
+    "/": Type.Operator,
+    "%": Type.Operator,
+    "&": Type.Operator,
+    "|": Type.Operator,
+    "!": Type.Operator,
+
+    /* Comparator */
+    ">": Type.Comparator,
+    "<": Type.Comparator,
+    ">=": Type.Comparator,
+    "<=": Type.Comparator,
+    "==": Type.Comparator,
+    "!=": Type.Comparator,
+}
+
+export function longerPattern(current: string): boolean {
+    if(patterns[current] == Type.Operator && isBinary(current)) return true;
+
+    const keys = Object.keys(patterns);
+    if(!keys.includes(current)) return false;
+    for(const pattern of keys) {
+        if(current.length >= pattern.length) continue;
+        if(pattern.substring(0, current.length) == current) return true;
+    }
+    return false;
+}
