@@ -8,12 +8,10 @@ fs.readFile("./io/script.txt", "utf8", (error, data) => {
 
     const lexer = new Lexer(data);
     const tokens = clean(lexer.tokenize());
-    console.log(tokens);
-
-    /*const parser = new Parser(tokens);
+    const parser = new Parser(tokens);
     const ast = parser.assemble();
 
     fs.writeFile("./io/ast.json", JSON.stringify(ast, null, "  "), err => {
         if(err) throw err;
-    });*/
+    });
 });

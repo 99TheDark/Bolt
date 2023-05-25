@@ -8,4 +8,3 @@
     - `else`
     - `foreach`
     - `for`
-- Identifiers

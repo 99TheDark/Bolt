@@ -132,10 +132,23 @@ export class Lexer {
         });
     }
 
+    insert(value: string, type: Type) {
+        const { row, col } = this.initial;
+
+        this.tokens.splice(this.tokens.length - 1, 0, {
+            value,
+            type,
+            row,
+            col
+        });
+    }
+
     tokenize(): Token[] {
+        let identifier = "";
         do {
             this.initial = this.position();
 
+            let change = true;
             if(this.at(2) == "//") {
                 this.eat(2);
                 this.add(
@@ -152,12 +165,12 @@ export class Lexer {
                     this.surrounding("\"", "\""),
                     Type.String
                 );
-            } else if(isNumber(this.at())) {
+            } else if(!identifier && isNumber(this.at())) {
                 this.add(
                     this.gather(() => isNumber(this.at())),
                     Type.Number
                 )
-            } else if(longerPattern(this.at())) {
+            } else if(!identifier && longerPattern(this.at())) {
                 const pattern = this.gather(cur => !!getPattern(cur) || longerPattern(cur));
                 this.add(
                     pattern,
@@ -169,7 +182,7 @@ export class Lexer {
                     Type.Whitespace
                 );
             }
-            else if(this.tryKeywords()) {}
+            else if(!identifier && this.tryKeywords()) {}
             else if(this.try("(", Type.OpenParenthesis)) {}
             else if(this.try(")", Type.CloseParenthesis)) {}
             else if(this.try("{", Type.OpenBrace)) {}
@@ -177,7 +190,18 @@ export class Lexer {
             else if(this.try("[", Type.OpenBracket)) {}
             else if(this.try("]", Type.CloseBracket)) {}
             else {
-                this.eat();
+                change = false;
+            }
+
+            this.initial = this.position();
+            if(!change) {
+                identifier += this.eat();
+            } else if(identifier) {
+                this.insert(
+                    identifier,
+                    Type.Identifier
+                );
+                identifier = "";
             }
         } while(this.at());
 
