@@ -98,7 +98,7 @@ export class Lexer {
         } else return false;
     }
 
-    private tryKeywords(): boolean {
+    private keywords(): Type | null {
         let longest: Type | null = null;
         let max = -1;
         Object.entries(keywords).forEach(entry => {
@@ -110,15 +110,7 @@ export class Lexer {
             }
         });
 
-        if(longest) {
-            this.add(
-                this.eat(max),
-                longest
-            );
-            return true;
-        } else {
-            return false;
-        }
+        return longest;
     }
 
     add(value: string, type: Type): void {
@@ -145,7 +137,7 @@ export class Lexer {
 
     tokenize(): Token[] {
         let identifier = "";
-        do {
+        while(this.at()) {
             this.initial = this.position();
 
             let change = true;
@@ -182,7 +174,6 @@ export class Lexer {
                     Type.Whitespace
                 );
             }
-            else if(!identifier && this.tryKeywords()) {}
             else if(this.try("(", Type.OpenParenthesis)) {}
             else if(this.try(")", Type.CloseParenthesis)) {}
             else if(this.try("{", Type.OpenBrace)) {}
@@ -197,13 +188,26 @@ export class Lexer {
             if(!change) {
                 identifier += this.eat();
             } else if(identifier) {
-                this.insert(
-                    identifier,
-                    Type.Identifier
-                );
+                const keyword = this.keywords();
+                if(keyword) {
+                    this.insert(
+                        identifier,
+                        Type.Keyword
+                    );
+                } else {
+                    this.insert(
+                        identifier,
+                        Type.Identifier
+                    );
+                }
                 identifier = "";
             }
-        } while(this.at());
+        }
+
+        if(identifier) this.add(
+            identifier,
+            Type.Identifier
+        );
 
         this.tokens.push({
             value: "EOF",

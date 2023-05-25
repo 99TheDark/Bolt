@@ -84,10 +84,11 @@ export const keywords: Record<string, Type> = {
     /* Keyword */
     "return": Type.Keyword,
     "if": Type.Keyword,
+    "elseif": Type.Keyword,
+    "else": Type.Keyword,
     "while": Type.Keyword,
     "for": Type.Keyword,
     "foreach": Type.Keyword,
-    "else": Type.Keyword,
     "switch": Type.Keyword,
 
     /* Datatype */

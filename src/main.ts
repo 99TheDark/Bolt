@@ -3,7 +3,7 @@ import { Lexer } from "./lexer/lexer"
 import { clean } from "./lexer/cleaner"
 import { Parser } from "./parser/parser"
 
-fs.readFile("./io/script.txt", "utf8", (error, data) => {
+fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     if(error) throw error;
 
     const lexer = new Lexer(data);
