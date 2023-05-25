@@ -3,7 +3,6 @@
 - Boolean (`bool`)
 - String (`string`)
 - Function (`func`)
-- Tree (`tree`)
 - Date (`date`)
 - Time (`time`)
 - Enum (`enum`)
@@ -54,35 +53,6 @@ func someFunction = (let a, let b) => {
     } else {
         return b
     }
-}
-```
-
-### Tree
-```
-let json = {
-    x: 5,
-    y: true,
-    inner: {
-        run: "Running"
-    }
-}
-let treeWithArray = {
-    myStuff: [
-        phone: "My phone",
-        computer: "My laptop"
-    ],
-    yourStuff: [
-        book: "A cool story",
-        tablet: "Your tablet",
-        drink: "Coffee"
-    ]
-}
-
-tree someTree = {
-    a: 1,
-    b: 2,
-    c: 3,
-    d: 4
 }
 ```
 

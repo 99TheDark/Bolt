@@ -12,3 +12,5 @@
     - Left-hand increment and decrement
     - Right-hand increment and decrement
     - Bitwise XOR operator
+- Declaration
+    - Datatypes broke, whoops

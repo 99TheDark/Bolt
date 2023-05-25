@@ -3,7 +3,7 @@ import { isClosure } from "./closure"
 import { Type, Token, patterns, typeString } from "../lexer/tokens"
 import { isUnary, isBinary } from "./operators"
 import { isControl } from "./control"
-import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, Control, StringLiteral, NumberLiteral, BooleanLiteral, Keyword, Datatype, Assignment, Precedence, EMPTY } from "./expressions"
+import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, StringLiteral, NumberLiteral, BooleanLiteral, Keyword, Datatype, Assignment, Precedence, EMPTY } from "./expressions"
 
 export class Parser {
     private tokens: Token[];
@@ -77,30 +77,65 @@ export class Parser {
     }
 
     parseStatement(): Statement {
-        if(isControl(this.at())) {
-            let type = this.eat().value;
-            let test = this.parseExpression();
-            let body: Expression[] = [];
-
-            this.expect(Type.OpenBrace);
-            while(this.at().type != Type.EOF && this.at().type != Type.CloseBrace) {
-                body.push(this.parseStatement());
-            }
-
-            this.eat();
-
-            if(type == "if" && this.at().value == "else") {
-                // console.log(this.parseStatement());
-            }
-
-            return {
-                kind: "Control",
-                type: type,
-                test: test,
-                body: body
-            } as Control;
+        switch(this.at().value) {
+            case "if":
+            case "while":
+                return this.parseControl();
         }
         return this.parseExpression();
+    }
+
+    parseBlock(): Statement[] {
+        const body: Statement[] = [];
+
+        this.expect(Type.OpenBrace);
+        while(this.at().type != Type.EOF && this.at().type != Type.CloseBrace) {
+            body.push(this.parseStatement());
+        }
+        this.eat();
+
+        return body;
+    }
+
+    parseControl(): Statement {
+        switch(this.at().value) {
+            default: return EMPTY as Statement;
+            case "if": {
+                this.eat();
+                const test = this.parseExpression();
+                const body = this.parseBlock();
+                const next = this.parseControl();
+
+                return {
+                    kind: "IfStatement",
+                    test,
+                    body,
+                    next
+                } as IfStatement;
+            }
+            case "elseif": {
+                this.eat();
+                const test = this.parseExpression();
+                const body = this.parseBlock();
+                const next = this.parseControl();
+
+                return {
+                    kind: "IfStatement",
+                    test,
+                    body,
+                    next
+                } as IfStatement;
+            }
+            case "else": {
+                this.eat();
+                const body = this.parseBlock();
+
+                return {
+                    kind: "ElseClause",
+                    body
+                } as ElseClause;
+            }
+        }
     }
 
     parseExpression(): Expression {

@@ -8,12 +8,6 @@ export const modes: Type[] = [
     Type.String
 ];
 
-export const closures: string[] = [
-    "(", ")",
-    "[", "]",
-    "{", "}"
-];
-
 export interface Detatched {
     (value: string): boolean
 }

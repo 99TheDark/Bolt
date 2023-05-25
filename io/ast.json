@@ -3,17 +3,143 @@
   "body": [
     {
       "kind": "Identifier",
-      "symbol": "let"
+      "symbol": "number"
     },
     {
       "kind": "Assignment",
       "variable": {
         "kind": "Identifier",
-        "symbol": "anumber"
+        "symbol": "x"
       },
       "value": {
         "kind": "Literal",
-        "value": 15.73845345
+        "value": 5
+      }
+    },
+    {
+      "kind": "IfStatement",
+      "test": {
+        "kind": "Comparator",
+        "left": {
+          "kind": "Literal",
+          "value": 12
+        },
+        "right": {
+          "kind": "Literal",
+          "value": 15
+        },
+        "operator": ">"
+      },
+      "body": [
+        {
+          "kind": "Assignment",
+          "operator": "+",
+          "variable": {
+            "kind": "Identifier",
+            "symbol": "x"
+          },
+          "value": {
+            "kind": "Literal",
+            "value": 3
+          }
+        },
+        {
+          "kind": "Identifier",
+          "symbol": "let"
+        },
+        {
+          "kind": "Assignment",
+          "variable": {
+            "kind": "Identifier",
+            "symbol": "y"
+          },
+          "value": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Identifier",
+              "symbol": "x"
+            },
+            "right": {
+              "kind": "Literal",
+              "value": 7
+            },
+            "operator": "*"
+          }
+        }
+      ],
+      "next": {
+        "kind": "IfStatement",
+        "test": {
+          "kind": "Comparator",
+          "left": {
+            "kind": "Literal",
+            "value": 13
+          },
+          "right": {
+            "kind": "Literal",
+            "value": 7
+          },
+          "operator": "<"
+        },
+        "body": [
+          {
+            "kind": "Assignment",
+            "operator": "*",
+            "variable": {
+              "kind": "Identifier",
+              "symbol": "x"
+            },
+            "value": {
+              "kind": "Literal",
+              "value": 12
+            }
+          }
+        ],
+        "next": {
+          "kind": "IfStatement",
+          "test": {
+            "kind": "Identifier",
+            "symbol": "false"
+          },
+          "body": [
+            {
+              "kind": "Assignment",
+              "operator": "/",
+              "variable": {
+                "kind": "Identifier",
+                "symbol": "x"
+              },
+              "value": {
+                "kind": "Literal",
+                "value": 6
+              }
+            }
+          ],
+          "next": {
+            "kind": "ElseClause",
+            "body": [
+              {
+                "kind": "Assignment",
+                "variable": {
+                  "kind": "Identifier",
+                  "symbol": "z"
+                },
+                "value": {
+                  "kind": "Binary",
+                  "left": {
+                    "kind": "Identifier",
+                    "symbol": "x"
+                  },
+                  "right": {
+                    "kind": "Literal",
+                    "value": 2
+                  },
+                  "operator": "/"
+                }
+              }
+            ]
+          }
+        }
       }
     }
   ]

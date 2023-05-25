@@ -5,4 +5,8 @@
  * This is beacause it's easier to type, and as Bolt is staticly typed, booleans can never become numbers,
  * and numbers cannot be logically compared.
  */
+
+if(a & b | c) {
+    
+}
 ```

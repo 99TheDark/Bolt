@@ -1,4 +1,4 @@
-export type Node = "Declaration" | "Assignment" | "Binary" | "Unary" | "Group" | "Comparator" | "Control" | "Datatype" | "Literal" | "Keyword" | "Identifier" | "Program" | "Empty"
+export type Node = "Declaration" | "Assignment" | "Binary" | "Unary" | "Group" | "Comparator" | "Control" | "Datatype" | "Literal" | "Keyword" | "Identifier" | "Program" | "Empty" | "IfStatement" | "ElseClause" | "WhileLoop"
 
 export type Precedence = "Comparative" | "Logical" | "Additive" | "Multiplicative"
 
@@ -12,39 +12,31 @@ export interface Program extends Statement {
 }
 
 // Expressions return values unlike statements
-export interface Expression extends Statement {
+export interface Expression extends Statement {}
 
-}
-
-export interface LoneKeyword extends Expression {
+export interface Identifier extends Expression {
+    kind: "Identifier"
     symbol: string
 }
 
-export interface Identifier extends LoneKeyword {
-    kind: "Identifier"
-}
-
-export interface Binary extends Expression {
+export interface BinaryOperation extends Expression {
+    kind: "Binary"
     left: Expression
     right: Expression
     operator: string
 }
 
-export interface Unary extends Expression {
+export interface UnaryOperation extends Expression {
+    kind: "Unary"
     operand: Expression
     operator: string
 }
 
-export interface BinaryOperation extends Binary {
-    kind: "Binary"
-}
-
-export interface UnaryOperation extends Unary {
-    kind: "Unary"
-}
-
-export interface Comparator extends Binary {
+export interface Comparator extends Expression {
     kind: "Comparator"
+    left: Expression
+    right: Expression
+    operator: string
 }
 
 export interface Literal extends Expression {
@@ -64,12 +56,14 @@ export interface BooleanLiteral extends Literal {
     value: boolean
 }
 
-export interface Datatype extends LoneKeyword {
+export interface Datatype extends Expression {
     kind: "Datatype"
+    symbol: string
 }
 
-export interface Keyword extends LoneKeyword {
+export interface Keyword extends Expression {
     kind: "Keyword"
+    symbol: string
 }
 
 export interface Assignment extends Expression {
@@ -80,12 +74,23 @@ export interface Assignment extends Expression {
     datatype: string
 }
 
-export interface Control extends Expression {
-    kind: "Control"
-    type: string
-    test: Expression
-    body: Expression[]
-    next: Expression[]
+export interface IfStatement extends Expression {
+    kind: "IfStatement"
+    test: Expression,
+    body: Statement[],
+    next: Expression
+}
+
+export interface WhileLoop extends Expression {
+    kind: "WhileLoop"
+    test: Expression,
+    body: Statement[],
+    next: Expression
+}
+
+export interface ElseClause extends Expression {
+    kind: "ElseClause",
+    body: Statement[]
 }
 
 export interface Empty extends Expression {
@@ -94,4 +99,4 @@ export interface Empty extends Expression {
 
 export const EMPTY = {
     kind: "Empty"
-} as Empty
+} as Empty;

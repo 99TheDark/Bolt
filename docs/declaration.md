@@ -6,10 +6,10 @@
 // x is inferred to be a number
 let x = 7
 
-// array or tree -> starts with array
-let arrayOrTree = []
+// array
+let array = []
 
-// number array or tree -> starts with number array
+// infers number array
 arrayOrTree += 5
 
 // must be a tree
