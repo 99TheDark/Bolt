@@ -1,4 +1,4 @@
-import { Type, Token, whitespace, longerPattern, patterns, getPattern, keywords } from "./tokens"
+import { Type, Token, whitespace, longerPattern, getPattern, keywords } from "./tokens"
 import { isNumber } from "./literal"
 
 export const modes: Type[] = [
@@ -67,10 +67,7 @@ export class Lexer {
 
     private gather(condition: Detatched): string {
         let value = "";
-
-        while(this.at() && condition(value + this.at())) {
-            value += this.eat();
-        }
+        while(this.at() && condition(value + this.at())) value += this.eat();
 
         return value;
     }
@@ -89,22 +86,43 @@ export class Lexer {
                 type
             );
             return true;
-        } else return false;
+        }
+        return false;
     }
 
-    private keywords(): Type | null {
+    private keywords(identifier: string): Type | null {
         let longest: Type | null = null;
         let max = -1;
         Object.entries(keywords).forEach(entry => {
             const [keyword, type] = entry;
 
-            if(max < keyword.length && this.at(keyword.length) == keyword) {
+            if(max < keyword.length && keyword == identifier) {
                 max = keyword.length;
                 longest = type;
             }
         });
 
         return longest;
+    }
+
+    private checkIdentifier(identifier: string): boolean {
+        if(identifier) {
+            const keyword = this.keywords(identifier);
+            if(keyword) {
+                this.insert(
+                    identifier,
+                    Type.Keyword
+                );
+            } else {
+                this.insert(
+                    identifier,
+                    Type.Identifier
+                );
+            }
+
+            return true;
+        }
+        return false;
     }
 
     add(value: string, type: Type): void {
@@ -181,27 +199,10 @@ export class Lexer {
             this.initial = this.position();
             if(!change) {
                 identifier += this.eat();
-            } else if(identifier) {
-                const keyword = this.keywords();
-                if(keyword) {
-                    this.insert(
-                        identifier,
-                        Type.Keyword
-                    );
-                } else {
-                    this.insert(
-                        identifier,
-                        Type.Identifier
-                    );
-                }
-                identifier = "";
-            }
+            } else if(this.checkIdentifier(identifier)) identifier = "";
         }
 
-        if(identifier) this.add(
-            identifier,
-            Type.Identifier
-        );
+        this.checkIdentifier(identifier);
 
         this.tokens.push({
             value: "EOF",

@@ -10,6 +10,8 @@ z += 5
 // Always true
 if(x < z) {
     y = !y
+} elseif(x ^ 2 < z) {
+    x += z / 2
 }
 
 string intro = "Hello world!"

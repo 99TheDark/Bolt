@@ -84,8 +84,7 @@ export interface IfStatement extends Expression {
 export interface WhileLoop extends Expression {
     kind: "WhileLoop"
     test: Expression,
-    body: Statement[],
-    next: Expression
+    body: Statement[]
 }
 
 export interface ElseClause extends Expression {

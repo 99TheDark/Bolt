@@ -2,7 +2,7 @@
   "kind": "Program",
   "body": [
     {
-      "kind": "Identifier",
+      "kind": "Keyword",
       "symbol": "number"
     },
     {
@@ -44,7 +44,7 @@
           }
         },
         {
-          "kind": "Identifier",
+          "kind": "Keyword",
           "symbol": "let"
         },
         {
@@ -96,49 +96,20 @@
           }
         ],
         "next": {
-          "kind": "IfStatement",
-          "test": {
-            "kind": "Identifier",
-            "symbol": "false"
-          },
+          "kind": "ElseClause",
           "body": [
             {
               "kind": "Assignment",
-              "operator": "/",
               "variable": {
                 "kind": "Identifier",
-                "symbol": "x"
+                "symbol": "z"
               },
               "value": {
-                "kind": "Literal",
-                "value": 6
+                "kind": "Identifier",
+                "symbol": "x"
               }
             }
-          ],
-          "next": {
-            "kind": "ElseClause",
-            "body": [
-              {
-                "kind": "Assignment",
-                "variable": {
-                  "kind": "Identifier",
-                  "symbol": "z"
-                },
-                "value": {
-                  "kind": "Binary",
-                  "left": {
-                    "kind": "Identifier",
-                    "symbol": "x"
-                  },
-                  "right": {
-                    "kind": "Literal",
-                    "value": 2
-                  },
-                  "operator": "/"
-                }
-              }
-            ]
-          }
+          ]
         }
       }
     }

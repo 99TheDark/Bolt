@@ -100,32 +100,29 @@ export class Parser {
     parseControl(): Statement {
         switch(this.at().value) {
             default: return EMPTY as Statement;
-            case "if": {
-                this.eat();
-                const test = this.parseExpression();
-                const body = this.parseBlock();
-                const next = this.parseControl();
-
-                return {
-                    kind: "IfStatement",
-                    test,
-                    body,
-                    next
-                } as IfStatement;
-            }
+            case "if":
             case "elseif": {
                 this.eat();
                 const test = this.parseExpression();
                 const body = this.parseBlock();
                 const next = this.parseControl();
 
-                return {
-                    kind: "IfStatement",
-                    test,
-                    body,
-                    next
-                } as IfStatement;
+                if(next.kind == "Empty") {
+                    return {
+                        kind: "IfStatement",
+                        test,
+                        body
+                    } as IfStatement;
+                } else {
+                    return {
+                        kind: "IfStatement",
+                        test,
+                        body,
+                        next
+                    } as IfStatement;
+                }
             }
+
             case "else": {
                 this.eat();
                 const body = this.parseBlock();
@@ -134,6 +131,18 @@ export class Parser {
                     kind: "ElseClause",
                     body
                 } as ElseClause;
+            }
+
+            case "while": {
+                this.eat();
+                const test = this.parseExpression();
+                const body = this.parseBlock();
+
+                return {
+                    kind: "WhileLoop",
+                    test,
+                    body
+                } as WhileLoop;
             }
         }
     }
