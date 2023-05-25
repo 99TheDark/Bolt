@@ -7,6 +7,9 @@ import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOpera
 
 export class Parser {
     private tokens: Token[];
+
+    ast: Program;
+
     static patterns: Record<Precedence, string[]> = {
         Additive: [
             "+",
@@ -34,6 +37,11 @@ export class Parser {
 
     constructor(tokens: Token[]) {
         this.tokens = [...tokens];
+
+        this.ast = {
+            kind: "Program",
+            body: []
+        };
     }
 
     isPattern(precedence: Precedence, token: Token) {
@@ -60,17 +68,12 @@ export class Parser {
         }
     }
 
-    assembleAST(): Program {
-        const program: Program = {
-            kind: "Program",
-            body: []
-        };
-
+    assemble(): Program {
         while(this.at().type != Type.EOF) {
-            program.body.push(this.parseStatement());
+            this.ast.body.push(this.parseStatement());
         }
 
-        return program;
+        return this.ast;
     }
 
     parseStatement(): Statement {

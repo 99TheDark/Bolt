@@ -2,35 +2,8 @@
   "kind": "Program",
   "body": [
     {
-      "kind": "Assignment",
-      "operator": "+",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "z"
-      },
-      "value": {
-        "kind": "Literal",
-        "value": 5
-      }
-    },
-    {
-      "kind": "Assignment",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "x"
-      },
-      "value": {
-        "kind": "Binary",
-        "left": {
-          "kind": "Literal",
-          "value": 3
-        },
-        "right": {
-          "kind": "Literal",
-          "value": 7
-        },
-        "operator": "+"
-      }
+      "kind": "Literal",
+      "value": "\n/*\nThis is a…\nMultiline comment\n*/"
     }
   ]
 }

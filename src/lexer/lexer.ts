@@ -1,15 +1,10 @@
-import { Type, Token, patterns, keywords, longerPattern } from "./tokens"
-import { isBinary } from "../parser/operators"
+import { Type, Token, whitespace, longerPattern, patterns, getPattern, keywords } from "./tokens"
+import { isNumber } from "./literal"
 
 export const modes: Type[] = [
     Type.Identifier,
     Type.Comment,
     Type.Number,
-    Type.String
-];
-
-export const staticmodes: Type[] = [
-    Type.Comment,
     Type.String
 ];
 
@@ -19,96 +14,180 @@ export const closures: string[] = [
     "{", "}"
 ];
 
-export function tokenize(code: string): Token[] {
-    const tokens: Token[] = [];
-    let mode: Type = Type.SOF;
-    let temp = "";
+export interface Detatched {
+    (value: string): boolean
+}
 
-    let row: number = 0;
-    let col: number = 0;
+export interface Position {
+    row: number,
+    col: number
+}
 
-    for(let i = 0; i <= code.length; i++) {
-        const ch = code[i];
+export class Lexer {
+    private buffer: string[];
+    private row: number;
+    private col: number;
+    private initial: Position;
 
-        let past = mode as Type;
-        if(past == Type.Comment) {
-            if(ch == "\n") mode = Type.Whitespace;
-        } else if(code.substring(i, i + 2) == "//") {
-            mode = Type.Comment;
-        } else if(past == Type.String) {
-            if(ch == "\"") mode = Type.Identifier;
-        } else if(/[0-9]/.test(ch) || (ch == "." && past == Type.Number)) {
-            mode = Type.Number;
-        } else if(ch == "\"") {
-            mode = Type.String;
-        } else switch(ch) {
-            case " ":
-            case "\n":
-            case "\t": mode = Type.Whitespace; break;
-            case "(": mode = Type.OpenParenthesis; break;
-            case ")": mode = Type.CloseParenthesis; break;
-            case "[": mode = Type.OpenBracket; break;
-            case "]": mode = Type.CloseBracket; break;
-            case "{": mode = Type.OpenBrace; break;
-            case "}": mode = Type.CloseBrace; break;
-            default: mode = Type.Identifier; break;
-        }
+    tokens: Token[];
 
-        if(past == Type.SOF) past = mode;
+    constructor(source: string) {
+        this.buffer = [...source];
+        this.tokens = [];
 
-        if(i < code.length && !staticmodes.includes(mode)) {
-            const before = temp.substring(0, temp.length - 1);
+        this.row = 0;
+        this.col = 0;
 
-            // Gotta work on this more…
-            /*
-            
-            '+':
-            +, +=, ++
+        this.initial = this.position();
+    }
 
-            */
-            if(patterns[before] == Type.Operator && isBinary(before) && temp[temp.length - 1] == "=") {
-                past = Type.Assignment;
-            } else if(patterns[temp] && !longerPattern(temp)) {
-                past = patterns[temp];
-            } else if(patterns[temp] && !(ch == "=" || longerPattern(temp + ch))) {
-                past = patterns[temp];
+    private at(count: number | void): string {
+        return count ? this.buffer.slice(0, count).join("") : this.buffer[0];
+    }
+
+    private eat(count: number | void): string {
+        let value = "";
+
+        for(let i = 0; i < (count ?? 1); i++) {
+            const ch = this.buffer.shift();
+            if(!ch) break;
+
+            this.col++;
+            if(ch == "\n") {
+                this.col = 0;
+                this.row++;
             }
+
+            value += ch;
         }
 
-        if(mode == past && i < code.length && modes.includes(mode)) {
-            temp += ch;
-        } else {
-            if(keywords[temp]) past = keywords[temp];
+        return value;
+    }
 
-            tokens.push({
-                value: temp,
-                type: past,
-                row,
-                col
-            });
+    private position(): Position {
+        return {
+            row: this.row,
+            col: this.col
+        } as Position;
+    }
 
-            temp = "";
-            if(past == Type.String) {
-                i++;
-            } else if(mode != Type.String) {
-                temp = ch;
+    private gather(condition: Detatched): string {
+        let value = "";
+
+        while(this.at() && condition(value + this.at())) {
+            value += this.eat();
+        }
+
+        return value;
+    }
+
+    private surrounding(starting: string, ending: string): string {
+        this.eat(starting.length);
+        const inner = this.gather(() => this.at(ending.length) != ending);
+        this.eat(ending.length);
+        return inner;
+    }
+
+    private try(value: string, type: Type): boolean {
+        if(this.at(value.length) == value) {
+            this.add(
+                this.eat(value.length),
+                type
+            );
+            return true;
+        } else return false;
+    }
+
+    private tryKeywords(): boolean {
+        let longest: Type | null = null;
+        let max = -1;
+        Object.entries(keywords).forEach(entry => {
+            const [keyword, type] = entry;
+
+            if(max < keyword.length && this.at(keyword.length) == keyword) {
+                max = keyword.length;
+                longest = type;
             }
-        }
+        });
 
-        if(ch == "\n") {
-            row++;
-            col = 0;
+        if(longest) {
+            this.add(
+                this.eat(max),
+                longest
+            );
+            return true;
         } else {
-            col++;
+            return false;
         }
     }
 
-    tokens.push({
-        value: "EOF",
-        type: Type.EOF,
-        row,
-        col
-    });
+    add(value: string, type: Type): void {
+        const { row, col } = this.initial;
 
-    return tokens;
-};
+        this.tokens.push({
+            value,
+            type,
+            row,
+            col
+        });
+    }
+
+    tokenize(): Token[] {
+        do {
+            this.initial = this.position();
+
+            if(this.at(2) == "//") {
+                this.eat(2);
+                this.add(
+                    this.surrounding("", "\n"),
+                    Type.Comment
+                );
+            } else if(this.at(2) == "/*") {
+                this.add(
+                    this.surrounding("/*", "*/"),
+                    Type.Comment
+                );
+            } else if(this.at() == "\"") {
+                this.add(
+                    this.surrounding("\"", "\""),
+                    Type.String
+                );
+            } else if(isNumber(this.at())) {
+                this.add(
+                    this.gather(() => isNumber(this.at())),
+                    Type.Number
+                )
+            } else if(longerPattern(this.at())) {
+                const pattern = this.gather(cur => !!getPattern(cur) || longerPattern(cur));
+                this.add(
+                    pattern,
+                    getPattern(pattern)
+                );
+            } else if(whitespace.includes(this.at())) {
+                this.add(
+                    this.eat(),
+                    Type.Whitespace
+                );
+            }
+            else if(this.tryKeywords()) {}
+            else if(this.try("(", Type.OpenParenthesis)) {}
+            else if(this.try(")", Type.CloseParenthesis)) {}
+            else if(this.try("{", Type.OpenBrace)) {}
+            else if(this.try("}", Type.CloseBrace)) {}
+            else if(this.try("[", Type.OpenBracket)) {}
+            else if(this.try("]", Type.CloseBracket)) {}
+            else {
+                this.eat();
+            }
+        } while(this.at());
+
+        this.tokens.push({
+            value: "EOF",
+            type: Type.EOF,
+            row: this.row,
+            col: this.col
+        });
+
+        return this.tokens;
+    }
+}

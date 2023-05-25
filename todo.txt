@@ -1,4 +1,0 @@
-Row, column and length to expressions
-else and ifelse
-foreach loops
-for loops
