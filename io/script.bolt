@@ -1,0 +1,12 @@
+number x = 5
+
+if(12 > 15) {
+    x += 3
+    let y = x * 7
+} elseif(13 < 7) {
+    x *= 12
+} elseif(false) {
+    x /= 6
+} else {
+    z = x / 2
+}

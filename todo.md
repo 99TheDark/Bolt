@@ -4,13 +4,12 @@
 
 ### Lexer
 - Control
-    - If else clause `ifelse`
-    - Else clause `else`
-    - For each loop `foreach`
-    - For loop `for`
+    - While loop (`while`)
+    - For each loop (`foreach`)
+    - For loop (`for`)
 - Operators
     - Left-hand increment and decrement
     - Right-hand increment and decrement
     - Bitwise XOR operator
 - Declaration
-    - Datatypes broke, whoops
+    - Datatypes broke again
