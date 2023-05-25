@@ -61,6 +61,7 @@ export const patterns: Record<string, Type> = {
     "-": Type.Operator,
     "*": Type.Operator,
     "/": Type.Operator,
+    "^": Type.Operator,
     "%": Type.Operator,
     "&": Type.Operator,
     "|": Type.Operator,

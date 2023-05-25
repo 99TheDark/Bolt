@@ -4,7 +4,10 @@
 
 ### Lexer
 - Control
-    - `ifelse`
-    - `else`
-    - `foreach`
-    - `for`
+    - If else clause `ifelse`
+    - Else clause `else`
+    - For each loop `foreach`
+    - For loop `for`
+- Operators
+    - Left-hand increment and decrement
+    - Right-hand increment and decrement
