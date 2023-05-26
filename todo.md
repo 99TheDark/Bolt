@@ -1,6 +1,5 @@
 # Todo
 ### Parser
-- Row and column to expressions
 - List operations
 - Function calls
 
