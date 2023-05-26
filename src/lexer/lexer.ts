@@ -1,4 +1,4 @@
-import { Type, Token, whitespace, longerPattern, getPattern, keywords } from "./tokens"
+import { Type, Token, whitespace, longerPattern, getPattern, keywords, patterns } from "./tokens"
 import { isNumber } from "./literal"
 
 export const modes: Type[] = [
@@ -105,24 +105,37 @@ export class Lexer {
         return longest;
     }
 
-    private checkIdentifier(identifier: string): boolean {
-        if(identifier) {
+    private checkIdentifier(identifier: string, initial: Position | null): boolean {
+        if(identifier && initial) {
             const keyword = this.keywords(identifier);
             if(keyword) {
                 this.insert(
                     identifier,
-                    Type.Keyword
+                    keyword,
+                    initial
                 );
             } else {
                 this.insert(
                     identifier,
-                    Type.Identifier
+                    Type.Identifier,
+                    initial
                 );
             }
 
             return true;
         }
         return false;
+    }
+
+    private insert(value: string, type: Type, position: Position) {
+        const { row, col } = position;
+
+        this.tokens.splice(this.tokens.length - 1, 0, {
+            value,
+            type,
+            row,
+            col
+        });
     }
 
     add(value: string, type: Type): void {
@@ -136,19 +149,9 @@ export class Lexer {
         });
     }
 
-    insert(value: string, type: Type) {
-        const { row, col } = this.initial;
-
-        this.tokens.splice(this.tokens.length - 1, 0, {
-            value,
-            type,
-            row,
-            col
-        });
-    }
-
     tokenize(): Token[] {
         let identifier = "";
+        let identifierInitial: Position | null = null;
         while(this.at()) {
             this.initial = this.position();
 
@@ -174,7 +177,7 @@ export class Lexer {
                     this.gather(() => isNumber(this.at())),
                     Type.Number
                 )
-            } else if(!identifier && longerPattern(this.at())) {
+            } else if(patterns[this.at()] || longerPattern(this.at())) {
                 const pattern = this.gather(cur => !!getPattern(cur) || longerPattern(cur));
                 this.add(
                     pattern,
@@ -196,20 +199,21 @@ export class Lexer {
                 change = false;
             }
 
-            this.initial = this.position();
             if(!change) {
+                if(!identifierInitial) identifierInitial = this.position();
                 identifier += this.eat();
-            } else if(this.checkIdentifier(identifier)) identifier = "";
+            } else if(this.checkIdentifier(identifier, identifierInitial)) {
+                identifierInitial = null;
+                identifier = "";
+            }
         }
 
-        this.checkIdentifier(identifier);
+        this.checkIdentifier(identifier, identifierInitial);
 
-        this.tokens.push({
-            value: "EOF",
-            type: Type.EOF,
-            row: this.row,
-            col: this.col
-        });
+        this.add(
+            "EOF",
+            Type.EOF
+        );
 
         return this.tokens;
     }

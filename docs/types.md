@@ -6,6 +6,7 @@
 - Date (`date`)
 - Time (`time`)
 - Enum (`enum`)
+- Regex (`regex`)
 
 # Examples
 
@@ -104,4 +105,12 @@ enum SomeEnum = [
     Lunch
     Dinner
 ]
+```
+
+### Regex
+```
+let capitals = /[A-Z]\w+/g
+let exclaim = /\w[?!]+/gi
+
+regex someRegex = /"((?:""|[^"])*)"/g
 ```

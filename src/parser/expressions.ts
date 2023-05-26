@@ -1,9 +1,29 @@
-export type Node = "Declaration" | "Assignment" | "Binary" | "Unary" | "Group" | "Comparator" | "Control" | "Datatype" | "Literal" | "Keyword" | "Identifier" | "Program" | "Empty" | "IfStatement" | "ElseClause" | "WhileLoop"
+export type Node =
+    "Declaration" |
+    "Assignment" |
+    "Binary" |
+    "Unary" |
+    "Comparator" |
+    "Control" |
+    "Datatype" |
+    "NumberLiteral" |
+    "BooleanLiteral" |
+    "StringLiteral" |
+    "IfStatement" |
+    "ElseClause" |
+    "WhileLoop" |
+    "List" |
+    "Keyword" |
+    "Identifier" |
+    "Program" |
+    "Empty"
 
 export type Precedence = "Comparative" | "Logical" | "Additive" | "Multiplicative"
 
 export interface Statement {
     kind: Node
+    row: number
+    col: number
 }
 
 export interface Program extends Statement {
@@ -39,21 +59,19 @@ export interface Comparator extends Expression {
     operator: string
 }
 
-export interface Literal extends Expression {
-    kind: "Literal"
-    value: any
-}
-
-export interface StringLiteral extends Literal {
-    value: string
-}
-
-export interface NumberLiteral extends Literal {
+export interface NumberLiteral extends Expression {
+    kind: "NumberLiteral"
     value: number
 }
 
-export interface BooleanLiteral extends Literal {
+export interface BooleanLiteral extends Expression {
+    kind: "BooleanLiteral"
     value: boolean
+}
+
+export interface StringLiteral extends Expression {
+    kind: "StringLiteral"
+    value: string
 }
 
 export interface Datatype extends Expression {
@@ -90,6 +108,11 @@ export interface WhileLoop extends Expression {
 export interface ElseClause extends Expression {
     kind: "ElseClause",
     body: Statement[]
+}
+
+export interface List extends Expression {
+    kind: "List",
+    values: Expression[]
 }
 
 export interface Empty extends Expression {

@@ -5,6 +5,8 @@ export enum Type {
     Number,
     String,
     Boolean,
+    Function,
+    Separator,
     Datatype,
     Keyword,
     OpenParenthesis,
@@ -27,6 +29,8 @@ export const typeRepresentations = Object.fromEntries([
     [Type.Number, "number"],
     [Type.String, "string"],
     [Type.Boolean, "boolean"],
+    [Type.Function, "function arrow"],
+    [Type.Separator, "comma"],
     [Type.Datatype, "datatype"],
     [Type.Keyword, "keyword"],
     [Type.OpenParenthesis, "parenthesis"],
@@ -56,6 +60,12 @@ export interface Token {
 }
 
 export const patterns: Record<string, Type> = {
+    /* Function */
+    "=>": Type.Function,
+
+    /* Separator */
+    ",": Type.Separator,
+
     /* Operator */
     "+": Type.Operator,
     "-": Type.Operator,

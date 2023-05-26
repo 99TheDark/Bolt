@@ -1,14 +1,14 @@
 # Todo
 ### Parser
-- Row, column and length to expressions
+- Row and column to expressions
+- List operations
+- Function calls
 
 ### Lexer
 - Control
-    - While loop (`while`)
     - For each loop (`foreach`)
     - For loop (`for`)
 - Operators
     - Left-hand increment and decrement
     - Right-hand increment and decrement
     - Bitwise XOR operator
-- List operations

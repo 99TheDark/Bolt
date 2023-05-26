@@ -2,116 +2,110 @@
   "kind": "Program",
   "body": [
     {
-      "kind": "Keyword",
-      "symbol": "number"
+      "kind": "Assignment",
+      "variable": {
+        "kind": "List",
+        "values": [
+          {
+            "kind": "Identifier",
+            "symbol": "x",
+            "row": 0,
+            "col": 4
+          },
+          {
+            "kind": "Identifier",
+            "symbol": "y",
+            "row": 0,
+            "col": 7
+          },
+          {
+            "kind": "Identifier",
+            "symbol": "z",
+            "row": 0,
+            "col": 10
+          }
+        ],
+        "row": 0,
+        "col": 4
+      },
+      "value": {
+        "kind": "NumberLiteral",
+        "value": 5,
+        "row": 0,
+        "col": 14
+      },
+      "row": 0,
+      "col": 12,
+      "datatype": "let"
     },
     {
       "kind": "Assignment",
       "variable": {
         "kind": "Identifier",
-        "symbol": "x"
+        "symbol": "a",
+        "row": 1,
+        "col": 4
       },
       "value": {
-        "kind": "Literal",
-        "value": 5
-      }
+        "kind": "NumberLiteral",
+        "value": 12,
+        "row": 1,
+        "col": 8
+      },
+      "row": 1,
+      "col": 6,
+      "datatype": "let"
     },
     {
       "kind": "IfStatement",
       "test": {
         "kind": "Comparator",
         "left": {
-          "kind": "Literal",
-          "value": 12
+          "kind": "List",
+          "values": [
+            {
+              "kind": "Identifier",
+              "symbol": "x",
+              "row": 3,
+              "col": 3
+            },
+            {
+              "kind": "Identifier",
+              "symbol": "y",
+              "row": 3,
+              "col": 6
+            },
+            {
+              "kind": "Identifier",
+              "symbol": "z",
+              "row": 3,
+              "col": 9
+            }
+          ],
+          "row": 3,
+          "col": 3
         },
         "right": {
-          "kind": "Literal",
-          "value": 15
+          "kind": "NumberLiteral",
+          "value": 10,
+          "row": 3,
+          "col": 13
         },
-        "operator": ">"
+        "operator": "<",
+        "row": 3,
+        "col": 11
       },
-      "body": [
-        {
-          "kind": "Assignment",
-          "operator": "+",
-          "variable": {
-            "kind": "Identifier",
-            "symbol": "x"
-          },
-          "value": {
-            "kind": "Literal",
-            "value": 3
-          }
-        },
-        {
-          "kind": "Keyword",
-          "symbol": "let"
-        },
-        {
-          "kind": "Assignment",
-          "variable": {
-            "kind": "Identifier",
-            "symbol": "y"
-          },
-          "value": {
-            "kind": "Binary",
-            "left": {
-              "kind": "Identifier",
-              "symbol": "x"
-            },
-            "right": {
-              "kind": "Literal",
-              "value": 7
-            },
-            "operator": "*"
-          }
-        }
-      ],
+      "body": [],
       "next": {
-        "kind": "IfStatement",
-        "test": {
-          "kind": "Comparator",
-          "left": {
-            "kind": "Literal",
-            "value": 13
-          },
-          "right": {
-            "kind": "Literal",
-            "value": 7
-          },
-          "operator": "<"
-        },
-        "body": [
-          {
-            "kind": "Assignment",
-            "operator": "*",
-            "variable": {
-              "kind": "Identifier",
-              "symbol": "x"
-            },
-            "value": {
-              "kind": "Literal",
-              "value": 12
-            }
-          }
-        ],
-        "next": {
-          "kind": "ElseClause",
-          "body": [
-            {
-              "kind": "Assignment",
-              "variable": {
-                "kind": "Identifier",
-                "symbol": "z"
-              },
-              "value": {
-                "kind": "Identifier",
-                "symbol": "x"
-              }
-            }
-          ]
-        }
-      }
+        "kind": "ElseClause",
+        "body": [],
+        "row": 5,
+        "col": 2
+      },
+      "row": 3,
+      "col": 0
     }
-  ]
+  ],
+  "row": 0,
+  "col": 0
 }

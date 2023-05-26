@@ -1,9 +1,7 @@
 import { BoltError } from "../errors/error"
-import { isClosure } from "./closure"
 import { Type, Token, patterns, typeString } from "../lexer/tokens"
 import { isUnary, isBinary } from "./operators"
-import { isControl } from "./control"
-import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, StringLiteral, NumberLiteral, BooleanLiteral, Keyword, Datatype, Assignment, Precedence, EMPTY } from "./expressions"
+import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, StringLiteral, NumberLiteral, BooleanLiteral, List, Keyword, Datatype, Assignment, Precedence, EMPTY } from "./expressions"
 
 export class Parser {
     private tokens: Token[];
@@ -40,7 +38,9 @@ export class Parser {
 
         this.ast = {
             kind: "Program",
-            body: []
+            body: [],
+            row: 0,
+            col: 0
         };
     }
 
@@ -102,7 +102,7 @@ export class Parser {
             default: return EMPTY as Statement;
             case "if":
             case "elseif": {
-                this.eat();
+                const { row, col } = this.eat();
                 const test = this.parseExpression();
                 const body = this.parseBlock();
                 const next = this.parseControl();
@@ -111,42 +111,51 @@ export class Parser {
                     return {
                         kind: "IfStatement",
                         test,
-                        body
+                        body,
+                        row,
+                        col
                     } as IfStatement;
                 } else {
                     return {
                         kind: "IfStatement",
                         test,
                         body,
-                        next
+                        next,
+                        row,
+                        col
                     } as IfStatement;
                 }
             }
 
             case "else": {
-                this.eat();
+                const { row, col } = this.eat();
                 const body = this.parseBlock();
 
                 return {
                     kind: "ElseClause",
-                    body
+                    body,
+                    row,
+                    col
                 } as ElseClause;
             }
 
             case "while": {
-                this.eat();
+                const { row, col } = this.eat();
                 const test = this.parseExpression();
                 const body = this.parseBlock();
 
                 return {
                     kind: "WhileLoop",
                     test,
-                    body
+                    body,
+                    row,
+                    col
                 } as WhileLoop;
             }
         }
     }
 
+    // Kind of useless
     parseExpression(): Expression {
         return this.parseDeclaration();
     }
@@ -155,6 +164,7 @@ export class Parser {
     Order of Precedence:
     Declaration ✓
     Assignment ✓
+    List ✓
     Parameter
     Function Call
     Logical ✓
@@ -192,31 +202,35 @@ export class Parser {
         }
 
         if(!patterns[assignment] && assigner == "=" && (operator == "" || patterns[operator] == Type.Operator)) {
-            if(left.kind != "Identifier") {
+            if(left.kind != "Identifier" && left.kind != "List") {
                 throw new BoltError(
                     `Unexpected left-hand side of assignment`,
-                    { // Temporary
-                        row: 0,
-                        col: 0
-                    } as Token
+                    left
                 );
             }
 
-            this.eat();
+            // Check all variables in list are identifiers
+            // Check that either the lists are equal length or the right isn't a list
+
+            const { row, col } = this.eat();
             const right = this.parseLogical();
 
             if(operator == "") {
                 return {
                     kind: "Assignment",
                     variable: left,
-                    value: right
+                    value: right,
+                    row,
+                    col
                 } as Assignment;
             } else {
                 return {
                     kind: "Assignment",
                     operator: operator,
                     variable: left,
-                    value: right
+                    value: right,
+                    row,
+                    col
                 } as Assignment;
             }
         }
@@ -228,14 +242,16 @@ export class Parser {
         let left = this.parseComparator();
 
         while(this.isPattern("Logical", this.at()) && isBinary(this.at())) {
-            const operator = this.eat().value;
+            const { value, row, col } = this.eat();
             const right = this.parseComparator();
 
             left = {
                 kind: "Binary",
-                left: left,
-                right: right,
-                operator: operator
+                left,
+                right,
+                operator: value,
+                row,
+                col
             } as BinaryOperation;
         }
 
@@ -243,35 +259,58 @@ export class Parser {
     }
 
     parseComparator(): Expression {
-        let left = this.parseAdditive();
+        let left = this.parseList();
 
         if(this.isPattern("Comparative", this.at())) {
-            const comparator = this.eat();
-            const right = this.parseAdditive();
+            const { value, row, col } = this.eat();
+            const right = this.parseList();
 
             return {
                 kind: "Comparator",
-                left: left,
-                right: right,
-                operator: comparator.value
+                left,
+                right,
+                operator: value,
+                row,
+                col
             } as Comparator;
         }
 
         return left;
     }
 
+    parseList(): Expression {
+        const values: Expression[] = [this.parseAdditive()];
+        while(this.at().type == Type.Separator) {
+            this.eat();
+            values.push(this.parseAdditive());
+        }
+
+        if(values.length == 1) return values[0];
+
+        const { row, col } = values[0];
+
+        return {
+            kind: "List",
+            values,
+            row,
+            col
+        } as List;
+    }
+
     parseAdditive(): Expression {
         let left = this.parseMultiplicative();
 
         while(this.isPattern("Additive", this.at()) && isBinary(this.at())) {
-            const operator = this.eat().value;
+            const { value, row, col } = this.eat();
             const right = this.parseMultiplicative();
 
             left = {
                 kind: "Binary",
-                left: left,
-                right: right,
-                operator: operator
+                left,
+                right,
+                operator: value,
+                row,
+                col
             } as BinaryOperation;
         }
 
@@ -282,14 +321,16 @@ export class Parser {
         let left = this.parseUnary();
 
         while(this.isPattern("Multiplicative", this.at()) && isBinary(this.at())) {
-            const operator = this.eat().value;
+            const { value, row, col } = this.eat();
             const right = this.parseUnary();
 
             left = {
                 kind: "Binary",
-                left: left,
-                right: right,
-                operator: operator
+                left,
+                right,
+                operator: value,
+                row,
+                col
             } as BinaryOperation;
         }
 
@@ -297,7 +338,7 @@ export class Parser {
     }
 
     parseUnary(): Expression {
-        let op = this.at();
+        let { value, row, col } = this.at();
 
         if(isUnary(this.at())) {
             this.eat();
@@ -305,7 +346,9 @@ export class Parser {
             return {
                 kind: "Unary",
                 operand: this.parsePrimary(),
-                operator: op.value
+                operator: value,
+                row,
+                col
             } as UnaryOperation;
         }
 
@@ -314,19 +357,50 @@ export class Parser {
 
     parsePrimary(): Expression {
         const token = this.eat();
+        const { row, col } = token;
         switch(token.type) {
             case Type.Identifier:
-                return { kind: "Identifier", symbol: token.value } as Identifier;
-            case Type.String:
-                return { kind: "Literal", value: token.value } as StringLiteral;
+                return {
+                    kind: "Identifier",
+                    symbol: token.value,
+                    row,
+                    col
+                } as Identifier;
             case Type.Number:
-                return { kind: "Literal", value: Parser.parseNumber(token.value) } as NumberLiteral;
+                return {
+                    kind: "NumberLiteral",
+                    value: Parser.parseNumber(token.value),
+                    row,
+                    col
+                } as NumberLiteral;
             case Type.Boolean:
-                return { kind: "Literal", value: Parser.parseBoolean(token.value) } as BooleanLiteral;
+                return {
+                    kind: "BooleanLiteral",
+                    value: Parser.parseBoolean(token.value),
+                    row,
+                    col
+                } as BooleanLiteral;
+            case Type.String:
+                return {
+                    kind: "StringLiteral",
+                    value: token.value,
+                    row,
+                    col
+                } as StringLiteral;
             case Type.Keyword:
-                return { kind: "Keyword", symbol: token.value } as Keyword;
+                return {
+                    kind: "Keyword",
+                    symbol: token.value,
+                    row,
+                    col
+                } as Keyword;
             case Type.Datatype:
-                return { kind: "Datatype", symbol: token.value } as Datatype;
+                return {
+                    kind: "Datatype",
+                    symbol: token.value,
+                    row,
+                    col
+                } as Datatype;
             case Type.OpenParenthesis:
                 const value = this.at().type == Type.CloseParenthesis ? EMPTY : this.parseStatement();
                 this.expect(Type.CloseParenthesis);

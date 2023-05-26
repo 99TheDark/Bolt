@@ -1,10 +1,8 @@
-number x = 5
+let x, y, z = 5
+let a = 12
 
-if(12 > 15) {
-    x += 3
-    let y = x * 7
-} elseif(13 < 7) {
-    x *= 12
+if(x, y, z < 10) {
+    
 } else {
-    z = x
+    
 }
