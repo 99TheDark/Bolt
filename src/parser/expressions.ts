@@ -13,7 +13,7 @@ export type Node =
     "IfStatement" |
     "ElseClause" |
     "WhileLoop" |
-    "List" |
+    "Vector" |
     "Keyword" |
     "Identifier" |
     "Program"
@@ -110,7 +110,7 @@ export interface ElseClause extends Expression {
     body: Statement[]
 }
 
-export interface List extends Expression {
-    kind: "List",
+export interface Vector extends Expression {
+    kind: "Vector",
     values: Expression[]
 }

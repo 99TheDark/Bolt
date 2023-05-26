@@ -130,6 +130,7 @@ export function longerPattern(current: string): boolean {
 
 export function getPattern(pattern: string): Type {
     if(pattern == "=") return Type.Assignment;
-    if(pattern.length == 2 && patterns[pattern[0]] == Type.Operator && pattern[1] == "=") return Type.Assignment;
+    if(patterns[pattern.slice(0, -1)] == Type.Operator && pattern.at(-1) == "=") return Type.Assignment;
+
     return patterns[pattern];
 }

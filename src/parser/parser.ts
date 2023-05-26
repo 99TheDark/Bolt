@@ -1,7 +1,8 @@
 import { BoltError } from "../errors/error"
-import { Type, Token, patterns, typeString } from "../lexer/tokens"
+import { Type, Token, typeString, getPattern } from "../lexer/tokens"
 import { isUnary, isBinary } from "./operators"
-import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, StringLiteral, NumberLiteral, BooleanLiteral, List, Keyword, Datatype, Assignment, Precedence } from "./expressions"
+import { isControl } from "./control"
+import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, StringLiteral, NumberLiteral, BooleanLiteral, Vector, Keyword, Datatype, Assignment, Precedence } from "./expressions"
 
 export class Parser {
     private tokens: Token[];
@@ -77,12 +78,11 @@ export class Parser {
     }
 
     parseStatement(): Statement {
-        switch(this.at().value) {
-            case "if":
-            case "while":
-                return this.parseControl();
+        if(isControl(this.at())) {
+            return this.parseControl();
+        } else {
+            return this.parseExpression();
         }
-        return this.parseExpression();
     }
 
     parseBlock(): Statement[] {
@@ -183,28 +183,39 @@ export class Parser {
 
     parseAssignment(): Expression {
         const left = this.parseLogical();
+
         const assignment = this.at().value;
-
-        let assigner = assignment.substring(1);
-        let operator = assignment.slice(0, -1);
-        if(assignment == "=") {
-            assigner = "=";
-            operator = "";
-        }
-
-        if(!patterns[assignment] && assigner == "=" && (operator == "" || patterns[operator] == Type.Operator)) {
-            if(left.kind != "Identifier" && left.kind != "List") {
-                throw new BoltError(
-                    `Unexpected left-hand side of assignment`,
-                    left
-                );
-            }
-
-            // Check all variables in list are identifiers
-            // Check that either the lists are equal length or the right isn't a list
-
+        if(getPattern(assignment) == Type.Assignment) {
             const { row, col } = this.eat();
+
+            const operator = assignment.slice(0, -1);
+            const assigner = assignment.at(-1);
             const right = this.parseLogical();
+
+            if(left.kind != "Identifier" && left.kind != "Vector") throw new BoltError(
+                `Invalid left-hand side of assignment; Identifier or vector of identifiers expected`,
+                left
+            );
+
+            const lvals = Parser.values(left);
+            const rvals = Parser.values(right);
+
+            if(left.kind == "Vector") lvals.forEach(val => {
+                if(val.kind != "Identifier") throw new BoltError(
+                    `Invalid left-hand side of assignment; Identifier or vector of identifiers expected`,
+                    val
+                );
+            });
+
+            if(left.kind == "Vector" && right.kind == "Vector" && lvals.length != rvals.length) throw new BoltError(
+                `Invalid assignment; Left-hand side vector of size ${lvals.length} must be the same size as right-hand side vector of size ${rvals.length}`,
+                right
+            );
+
+            if(left.kind == "Identifier" && right.kind == "Vector") throw new BoltError(
+                `Invalid right-hand side of assignment; A single identifier cannot be assigned a vector of values`,
+                right
+            );
 
             return Parser.filter({
                 kind: "Assignment",
@@ -271,11 +282,11 @@ export class Parser {
         const { row, col } = values[0];
 
         return {
-            kind: "List",
+            kind: "Vector",
             values,
             row,
             col
-        } as List;
+        } as Vector;
     }
 
     parseAdditive(): Expression {
@@ -405,6 +416,10 @@ export class Parser {
             if(!value) delete obj[key];
         });
         return obj;
+    }
+
+    static values(vector: Expression): Expression[] {
+        return (vector as Vector).values;
     }
 
     // TODO: Change to own parser

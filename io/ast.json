@@ -4,7 +4,7 @@
     {
       "kind": "Assignment",
       "variable": {
-        "kind": "List",
+        "kind": "Vector",
         "values": [
           {
             "kind": "Identifier",
@@ -29,8 +29,27 @@
         "col": 4
       },
       "value": {
-        "kind": "NumberLiteral",
-        "value": 5,
+        "kind": "Vector",
+        "values": [
+          {
+            "kind": "NumberLiteral",
+            "value": 5,
+            "row": 0,
+            "col": 14
+          },
+          {
+            "kind": "NumberLiteral",
+            "value": 4,
+            "row": 0,
+            "col": 17
+          },
+          {
+            "kind": "NumberLiteral",
+            "value": 3,
+            "row": 0,
+            "col": 20
+          }
+        ],
         "row": 0,
         "col": 14
       },
@@ -78,7 +97,7 @@
       "test": {
         "kind": "Comparator",
         "left": {
-          "kind": "List",
+          "kind": "Vector",
           "values": [
             {
               "kind": "Identifier",
