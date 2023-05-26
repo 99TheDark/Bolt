@@ -2,138 +2,50 @@
   "kind": "Program",
   "body": [
     {
-      "kind": "Assignment",
-      "variable": {
-        "kind": "Vector",
-        "values": [
-          {
-            "kind": "Identifier",
-            "symbol": "x",
-            "row": 0,
-            "col": 4
-          },
-          {
-            "kind": "Identifier",
-            "symbol": "y",
-            "row": 0,
-            "col": 7
-          },
-          {
-            "kind": "Identifier",
-            "symbol": "z",
-            "row": 0,
-            "col": 10
-          }
-        ],
-        "row": 0,
-        "col": 4
-      },
-      "value": {
-        "kind": "Vector",
-        "values": [
-          {
-            "kind": "NumberLiteral",
-            "value": 5,
-            "row": 0,
-            "col": 14
-          },
-          {
-            "kind": "NumberLiteral",
-            "value": 4,
-            "row": 0,
-            "col": 17
-          },
-          {
-            "kind": "NumberLiteral",
-            "value": 3,
-            "row": 0,
-            "col": 20
-          }
-        ],
-        "row": 0,
-        "col": 14
-      },
-      "col": 12,
-      "datatype": "let"
-    },
-    {
-      "kind": "Assignment",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "a",
-        "row": 1,
-        "col": 4
-      },
-      "value": {
-        "kind": "NumberLiteral",
-        "value": 12,
-        "row": 1,
-        "col": 8
-      },
-      "row": 1,
-      "col": 6,
-      "datatype": "let"
-    },
-    {
-      "kind": "Assignment",
-      "operator": "*",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "a",
-        "row": 2,
-        "col": 0
-      },
-      "value": {
-        "kind": "NumberLiteral",
-        "value": 3,
-        "row": 2,
-        "col": 5
-      },
-      "row": 2,
-      "col": 2
-    },
-    {
-      "kind": "IfStatement",
-      "test": {
-        "kind": "Comparator",
-        "left": {
-          "kind": "Vector",
-          "values": [
-            {
-              "kind": "Identifier",
-              "symbol": "x",
-              "row": 4,
-              "col": 3
-            },
-            {
-              "kind": "Identifier",
-              "symbol": "y",
-              "row": 4,
-              "col": 6
-            },
-            {
-              "kind": "Identifier",
-              "symbol": "z",
-              "row": 4,
-              "col": 9
-            }
-          ],
-          "row": 4,
-          "col": 3
-        },
-        "right": {
+      "kind": "FunctionCall",
+      "parameters": [
+        {
           "kind": "Identifier",
-          "symbol": "a",
-          "row": 4,
-          "col": 13
+          "symbol": "x",
+          "row": 0,
+          "col": 6
         },
-        "operator": "<",
-        "row": 4,
-        "col": 11
-      },
-      "body": [],
-      "next": {},
-      "row": 4
+        {
+          "kind": "Identifier",
+          "symbol": "y",
+          "row": 0,
+          "col": 9
+        },
+        {
+          "kind": "Identifier",
+          "symbol": "z",
+          "row": 0,
+          "col": 12
+        }
+      ],
+      "row": 0,
+      "col": 0
+    },
+    {
+      "kind": "FunctionCall",
+      "parameters": [
+        {
+          "kind": "Identifier",
+          "symbol": "x",
+          "row": 1,
+          "col": 2
+        }
+      ],
+      "row": 1,
+      "col": 0
+    },
+    {
+      "kind": "FunctionCall",
+      "parameters": [
+        {}
+      ],
+      "row": 2,
+      "col": 0
     }
   ],
   "row": 0,

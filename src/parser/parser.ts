@@ -2,7 +2,7 @@ import { BoltError } from "../errors/error"
 import { Type, Token, typeString, getPattern } from "../lexer/tokens"
 import { isUnary, isBinary } from "./operators"
 import { isControl } from "./control"
-import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, StringLiteral, NumberLiteral, BooleanLiteral, Vector, Keyword, Datatype, Assignment, Precedence } from "./expressions"
+import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, StringLiteral, NumberLiteral, BooleanLiteral, Vector, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions"
 
 export class Parser {
     private tokens: Token[];
@@ -156,7 +156,6 @@ export class Parser {
     Declaration ✓
     Assignment ✓
     List ✓
-    Parameter
     Function Call
     Logical ✓
     Comparator ✓
@@ -182,7 +181,7 @@ export class Parser {
     }
 
     parseAssignment(): Expression {
-        const left = this.parseLogical();
+        const left = this.parseFunction();
 
         const assignment = this.at().value;
         if(getPattern(assignment) == Type.Assignment) {
@@ -190,7 +189,7 @@ export class Parser {
 
             const operator = assignment.slice(0, -1);
             const assigner = assignment.at(-1);
-            const right = this.parseLogical();
+            const right = this.parseFunction();
 
             if(left.kind != "Identifier" && left.kind != "Vector") throw new BoltError(
                 `Invalid left-hand side of assignment; Identifier or vector of identifiers expected`,
@@ -225,6 +224,25 @@ export class Parser {
                 row,
                 col
             } as Assignment);
+        }
+
+        return left;
+    }
+
+    parseFunction(): Expression {
+        const left = this.parseLogical();
+        if(left.kind == "Identifier" && this.at().type == Type.OpenParenthesis) {
+            const { row, col } = left;
+            this.eat();
+            const inner = this.parseGroup();
+            const parameters = inner.kind == "Vector" ? (inner as Vector).values : [inner];
+
+            return {
+                kind: "FunctionCall",
+                parameters,
+                row,
+                col
+            } as FunctionCall;
         }
 
         return left;
@@ -394,9 +412,7 @@ export class Parser {
                     col
                 } as Datatype;
             case Type.OpenParenthesis:
-                const value = this.at().type == Type.CloseParenthesis ? {} as Expression : this.parseStatement();
-                this.expect(Type.CloseParenthesis);
-                return value;
+                return this.parseGroup();
             case Type.OpenBracket:
                 const values = this.at().type == Type.CloseBracket ? {} as Expression : this.parseStatement();
                 this.expect(Type.CloseBracket);
@@ -408,6 +424,12 @@ export class Parser {
                     token
                 );
         }
+    }
+
+    parseGroup(): Expression {
+        const value = this.at().type == Type.CloseParenthesis ? {} as Expression : this.parseStatement();
+        this.expect(Type.CloseParenthesis);
+        return value;
     }
 
     static filter(obj: any): Expression {
