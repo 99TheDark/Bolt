@@ -9,14 +9,14 @@ export type Node =
     "NumberLiteral" |
     "BooleanLiteral" |
     "StringLiteral" |
+    "FunctionLiteral" |
     "IfStatement" |
     "ElseClause" |
     "WhileLoop" |
     "List" |
     "Keyword" |
     "Identifier" |
-    "Program" |
-    "Empty"
+    "Program"
 
 export type Precedence = "Comparative" | "Logical" | "Additive" | "Multiplicative"
 
@@ -114,11 +114,3 @@ export interface List extends Expression {
     kind: "List",
     values: Expression[]
 }
-
-export interface Empty extends Expression {
-    kind: "Empty"
-}
-
-export const EMPTY = {
-    kind: "Empty"
-} as Empty;

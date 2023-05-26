@@ -1,7 +1,8 @@
 # Todo
 ### Parser
-- List operations
+- Vector operations
 - Function calls
+- Function declaration
 
 ### Lexer
 - Control

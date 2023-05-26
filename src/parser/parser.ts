@@ -1,7 +1,7 @@
 import { BoltError } from "../errors/error"
 import { Type, Token, patterns, typeString } from "../lexer/tokens"
 import { isUnary, isBinary } from "./operators"
-import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, StringLiteral, NumberLiteral, BooleanLiteral, List, Keyword, Datatype, Assignment, Precedence, EMPTY } from "./expressions"
+import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, StringLiteral, NumberLiteral, BooleanLiteral, List, Keyword, Datatype, Assignment, Precedence } from "./expressions"
 
 export class Parser {
     private tokens: Token[];
@@ -99,7 +99,8 @@ export class Parser {
 
     parseControl(): Statement {
         switch(this.at().value) {
-            default: return EMPTY as Statement;
+            default: return {} as Statement;
+
             case "if":
             case "elseif": {
                 const { row, col } = this.eat();
@@ -107,24 +108,14 @@ export class Parser {
                 const body = this.parseBlock();
                 const next = this.parseControl();
 
-                if(next.kind == "Empty") {
-                    return {
-                        kind: "IfStatement",
-                        test,
-                        body,
-                        row,
-                        col
-                    } as IfStatement;
-                } else {
-                    return {
-                        kind: "IfStatement",
-                        test,
-                        body,
-                        next,
-                        row,
-                        col
-                    } as IfStatement;
-                }
+                return Parser.filter({
+                    kind: "IfStatement",
+                    test,
+                    body,
+                    next,
+                    row,
+                    col
+                } as IfStatement);
             }
 
             case "else": {
@@ -215,24 +206,14 @@ export class Parser {
             const { row, col } = this.eat();
             const right = this.parseLogical();
 
-            if(operator == "") {
-                return {
-                    kind: "Assignment",
-                    variable: left,
-                    value: right,
-                    row,
-                    col
-                } as Assignment;
-            } else {
-                return {
-                    kind: "Assignment",
-                    operator: operator,
-                    variable: left,
-                    value: right,
-                    row,
-                    col
-                } as Assignment;
-            }
+            return Parser.filter({
+                kind: "Assignment",
+                operator,
+                variable: left,
+                value: right,
+                row,
+                col
+            } as Assignment);
         }
 
         return left;
@@ -402,11 +383,11 @@ export class Parser {
                     col
                 } as Datatype;
             case Type.OpenParenthesis:
-                const value = this.at().type == Type.CloseParenthesis ? EMPTY : this.parseStatement();
+                const value = this.at().type == Type.CloseParenthesis ? {} as Expression : this.parseStatement();
                 this.expect(Type.CloseParenthesis);
                 return value;
             case Type.OpenBracket:
-                const values = this.at().type == Type.CloseBracket ? EMPTY : this.parseStatement();
+                const values = this.at().type == Type.CloseBracket ? {} as Expression : this.parseStatement();
                 this.expect(Type.CloseBracket);
                 return values;
 
@@ -416,6 +397,14 @@ export class Parser {
                     token
                 );
         }
+    }
+
+    static filter(obj: any): Expression {
+        Object.entries(obj).forEach(entry => {
+            const [key, value] = entry;
+            if(!value) delete obj[key];
+        });
+        return obj;
     }
 
     // TODO: Change to own parser
@@ -431,4 +420,5 @@ export class Parser {
         if(str == "false") return false;
         return null;
     }
+
 }

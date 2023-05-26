@@ -1,7 +1,7 @@
-# List Operations
+# Vector Operations
 ```
-// Operations can not only be between two numbers, but a list of operators.
-// A list is created by seperating values with commas.
+// Operations can not only be between two numbers, but a vector of values.
+// A vector is created by seperating values with commas. It is simmilar to an array.
 
 // x = 5, y = -1, z = 2
 let x, y, z = 5, -1, 2
