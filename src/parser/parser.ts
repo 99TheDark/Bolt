@@ -505,7 +505,7 @@ export class Parser {
         const integral = parseInt(strIntegral, base);
         const fractional = parseInt(strFractional, base);
 
-        if(!baseData[base].test(s)) throw new BoltError(
+        if(base != 10 && !baseData[base].test(s)) throw new BoltError(
             `Out of bounds characters in ${baseData[base].name} number '${token.value}'`,
             token
         );
