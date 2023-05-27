@@ -2,21 +2,40 @@
   "kind": "Program",
   "body": [
     {
-      "kind": "Assignment",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "x",
+      "iteration": {
+        "kind": "Iteration",
+        "item": {
+          "kind": "Identifier",
+          "symbol": "x",
+          "row": 0,
+          "col": 8
+        },
+        "iterator": {
+          "kind": "Identifier",
+          "symbol": "arr",
+          "row": 0,
+          "col": 12
+        },
         "row": 0,
-        "col": 4
+        "col": 10
       },
-      "value": {
-        "kind": "NumberLiteral",
-        "value": 231073,
-        "row": 0,
-        "col": 8
-      },
-      "col": 6,
-      "datatype": "let"
+      "body": [
+        {
+          "kind": "FunctionCall",
+          "parameters": [
+            {
+              "kind": "Identifier",
+              "symbol": "x",
+              "row": 1,
+              "col": 10
+            }
+          ],
+          "row": 1,
+          "col": 4
+        }
+      ],
+      "row": 0,
+      "col": 0
     }
   ],
   "row": 0,

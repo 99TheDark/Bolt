@@ -13,8 +13,11 @@ export type Node =
     "IfStatement" |
     "ElseClause" |
     "WhileLoop" |
+    "ForLoop" |
+    "ForEachLoop" |
     "FunctionCall" |
     "Vector" |
+    "Iteration" |
     "Keyword" |
     "Identifier" |
     "Program"
@@ -111,9 +114,26 @@ export interface ElseClause extends Expression {
     body: Statement[]
 }
 
+export interface ForLoop extends Expression {
+    kind: "ForLoop"
+    body: Statement[]
+}
+
+export interface ForEachLoop extends Expression {
+    kind: "ForEachLoop"
+    iteration: Iteration
+    body: Statement[]
+}
+
 export interface Vector extends Expression {
     kind: "Vector",
     values: Expression[]
+}
+
+export interface Iteration extends Expression {
+    kind: "Iteration"
+    item: Identifier | Vector
+    iterator: Identifier
 }
 
 export interface FunctionCall extends Expression {

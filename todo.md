@@ -1,7 +1,6 @@
 # Todo
 ### Lexer
 - Control
-    - For each loop (`foreach`)
     - For loop (`for`)
 - Operators
     - Left-hand increment and decrement
@@ -12,6 +11,10 @@
     - Time literal
     - Regex literal
     - Unicode character literal (`u049f`)
+- Strings
+    - Escape strings
+    - Formatted strings (`FormattedStringLiteral`)
+    - Escape unicode character
 
 ### Parser
 - Declaration

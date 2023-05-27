@@ -7,6 +7,7 @@ export enum Type {
     Boolean,
     Function,
     Separator,
+    Iteration,
     Datatype,
     Keyword,
     OpenParenthesis,
@@ -31,6 +32,7 @@ export const typeRepresentations = Object.fromEntries([
     [Type.Boolean, "boolean"],
     [Type.Function, "function arrow"],
     [Type.Separator, "comma"],
+    [Type.Iteration, "colon"],
     [Type.Datatype, "datatype"],
     [Type.Keyword, "keyword"],
     [Type.OpenParenthesis, "parenthesis"],
@@ -65,6 +67,9 @@ export const patterns: Record<string, Type> = {
 
     /* Separator */
     ",": Type.Separator,
+
+    /* Iteration */
+    ":": Type.Iteration,
 
     /* Operator */
     "+": Type.Operator,

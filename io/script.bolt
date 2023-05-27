@@ -1,1 +1,3 @@
-let x = o703241
+foreach(x : arr) {
+    print(x)
+}

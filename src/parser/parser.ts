@@ -2,7 +2,7 @@ import { BoltError } from "../errors/error"
 import { Type, Token, typeString, getPattern } from "../lexer/tokens"
 import { isUnary, isBinary } from "./operators"
 import { isControl } from "./control"
-import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, StringLiteral, NumberLiteral, BooleanLiteral, Vector, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions"
+import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForLoop, ForEachLoop, StringLiteral, NumberLiteral, BooleanLiteral, Vector, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions"
 
 export class Parser {
     private tokens: Token[];
@@ -143,6 +143,24 @@ export class Parser {
                     col
                 } as WhileLoop;
             }
+
+            case "foreach": {
+                const { row, col } = this.eat();
+                const iteration = this.parseExpression();
+                const body = this.parseBlock();
+
+                if(iteration.kind != "Iteration") throw new BoltError(
+                    `Unexpected expression in for each loop; Only iterations (value : arr) are allowed as a parameter`,
+                    iteration
+                );
+
+                return {
+                    iteration,
+                    body,
+                    row,
+                    col
+                } as ForEachLoop;
+            }
         }
     }
 
@@ -153,16 +171,17 @@ export class Parser {
 
     /*
     Order of Precedence:
-    Declaration ✓
-    Assignment ✓
-    List ✓
+    Declaration
+    Assignment
+    Iteration
     Function Call
-    Logical ✓
-    Comparator ✓
-    Add, Subtract ✓
-    Multiply, Divide ✓
-    Negate ✓
-    Primary ✓
+    Logical
+    Comparator
+    List
+    Add, Subtract
+    Multiply, Divide
+    Negate
+    Primary
     */
     parseDeclaration(): Expression {
         const left = this.parseAssignment();
@@ -181,15 +200,14 @@ export class Parser {
     }
 
     parseAssignment(): Expression {
-        const left = this.parseFunction();
+        const left = this.parseIteration();
 
         const assignment = this.at().value;
         if(getPattern(assignment) == Type.Assignment) {
             const { row, col } = this.eat();
 
             const operator = assignment.slice(0, -1);
-            const assigner = assignment.at(-1);
-            const right = this.parseFunction();
+            const right = this.parseIteration();
 
             if(left.kind != "Identifier" && left.kind != "Vector") throw new BoltError(
                 `Invalid left-hand side of assignment; Identifier or vector of identifiers expected`,
@@ -224,6 +242,25 @@ export class Parser {
                 row,
                 col
             } as Assignment);
+        }
+
+        return left;
+    }
+
+    parseIteration(): Expression {
+        const left = this.parseFunction();
+
+        if(this.at().type == Type.Iteration) {
+            const { row, col } = this.eat();
+            const right = this.parseFunction();
+
+            return {
+                kind: "Iteration",
+                item: left,
+                iterator: right,
+                row,
+                col
+            } as Iteration;
         }
 
         return left;

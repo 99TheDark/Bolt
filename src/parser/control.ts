@@ -2,7 +2,8 @@ import { Token } from "../lexer/tokens";
 
 const controlStatements = [
     "if",
-    "while"
+    "while",
+    "foreach"
 ];
 
 export function isControl(token: Token) {
