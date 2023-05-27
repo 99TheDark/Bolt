@@ -48,7 +48,7 @@ let seperateLines = (string line1, string line2, string line3) => {
     return line1 + "\n" + line2 + "\n" + line3
 }
 
-func someFunction = (let a, let b) => {
+func someFunction = (number a, number b) => {
     if(a > b) {
         return a
     } else {

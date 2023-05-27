@@ -5,7 +5,7 @@
 - For each loop (`foreach`)
 - Switch case (`switch`)
 
-### If statement
+### If Statement
 ```
 let x = 5
 let y = 1
@@ -18,7 +18,7 @@ if(x < 6) {
 }
 ```
 
-### While loop
+### While Loop
 ```
 let x = 7
 while(x % 3 != 0) {
@@ -26,7 +26,7 @@ while(x % 3 != 0) {
 }
 ```
 
-### For loop
+### For Loop
 ```
 let evens = []
 for(let i = 0, i < 10, i += 2) {
@@ -42,7 +42,7 @@ for(let i = 0, j = 0, i < 100, i++, j++) {
 }
 ```
 
-### For each loop
+### For Each Loop
 ```
 let people = [
     {
@@ -64,7 +64,7 @@ let people = [
 ]
 let pi = [3, 1, 4, 1, 5, 9]
 
-foreach(number digit : pi) {
+foreach(digit : pi) {
     print(digit)
 }
 
@@ -76,7 +76,7 @@ foreach(name, age : people) {
 }
 ```
 
-### Switch case
+### Switch Case
 ```
 string character = "9"
 switch(character) {
