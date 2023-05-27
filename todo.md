@@ -8,17 +8,20 @@
     - Bitwise XOR operator
 - Literals
     - Regex literal
-    - Unicode character literal (`u049f`)
 - Strings
     - Escape strings
     - Formatted strings (`FormattedStringLiteral`)
-    - Escape unicode character
+    - Escape unicode character literal (`\u049f`)
 
 ### Parser
 - Declaration
     - Array
     - Enum
-    - Function
 
 ### Errors
 - Try to remove all ; seperators to make the error easier to understand
+
+### Type Inference
+### Dead Code Checks
+### Assmeble LLVM Code
+### Compile LLVM

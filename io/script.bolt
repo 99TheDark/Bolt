@@ -1,3 +1,8 @@
-let add = (number a, number b) => {
-    return a + b
-}
+let digitsOfPi = [3, 1, 4]
+
+let Directions = [
+    North
+    South
+    East
+    West
+]

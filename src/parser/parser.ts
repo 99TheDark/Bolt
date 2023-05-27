@@ -2,7 +2,7 @@ import { BoltError } from "../errors/error"
 import { Type, Token, typeString, getPattern } from "../lexer/tokens"
 import { isUnary, isBinary } from "./operators"
 import { isControl } from "./control"
-import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions"
+import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions"
 import { baseData } from "../lexer/literal"
 
 export class Parser {
@@ -98,6 +98,23 @@ export class Parser {
         this.eat();
 
         return body;
+    }
+
+    parseEnumerable(): Expression[] {
+        const body: Statement[] = [];
+
+        while(this.at().type != Type.EOF && this.at().type != Type.CloseBracket) {
+            body.push(this.parseStatement());
+        }
+        this.eat();
+
+        return body;
+    }
+
+    parseGroup(): Expression {
+        const value = this.at().type == Type.CloseParenthesis ? {} as Expression : this.parseStatement();
+        this.expect(Type.CloseParenthesis);
+        return value;
     }
 
     parseControl(): Statement {
@@ -514,9 +531,30 @@ export class Parser {
             case Type.OpenParenthesis:
                 return this.parseGroup();
             case Type.OpenBracket:
-                const values = this.at().type == Type.CloseBracket ? {} as Expression : this.parseStatement();
-                this.expect(Type.CloseBracket);
-                return values;
+                const values = this.parseEnumerable();
+                if(values.length == 1 && values[0].kind == "Vector") {
+                    const vec = values[0] as Vector;
+                    return {
+                        kind: "ArrayLiteral",
+                        values: vec.values,
+                        row: vec.row,
+                        col: vec.col
+                    } as ArrayLiteral;
+                }
+
+                values.forEach(exp => {
+                    if(exp.kind != "Identifier") throw new BoltError(
+                        `Only enumerator names allowed inside enums`,
+                        exp
+                    );
+                });
+
+                return {
+                    "kind": "EnumLiteral",
+                    enumerators: values.map(exp => (exp as Identifier).symbol),
+                    row,
+                    col
+                } as EnumLiteral;
 
             default:
                 throw new BoltError(
@@ -524,12 +562,6 @@ export class Parser {
                     token
                 );
         }
-    }
-
-    parseGroup(): Expression {
-        const value = this.at().type == Type.CloseParenthesis ? {} as Expression : this.parseStatement();
-        this.expect(Type.CloseParenthesis);
-        return value;
     }
 
     private static filter(obj: any): Expression {

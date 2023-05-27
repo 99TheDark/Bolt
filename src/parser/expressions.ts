@@ -12,6 +12,9 @@ export type Node =
     "BooleanLiteral" |
     "StringLiteral" |
     "FunctionLiteral" |
+    "EnumLiteral" |
+    "RegexLiteral" |
+    "ArrayLiteral" |
     "IfStatement" |
     "ElseClause" |
     "WhileLoop" |
@@ -87,6 +90,16 @@ export interface FunctionLiteral extends Expression {
     kind: "FunctionLiteral"
     parameters: ParameterList
     body: Statement[]
+}
+
+export interface EnumLiteral extends Expression {
+    kind: "EnumLiteral"
+    enumerators: string[]
+}
+
+export interface ArrayLiteral extends Expression {
+    kind: "ArrayLiteral"
+    values: Expression[]
 }
 
 export interface Datatype extends Expression {
