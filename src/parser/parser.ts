@@ -379,14 +379,14 @@ export class Parser {
             case Type.Number:
                 return {
                     kind: "NumberLiteral",
-                    value: Parser.parseNumber(token.value),
+                    value: Parser.parseNumber(token),
                     row,
                     col
                 } as NumberLiteral;
             case Type.Boolean:
                 return {
                     kind: "BooleanLiteral",
-                    value: Parser.parseBoolean(token.value),
+                    value: Parser.parseBoolean(token),
                     row,
                     col
                 } as BooleanLiteral;
@@ -445,19 +445,29 @@ export class Parser {
     }
 
     // TODO: Change to own parser
-    static parseNumber(str: string): number | null {
+    static parseNumber(token: Token): number {
+        let str = token.value;
         if(str[0] == "#") str = "0x" + str.substring(1);
-
+        if(str[0] == "b") str = "0b" + str.substring(1);
+        if(str[0] == "o") str = "0o" + str.substring(1);
         const num = Number(str);
-        if(isNaN(num)) return null;
+
+        if(isNaN(num)) throw new BoltError(
+            `Unexpected parsing error; Could not parse number ${typeString(token.type)} '${token.value}'`,
+            token
+        );
 
         return num;
     }
 
-    static parseBoolean(str: string): boolean | null {
-        if(str == "true") return true;
-        if(str == "false") return false;
-        return null;
+    static parseBoolean(token: Token): boolean {
+        if(token.value == "true") return true;
+        if(token.value == "false") return false;
+
+        throw new BoltError(
+            `Unexpected parsing error; Could not parse boolean ${typeString(token.type)} '${token.value}'`,
+            token
+        );
     }
 
 }

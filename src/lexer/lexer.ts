@@ -1,5 +1,5 @@
 import { Type, Token, whitespace, longerPattern, getPattern, keywords, patterns } from "./tokens"
-import { isNumber, isHexidecimal } from "./literal"
+import { isNumber, isAlphanumeric, baseStarters } from "./literal"
 
 export const modes: Type[] = [
     Type.Identifier,
@@ -105,17 +105,18 @@ export class Lexer {
         return longest;
     }
 
-    private checkIdentifier(identifier: string, initial: Position | null): boolean {
+    private checkIdentifier(identifier: string, initial: Position | null, backwards: boolean): boolean {
         if(identifier && initial) {
+            const method = backwards ? "insert" : "add";
             const keyword = this.keywords(identifier);
             if(keyword) {
-                this.insert(
+                this[method](
                     identifier,
                     keyword,
                     initial
                 );
             } else {
-                this.insert(
+                this[method](
                     identifier,
                     Type.Identifier,
                     initial
@@ -177,10 +178,10 @@ export class Lexer {
                     this.gather(() => isNumber(this.at())),
                     Type.Number
                 );
-            } else if(!identifier && this.at() == "#") {
+            } else if(!identifier && baseStarters.includes(this.at())) {
                 const start = this.eat();
                 this.add(
-                    start + this.gather(() => isHexidecimal(this.at())).toLowerCase(),
+                    start + this.gather(() => isAlphanumeric(this.at())).toLowerCase(),
                     Type.Number
                 );
             } else if(patterns[this.at()] || longerPattern(this.at())) {
@@ -208,13 +209,13 @@ export class Lexer {
             if(!change) {
                 if(!identifierInitial) identifierInitial = this.position();
                 identifier += this.eat();
-            } else if(this.checkIdentifier(identifier, identifierInitial)) {
+            } else if(this.checkIdentifier(identifier, identifierInitial, true)) {
                 identifierInitial = null;
                 identifier = "";
             }
         }
 
-        this.checkIdentifier(identifier, identifierInitial);
+        this.checkIdentifier(identifier, identifierInitial, false);
 
         this.add(
             "EOF",

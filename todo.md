@@ -11,11 +11,13 @@
     - Date literal
     - Time literal
     - Regex literal
-    - Numeric hex literal (`#abcdef`)
-    - Numeric binary literal (`b001101`)
-    - Numeric octal literal (`o703241`)
+    - Unicode character literal (`u049f`)
 
 ### Parser
 - Declaration
     - Array
     - Function
+- Literals
+    - Decimal points in hex, octal, binary etc
+- Errors
+    - Fix number parser to give more cohesive errors
