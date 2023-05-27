@@ -3,8 +3,6 @@
 - Boolean (`bool`)
 - String (`string`)
 - Function (`func`)
-- Date (`date`)
-- Time (`time`)
 - Enum (`enum`)
 - Regex (`regex`)
 
@@ -55,26 +53,6 @@ func someFunction = (number a, number b) => {
         return b
     }
 }
-```
-
-### Date
-```
-let epoch = 1/1/1970
-let millennium = 1/1/2000
-let beforeYearZero = -10/8/512
-
-date someDate = 5/22/2023
-```
-
-### Time
-```
-let wakeUp = 6:45am
-let bedTime = 10:30PM
-
-let exactWakeUp = 6:46:37
-let exactBedTime = 23:08:14
-
-time someTime = 19:45:12
 ```
 
 ### Enum

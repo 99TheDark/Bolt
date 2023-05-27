@@ -3,6 +3,7 @@ import { Type, Token, typeString, getPattern } from "../lexer/tokens"
 import { isUnary, isBinary } from "./operators"
 import { isControl } from "./control"
 import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForLoop, ForEachLoop, StringLiteral, NumberLiteral, BooleanLiteral, Vector, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions"
+import { baseData } from "../lexer/literal"
 
 export class Parser {
     private tokens: Token[];
@@ -148,7 +149,7 @@ export class Parser {
                 const body = this.parseBlock();
 
                 if(iteration.kind != "Iteration") throw new BoltError(
-                    `Unexpected expression in for each loop; Only iterations (value : arr) are allowed as a parameter`,
+                    `Only iterations (value : arr) are allowed as a parameter in a foreach loop`,
                     iteration
                 );
 
@@ -467,7 +468,7 @@ export class Parser {
         return value;
     }
 
-    static filter(obj: any): Expression {
+    private static filter(obj: any): Expression {
         Object.entries(obj).forEach(entry => {
             const [key, value] = entry;
             if(!value) delete obj[key];
@@ -475,24 +476,47 @@ export class Parser {
         return obj;
     }
 
-    static values(vector: Expression): Expression[] {
+    private static values(vector: Expression): Expression[] {
         return (vector as Vector).values;
     }
 
-    // TODO: Change to own parser
-    static parseNumber(token: Token): number {
-        let str = token.value;
-        if(str[0] == "#") str = "0x" + str.substring(1);
-        if(str[0] == "b") str = "0b" + str.substring(1);
-        if(str[0] == "o") str = "0o" + str.substring(1);
-        const num = Number(str);
+    private static baseMatch(str: string): [string, number] {
+        switch(str[0]) {
+            case "b": return [str.substring(1), 2];
+            case "q": return [str.substring(1), 4];
+            case "o": return [str.substring(1), 8];
+            case "#": return [str.substring(1), 16];
+            default: return [str, 10];
+        }
+    }
 
-        if(isNaN(num)) throw new BoltError(
-            `Unexpected parsing error; Could not parse number ${typeString(token.type)} '${token.value}'`,
+    static parseNumber(token: Token): number {
+        let [s, base] = Parser.baseMatch(token.value);
+
+        if((s.match(/[.]/g)?.length ?? 0) > 1) throw new BoltError(
+            `Numbers can only have up to one decimal point`,
             token
         );
 
-        return num;
+        const decimal = (s.indexOf(".") + 1) || (s.length + 1) - 1;
+        const strIntegral = s.substring(0, decimal);
+        const strFractional = s.substring(decimal + 1);
+
+        const integral = parseInt(strIntegral, base);
+        const fractional = parseInt(strFractional, base);
+
+        if(!baseData[base].test(s)) throw new BoltError(
+            `Out of bounds characters in ${baseData[base].name} number '${token.value}'`,
+            token
+        );
+
+        const value = integral + (fractional / (10 ** strFractional.length) || 0);
+        if(value > Number.MAX_SAFE_INTEGER) throw new BoltError(
+            `The number '${value}' is too large`,
+            token
+        );
+
+        return value;
     }
 
     static parseBoolean(token: Token): boolean {
@@ -500,7 +524,7 @@ export class Parser {
         if(token.value == "false") return false;
 
         throw new BoltError(
-            `Unexpected parsing error; Could not parse boolean ${typeString(token.type)} '${token.value}'`,
+            `Could not parse boolean ${typeString(token.type)} '${token.value}'`,
             token
         );
     }

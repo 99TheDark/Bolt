@@ -1,5 +1,5 @@
 import { Type, Token, whitespace, longerPattern, getPattern, keywords, patterns } from "./tokens"
-import { isNumber, isAlphanumeric, baseStarters } from "./literal"
+import { isNumber, isAlphanumeric, validBase } from "./literal"
 
 export const modes: Type[] = [
     Type.Identifier,
@@ -178,7 +178,7 @@ export class Lexer {
                     this.gather(() => isNumber(this.at())),
                     Type.Number
                 );
-            } else if(!identifier && baseStarters.includes(this.at())) {
+            } else if(!identifier && validBase(this.at())) {
                 const start = this.eat();
                 this.add(
                     start + this.gather(() => isAlphanumeric(this.at())).toLowerCase(),

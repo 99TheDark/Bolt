@@ -7,10 +7,7 @@
     - Right-hand increment and decrement (`i++`, `i--`)
     - Bitwise XOR operator
 - Literals
-    - Date literal
-    - Time literal
     - Regex literal
-    - Quaternary literal (`q310322`)
     - Unicode character literal (`u049f`)
 - Strings
     - Escape strings
@@ -22,7 +19,6 @@
     - Array
     - Enum
     - Function
-- Literals
-    - Decimal points in hex, octal, binary etc
-- Errors
-    - Fix number parser to give more cohesive errors
+
+### Errors
+- Try to remove all ; seperators to make the error easier to understand
