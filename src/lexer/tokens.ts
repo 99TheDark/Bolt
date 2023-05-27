@@ -5,7 +5,7 @@ export enum Type {
     Number,
     String,
     Boolean,
-    Function,
+    FunctionArrow,
     Separator,
     Iteration,
     Datatype,
@@ -30,7 +30,7 @@ export const typeRepresentations = Object.fromEntries([
     [Type.Number, "number"],
     [Type.String, "string"],
     [Type.Boolean, "boolean"],
-    [Type.Function, "function arrow"],
+    [Type.FunctionArrow, "function arrow"],
     [Type.Separator, "comma"],
     [Type.Iteration, "colon"],
     [Type.Datatype, "datatype"],
@@ -63,7 +63,7 @@ export interface Token {
 
 export const patterns: Record<string, Type> = {
     /* Function */
-    "=>": Type.Function,
+    "=>": Type.FunctionArrow,
 
     /* Separator */
     ",": Type.Separator,

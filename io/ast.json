@@ -5,17 +5,83 @@
       "kind": "Assignment",
       "variable": {
         "kind": "Identifier",
-        "symbol": "x",
+        "symbol": "add",
         "row": 0,
         "col": 4
       },
       "value": {
-        "kind": "NumberLiteral",
-        "value": 405.123,
+        "kind": "FunctionLiteral",
+        "parameters": {
+          "kind": "ParameterList",
+          "parameters": [
+            {
+              "kind": "Parameter",
+              "datatype": {
+                "kind": "Datatype",
+                "symbol": "number",
+                "row": 0,
+                "col": 11
+              },
+              "variable": {
+                "kind": "Identifier",
+                "symbol": "a",
+                "row": 0,
+                "col": 18
+              },
+              "row": 0,
+              "col": 10
+            },
+            {
+              "kind": "Parameter",
+              "datatype": {
+                "kind": "Datatype",
+                "symbol": "number",
+                "row": 0,
+                "col": 21
+              },
+              "variable": {
+                "kind": "Identifier",
+                "symbol": "b",
+                "row": 0,
+                "col": 28
+              },
+              "row": 0,
+              "col": 19
+            }
+          ],
+          "row": 0,
+          "col": 10
+        },
+        "body": [
+          {
+            "kind": "Keyword",
+            "symbol": "return",
+            "row": 1,
+            "col": 4
+          },
+          {
+            "kind": "Binary",
+            "left": {
+              "kind": "Identifier",
+              "symbol": "a",
+              "row": 1,
+              "col": 11
+            },
+            "right": {
+              "kind": "Identifier",
+              "symbol": "b",
+              "row": 1,
+              "col": 15
+            },
+            "operator": "+",
+            "row": 1,
+            "col": 13
+          }
+        ],
         "row": 0,
-        "col": 8
+        "col": 31
       },
-      "col": 6,
+      "col": 8,
       "datatype": "let"
     }
   ]

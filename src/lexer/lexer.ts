@@ -1,5 +1,5 @@
 import { Type, Token, whitespace, longerPattern, getPattern, keywords, patterns } from "./tokens"
-import { isNumber, isAlphanumeric, validBase } from "./literal"
+import { isNumber, isAlphanumeric, baseData } from "./literal"
 
 export const modes: Type[] = [
     Type.Identifier,
@@ -37,6 +37,10 @@ export class Lexer {
 
     private at(count: number | void): string {
         return count ? this.buffer.slice(0, count).join("") : this.buffer[0];
+    }
+
+    private next(): string {
+        return this.buffer[1];
     }
 
     private eat(count: number | void): string {
@@ -128,6 +132,10 @@ export class Lexer {
         return false;
     }
 
+    private checkValidBases(): boolean {
+        return Object.values(baseData).some(data => data.prefix == this.at(data.prefix.length));
+    }
+
     private insert(value: string, type: Type, position: Position) {
         const { row, col } = position;
 
@@ -173,15 +181,15 @@ export class Lexer {
                     this.surrounding("\"", "\""),
                     Type.String
                 );
-            } else if(!identifier && isNumber(this.at())) {
-                this.add(
-                    this.gather(() => isNumber(this.at())),
-                    Type.Number
-                );
-            } else if(!identifier && validBase(this.at())) {
+            } else if(!identifier && this.checkValidBases()) {
                 const start = this.eat();
                 this.add(
                     start + this.gather(() => isAlphanumeric(this.at())).toLowerCase(),
+                    Type.Number
+                );
+            } else if(!identifier && isNumber(this.at())) {
+                this.add(
+                    this.gather(() => isNumber(this.at())),
                     Type.Number
                 );
             } else if(patterns[this.at()] || longerPattern(this.at())) {

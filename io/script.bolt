@@ -1,1 +1,3 @@
-let x = 405.3123
+let add = (number a, number b) => {
+    return a + b
+}

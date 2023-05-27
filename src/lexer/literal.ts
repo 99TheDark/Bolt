@@ -25,17 +25,17 @@ export function isHexidecimal(str: string): boolean {
 export const baseData: Record<number, { name: string, prefix: string, test: (str: string) => boolean }> = {
     2: {
         name: "binary",
-        prefix: "b",
+        prefix: "0b",
         test: isBinary
     },
     4: {
         name: "quaternary",
-        prefix: "q",
+        prefix: "0q",
         test: isQuaternary
     },
     8: {
         name: "octal",
-        prefix: "o",
+        prefix: "0o",
         test: isOctal
     },
     16: {
@@ -44,7 +44,3 @@ export const baseData: Record<number, { name: string, prefix: string, test: (str
         test: isHexidecimal
     }
 };
-
-export function validBase(prefix: string) {
-    return Object.values(baseData).some(data => data.prefix == prefix);
-}

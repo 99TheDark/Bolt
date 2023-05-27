@@ -2,7 +2,7 @@ import { BoltError } from "../errors/error"
 import { Type, Token, typeString, getPattern } from "../lexer/tokens"
 import { isUnary, isBinary } from "./operators"
 import { isControl } from "./control"
-import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForLoop, ForEachLoop, StringLiteral, NumberLiteral, BooleanLiteral, Vector, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions"
+import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions"
 import { baseData } from "../lexer/literal"
 
 export class Parser {
@@ -50,6 +50,10 @@ export class Parser {
 
     at(): Token {
         return this.tokens[0] as Token;
+    }
+
+    peek(count: number): Token[] {
+        return this.tokens.slice(0, count);
     }
 
     eat(): Token {
@@ -173,6 +177,8 @@ export class Parser {
     Declaration
     Assignment
     Iteration
+    Function Literal
+    Parameters
     Function Call
     Logical
     Comparator
@@ -266,6 +272,64 @@ export class Parser {
     }
 
     parseFunction(): Expression {
+        const left = this.parseParameters();
+        if(left.kind == "ParameterList") {
+            const { row, col } = this.expect(Type.FunctionArrow);
+
+            return {
+                kind: "FunctionLiteral",
+                parameters: left,
+                body: this.parseBlock(),
+                row,
+                col
+            } as FunctionLiteral;
+        }
+
+        return left;
+    }
+
+    parseParameters(): Expression {
+        const [paren, datatype, variable] = this.peek(3);
+        if(paren.type == Type.OpenParenthesis && datatype.type == Type.Datatype && variable.type == Type.Identifier) {
+            const { row, col } = this.at();
+            const params: Parameter[] = [];
+            do {
+                const { row, col } = this.eat();
+
+                const datatype = this.parsePrimary();
+                if(datatype.kind != "Datatype") throw new BoltError(
+                    `Each parameter must contain a datatype`,
+                    datatype
+                );
+
+                const variable = this.parsePrimary();
+                if(variable.kind != "Identifier") throw new BoltError(
+                    `Invalid variable name in parameters`,
+                    datatype
+                );
+
+                params.push({
+                    kind: "Parameter",
+                    datatype,
+                    variable,
+                    row,
+                    col
+                } as Parameter);
+            } while(this.at().type == Type.Separator);
+            this.expect(Type.CloseParenthesis);
+
+            return {
+                kind: "ParameterList",
+                parameters: params,
+                row,
+                col
+            } as ParameterList;
+        }
+
+        return this.parseFunctionCall();
+    }
+
+    parseFunctionCall(): Expression {
         const left = this.parseLogical();
         if(left.kind == "Identifier" && this.at().type == Type.OpenParenthesis) {
             const { row, col } = left;
@@ -481,13 +545,14 @@ export class Parser {
     }
 
     private static baseMatch(str: string): [string, number] {
-        switch(str[0]) {
-            case "b": return [str.substring(1), 2];
-            case "q": return [str.substring(1), 4];
-            case "o": return [str.substring(1), 8];
-            case "#": return [str.substring(1), 16];
-            default: return [str, 10];
+        for(const entry of Object.entries(baseData)) {
+            const [base, data] = entry;
+            if(data.prefix == str.substring(0, data.prefix.length)) {
+                return [str.substring(data.prefix.length), Number(base)];
+            }
         }
+
+        return [str, 10];
     }
 
     static parseNumber(token: Token): number {

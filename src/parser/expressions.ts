@@ -19,6 +19,8 @@ export type Node =
     "ForEachLoop" |
     "FunctionCall" |
     "Vector" |
+    "Parameter" |
+    "ParameterList" |
     "Iteration" |
     "Keyword" |
     "Identifier" |
@@ -81,6 +83,12 @@ export interface StringLiteral extends Expression {
     value: string
 }
 
+export interface FunctionLiteral extends Expression {
+    kind: "FunctionLiteral"
+    parameters: ParameterList
+    body: Statement[]
+}
+
 export interface Datatype extends Expression {
     kind: "Datatype"
     symbol: string
@@ -119,6 +127,9 @@ export interface ElseClause extends Expression {
 
 export interface ForLoop extends Expression {
     kind: "ForLoop"
+    declarations: Expression[]
+    test: Expression
+    after: Expression[]
     body: Statement[]
 }
 
@@ -129,8 +140,19 @@ export interface ForEachLoop extends Expression {
 }
 
 export interface Vector extends Expression {
-    kind: "Vector",
+    kind: "Vector"
     values: Expression[]
+}
+
+export interface Parameter extends Expression {
+    kind: "Parameter"
+    datatype: Datatype
+    variable: Identifier
+}
+
+export interface ParameterList extends Expression {
+    kind: "ParameterList"
+    parameters: []
 }
 
 export interface Iteration extends Expression {
