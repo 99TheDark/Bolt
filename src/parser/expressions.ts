@@ -1,3 +1,5 @@
+import { VariableType } from "../typing/types"
+
 export type Node =
     "Declaration" |
     "Assignment" |
@@ -26,11 +28,12 @@ export type Precedence = "Comparative" | "Logical" | "Additive" | "Multiplicativ
 
 export interface Statement {
     kind: Node
+    type: VariableType
     row: number
     col: number
 }
 
-export interface Program extends Statement {
+export interface Program {
     kind: "Program"
     body: Statement[]
 }

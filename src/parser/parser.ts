@@ -39,10 +39,8 @@ export class Parser {
 
         this.ast = {
             kind: "Program",
-            body: [],
-            row: 0,
-            col: 0
-        };
+            body: []
+        } as Program;
     }
 
     isPattern(precedence: Precedence, token: Token) {
