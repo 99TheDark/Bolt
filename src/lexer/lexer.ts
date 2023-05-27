@@ -1,5 +1,5 @@
 import { Type, Token, whitespace, longerPattern, getPattern, keywords, patterns } from "./tokens"
-import { isNumber } from "./literal"
+import { isNumber, isHexidecimal } from "./literal"
 
 export const modes: Type[] = [
     Type.Identifier,
@@ -176,7 +176,13 @@ export class Lexer {
                 this.add(
                     this.gather(() => isNumber(this.at())),
                     Type.Number
-                )
+                );
+            } else if(!identifier && this.at() == "#") {
+                const start = this.eat();
+                this.add(
+                    start + this.gather(() => isHexidecimal(this.at())).toLowerCase(),
+                    Type.Number
+                );
             } else if(patterns[this.at()] || longerPattern(this.at())) {
                 const pattern = this.gather(cur => !!getPattern(cur) || longerPattern(cur));
                 this.add(

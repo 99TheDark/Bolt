@@ -446,6 +446,8 @@ export class Parser {
 
     // TODO: Change to own parser
     static parseNumber(str: string): number | null {
+        if(str[0] == "#") str = "0x" + str.substring(1);
+
         const num = Number(str);
         if(isNaN(num)) return null;
 

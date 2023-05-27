@@ -11,6 +11,9 @@
     - Date literal
     - Time literal
     - Regex literal
+    - Numeric hex literal (`#abcdef`)
+    - Numeric binary literal (`b001101`)
+    - Numeric octal literal (`o703241`)
 
 ### Parser
 - Declaration

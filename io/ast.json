@@ -2,50 +2,21 @@
   "kind": "Program",
   "body": [
     {
-      "kind": "FunctionCall",
-      "parameters": [
-        {
-          "kind": "Identifier",
-          "symbol": "x",
-          "row": 0,
-          "col": 6
-        },
-        {
-          "kind": "Identifier",
-          "symbol": "y",
-          "row": 0,
-          "col": 9
-        },
-        {
-          "kind": "Identifier",
-          "symbol": "z",
-          "row": 0,
-          "col": 12
-        }
-      ],
-      "row": 0,
-      "col": 0
-    },
-    {
-      "kind": "FunctionCall",
-      "parameters": [
-        {
-          "kind": "Identifier",
-          "symbol": "x",
-          "row": 1,
-          "col": 2
-        }
-      ],
-      "row": 1,
-      "col": 0
-    },
-    {
-      "kind": "FunctionCall",
-      "parameters": [
-        {}
-      ],
-      "row": 2,
-      "col": 0
+      "kind": "Assignment",
+      "variable": {
+        "kind": "Identifier",
+        "symbol": "x",
+        "row": 0,
+        "col": 4
+      },
+      "value": {
+        "kind": "NumberLiteral",
+        "value": 3976093,
+        "row": 0,
+        "col": 8
+      },
+      "col": 6,
+      "datatype": "let"
     }
   ],
   "row": 0,
