@@ -2,85 +2,187 @@
   "kind": "Program",
   "body": [
     {
+      "kind": "Assignment",
+      "variable": {
+        "kind": "Identifier",
+        "symbol": "x",
+        "row": 0,
+        "col": 4
+      },
+      "value": {
+        "kind": "NumberLiteral",
+        "value": 5,
+        "row": 0,
+        "col": 8,
+        "type": "Number"
+      },
+      "row": 0,
+      "datatype": "let",
+      "type": "Number"
+    },
+    {
+      "kind": "Assignment",
+      "variable": {
+        "kind": "Identifier",
+        "symbol": "y",
+        "row": 1,
+        "col": 4
+      },
+      "value": {
+        "kind": "BooleanLiteral",
+        "value": true,
+        "row": 1,
+        "col": 8,
+        "type": "Boolean"
+      },
+      "datatype": "let",
+      "type": "Boolean"
+    },
+    {
+      "kind": "Assignment",
+      "variable": {
+        "kind": "Identifier",
+        "symbol": "z",
+        "row": 2,
+        "col": 4
+      },
+      "value": {
+        "kind": "NumberLiteral",
+        "value": 29.059,
+        "row": 2,
+        "col": 8,
+        "type": "Number"
+      },
+      "datatype": "let",
+      "type": "Number"
+    },
+    {
+      "kind": "Assignment",
+      "operator": "+",
+      "variable": {
+        "kind": "Identifier",
+        "symbol": "x",
+        "row": 3,
+        "col": 0
+      },
+      "value": {
+        "kind": "NumberLiteral",
+        "value": 3,
+        "row": 3,
+        "col": 5,
+        "type": "Number"
+      },
+      "type": "Number"
+    },
+    {
       "kind": "IfStatement",
       "test": {
         "kind": "Comparator",
         "left": {
-          "kind": "NumberLiteral",
-          "value": 5,
-          "row": 0,
-          "col": 3,
-          "type": "Number"
+          "kind": "Identifier",
+          "symbol": "x",
+          "row": 5,
+          "col": 3
         },
         "right": {
-          "kind": "Binary",
-          "left": {
-            "kind": "NumberLiteral",
-            "value": 12,
-            "row": 0,
-            "col": 7,
-            "type": "Number"
-          },
-          "right": {
-            "kind": "NumberLiteral",
-            "value": 3,
-            "row": 0,
-            "col": 12,
-            "type": "Number"
-          },
-          "operator": "-",
-          "row": 0,
-          "col": 10
+          "kind": "Identifier",
+          "symbol": "z",
+          "row": 5,
+          "col": 7
         },
         "operator": "<",
-        "row": 0,
+        "row": 5,
         "col": 5,
         "type": "Boolean"
       },
-      "body": [],
-      "next": {
-        "type": "Unknown"
-      },
-      "row": 0,
+      "body": [
+        {
+          "kind": "Assignment",
+          "variable": {
+            "kind": "Identifier",
+            "symbol": "x",
+            "row": 6,
+            "col": 8
+          },
+          "value": {
+            "kind": "StringLiteral",
+            "value": "Hello world",
+            "row": 6,
+            "col": 12,
+            "type": "String"
+          },
+          "datatype": "let",
+          "type": "String"
+        },
+        {
+          "kind": "Assignment",
+          "variable": {
+            "kind": "Identifier",
+            "symbol": "goodbye",
+            "row": 7,
+            "col": 8
+          },
+          "value": {
+            "kind": "StringLiteral",
+            "value": "It was nice knowing you...",
+            "row": 7,
+            "col": 18,
+            "type": "String"
+          },
+          "datatype": "let",
+          "type": "String"
+        }
+      ],
       "col": 0,
+      "scope": [
+        {
+          "name": "x",
+          "type": "String"
+        },
+        {
+          "name": "goodbye",
+          "type": "String"
+        },
+        {
+          "name": "x",
+          "type": "String"
+        },
+        {
+          "name": "goodbye",
+          "type": "String"
+        },
+        {
+          "name": "x",
+          "type": "String"
+        },
+        {
+          "name": "goodbye",
+          "type": "String"
+        },
+        {
+          "name": "x",
+          "type": "String"
+        },
+        {
+          "name": "goodbye",
+          "type": "String"
+        }
+      ],
       "type": "Unknown"
+    }
+  ],
+  "scope": [
+    {
+      "name": "x",
+      "type": "Number"
     },
     {
-      "kind": "WhileLoop",
-      "test": {
-        "kind": "BooleanLiteral",
-        "value": false,
-        "row": 4,
-        "col": 6,
-        "type": "Boolean"
-      },
-      "body": [],
-      "row": 4,
-      "col": 0,
-      "type": "Unknown"
+      "name": "y",
+      "type": "Boolean"
     },
     {
-      "iteration": {
-        "kind": "Iteration",
-        "item": {
-          "kind": "Identifier",
-          "symbol": "x",
-          "row": 8,
-          "col": 8
-        },
-        "iterator": {
-          "kind": "Identifier",
-          "symbol": "arr",
-          "row": 8,
-          "col": 12
-        },
-        "row": 8,
-        "col": 10
-      },
-      "body": [],
-      "row": 8,
-      "col": 0,
-      "type": "Unknown"
+      "name": "z",
+      "type": "Number"
     }
   ]
 }

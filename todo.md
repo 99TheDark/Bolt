@@ -20,11 +20,7 @@
     - Easier to understand errors
 
 ### Type Inference
-- Boolean checking in the tests of `if` and `while` loops
-- Valid iteration detection in `foreach` loops
 - Type inference using scope for when values are redefined
-
-### Invalid Code Detector
 
 ### Assmeble LLVM Code
 

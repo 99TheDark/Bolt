@@ -1,4 +1,5 @@
 import { VariableType } from "../typing/types";
+import { Variable } from "../typing/scope";
 
 export type Node =
     "Declaration" |
@@ -32,6 +33,11 @@ export type Node =
 
 export type Precedence = "Comparative" | "Logical" | "Additive" | "Multiplicative"
 
+export interface Scopeable {
+    scope: Variable[]
+    body: Statement[]
+}
+
 export interface Statement {
     kind: Node
     type: VariableType
@@ -39,9 +45,8 @@ export interface Statement {
     col: number
 }
 
-export interface Program {
+export interface Program extends Scopeable {
     kind: "Program"
-    body: Statement[]
 }
 
 // Expressions return values unlike statements
@@ -90,11 +95,10 @@ export interface StringLiteral extends Expression {
     value: string
 }
 
-export interface FunctionLiteral extends Expression {
+export interface FunctionLiteral extends Expression, Scopeable {
     kind: "FunctionLiteral"
     type: "Function"
     parameters: ParameterList
-    body: Statement[]
 }
 
 export interface EnumLiteral extends Expression {
@@ -109,11 +113,10 @@ export interface RegexLiteral extends Expression {
     regex: string
 }
 
-export interface ClassLiteral extends Expression {
+export interface ClassLiteral extends Expression, Scopeable {
     kind: "ClassLiteral"
     type: "Class"
     extension: Vector
-    body: Statement[]
 }
 
 export interface ArrayLiteral extends Expression {
@@ -139,36 +142,31 @@ export interface Assignment extends Expression {
     datatype: string
 }
 
-export interface IfStatement extends Expression {
+export interface IfStatement extends Expression, Scopeable {
     kind: "IfStatement"
     test: Expression,
-    body: Statement[],
     next: Expression
 }
 
-export interface WhileLoop extends Expression {
+export interface WhileLoop extends Expression, Scopeable {
     kind: "WhileLoop"
     test: Expression,
-    body: Statement[]
 }
 
-export interface ElseClause extends Expression {
+export interface ElseClause extends Expression, Scopeable {
     kind: "ElseClause",
-    body: Statement[]
 }
 
-export interface ForLoop extends Expression {
+export interface ForLoop extends Expression, Scopeable {
     kind: "ForLoop"
     declarations: Expression[]
     test: Expression
     after: Expression[]
-    body: Statement[]
 }
 
-export interface ForEachLoop extends Expression {
+export interface ForEachLoop extends Expression, Scopeable {
     kind: "ForEachLoop"
     iteration: Iteration
-    body: Statement[]
 }
 
 export interface Vector extends Expression {

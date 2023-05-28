@@ -40,7 +40,8 @@ export class Parser {
 
         this.ast = {
             kind: "Program",
-            body: []
+            body: [],
+            scope: []
         } as Program;
     }
 
@@ -584,7 +585,7 @@ export class Parser {
     private static filter(obj: any): Expression {
         Object.entries(obj).forEach(entry => {
             const [key, value] = entry;
-            if(!value && value !== 0) delete obj[key];
+            if((!value || Object.keys(value).length == 0) && value !== 0) delete obj[key];
         });
         return obj;
     }

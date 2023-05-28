@@ -1,11 +1,12 @@
-if(5 < 12 - 3) {
+let x = 5
+let y = true
+let z = #1a.8bf3
+x += 3
 
-}
-
-while(false) {
-
-}
-
-foreach(x : arr) {
-
+if(x < z) {
+    // Why is this repeating 4x?
+    let x = "Hello world"
+    let goodbye = "It was nice knowing you..."
+} else {
+    let z = 3
 }
