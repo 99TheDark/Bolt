@@ -120,7 +120,6 @@ export class Parser {
     parseControl(): Statement {
         switch(this.at().value) {
             default: return {} as Statement;
-
             case "if":
             case "elseif": {
                 const { row, col } = this.eat();
@@ -137,7 +136,6 @@ export class Parser {
                     col
                 } as IfStatement);
             }
-
             case "else": {
                 const { row, col } = this.eat();
                 const body = this.parseBlock();
@@ -149,7 +147,6 @@ export class Parser {
                     col
                 } as ElseClause;
             }
-
             case "while": {
                 const { row, col } = this.eat();
                 const test = this.parseExpression();
@@ -163,7 +160,6 @@ export class Parser {
                     col
                 } as WhileLoop;
             }
-
             case "foreach": {
                 const { row, col } = this.eat();
                 const iteration = this.parseExpression();
@@ -298,7 +294,8 @@ export class Parser {
                 parameters: left,
                 body: this.parseBlock(),
                 row,
-                col
+                col,
+                type: "Function"
             } as FunctionLiteral;
         }
 
@@ -498,21 +495,24 @@ export class Parser {
                     kind: "NumberLiteral",
                     value: Parser.parseNumber(token),
                     row,
-                    col
+                    col,
+                    type: "Number"
                 } as NumberLiteral;
             case Type.Boolean:
                 return {
                     kind: "BooleanLiteral",
                     value: Parser.parseBoolean(token),
                     row,
-                    col
+                    col,
+                    type: "Boolean"
                 } as BooleanLiteral;
             case Type.String:
                 return {
                     kind: "StringLiteral",
                     value: token.value,
                     row,
-                    col
+                    col,
+                    type: "String"
                 } as StringLiteral;
             case Type.Keyword:
                 return {
@@ -550,10 +550,11 @@ export class Parser {
                 });
 
                 return {
-                    "kind": "EnumLiteral",
+                    kind: "EnumLiteral",
                     enumerators: values.map(exp => (exp as Identifier).symbol),
                     row,
-                    col
+                    col,
+                    type: "Enum"
                 } as EnumLiteral;
 
             default:

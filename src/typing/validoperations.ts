@@ -6,5 +6,7 @@ export const valid: Record<VariableType, string[]> = {
     "String": ["+"],
     "Function": [],
     "Enum": [],
-    "Regex": []
+    "Regex": [],
+    "Class": [],
+    "Unknown": []
 }

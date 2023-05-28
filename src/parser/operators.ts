@@ -1,4 +1,4 @@
-import { Type, Token, patterns } from "../lexer/tokens"
+import { Token } from "../lexer/tokens"
 
 export type OperatorType = "Unary" | "Binary"
 

@@ -1,7 +1,8 @@
-import fs from "fs"
-import { Lexer } from "./lexer/lexer"
-import { clean } from "./lexer/cleaner"
-import { Parser } from "./parser/parser"
+import fs from "fs";
+import { Lexer } from "./lexer/lexer";
+import { clean } from "./lexer/cleaner";
+import { Parser } from "./parser/parser";
+import { inferAST } from "./typing/inference";
 
 fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     if(error) throw error;
@@ -10,8 +11,9 @@ fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     const tokens = clean(lexer.tokenize());
     const parser = new Parser(tokens);
     const ast = parser.assemble();
+    const typedAST = inferAST(ast);
 
-    fs.writeFile("./io/ast.json", JSON.stringify(ast, null, "  "), err => {
+    fs.writeFile("./io/ast.json", JSON.stringify(typedAST, null, "  "), err => {
         if(err) throw err;
     });
 });

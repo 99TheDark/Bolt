@@ -1,4 +1,4 @@
-import { VariableType, Unknown } from "../typing/types";
+import { VariableType } from "../typing/types";
 
 export type Node =
     "Declaration" |
@@ -34,7 +34,7 @@ export type Precedence = "Comparative" | "Logical" | "Additive" | "Multiplicativ
 
 export interface Statement {
     kind: Node
-    type: VariableType | Unknown
+    type: VariableType
     row: number
     col: number
 }
@@ -74,37 +74,44 @@ export interface Comparator extends Expression {
 
 export interface NumberLiteral extends Expression {
     kind: "NumberLiteral"
+    type: "Number"
     value: number
 }
 
 export interface BooleanLiteral extends Expression {
     kind: "BooleanLiteral"
+    type: "Boolean"
     value: boolean
 }
 
 export interface StringLiteral extends Expression {
     kind: "StringLiteral"
+    type: "String"
     value: string
 }
 
 export interface FunctionLiteral extends Expression {
     kind: "FunctionLiteral"
+    type: "Function"
     parameters: ParameterList
     body: Statement[]
 }
 
 export interface EnumLiteral extends Expression {
     kind: "EnumLiteral"
+    type: "Enum"
     enumerators: string[]
 }
 
 export interface RegexLiteral extends Expression {
     kind: "RegexLiteral"
+    type: "Regex"
     regex: string
 }
 
 export interface ClassLiteral extends Expression {
     kind: "ClassLiteral"
+    type: "Class"
     extension: Vector
     body: Statement[]
 }

@@ -5,60 +5,91 @@
       "kind": "Assignment",
       "variable": {
         "kind": "Identifier",
-        "symbol": "digitsOfPi",
+        "symbol": "x",
         "row": 0,
         "col": 4
       },
       "value": {
-        "kind": "ArrayLiteral",
-        "values": [
-          {
-            "kind": "NumberLiteral",
-            "value": 3,
-            "row": 0,
-            "col": 18
-          },
-          {
-            "kind": "NumberLiteral",
-            "value": 1,
+        "kind": "Binary",
+        "left": {
+          "kind": "Binary",
+          "left": {
+            "kind": "Binary",
+            "left": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Binary",
+                "left": {
+                  "kind": "NumberLiteral",
+                  "value": 3,
+                  "row": 0,
+                  "col": 10,
+                  "type": "Number"
+                },
+                "right": {
+                  "kind": "NumberLiteral",
+                  "value": 5,
+                  "row": 0,
+                  "col": 14,
+                  "type": "Number"
+                },
+                "operator": "+",
+                "row": 0,
+                "col": 12
+              },
+              "right": {
+                "kind": "NumberLiteral",
+                "value": 7,
+                "row": 0,
+                "col": 19,
+                "type": "Number"
+              },
+              "operator": "*",
+              "row": 0,
+              "col": 17
+            },
+            "right": {
+              "kind": "NumberLiteral",
+              "value": 2,
+              "row": 0,
+              "col": 23,
+              "type": "Number"
+            },
+            "operator": "+",
             "row": 0,
             "col": 21
           },
-          {
+          "right": {
             "kind": "NumberLiteral",
             "value": 4,
             "row": 0,
-            "col": 24
-          }
-        ],
+            "col": 28,
+            "type": "Number"
+          },
+          "operator": "/",
+          "row": 0,
+          "col": 26
+        },
+        "right": {
+          "kind": "Unary",
+          "operand": {
+            "kind": "NumberLiteral",
+            "value": 2,
+            "row": 0,
+            "col": 33,
+            "type": "Number"
+          },
+          "operator": "-",
+          "row": 0,
+          "col": 32
+        },
+        "operator": "*",
         "row": 0,
-        "col": 18
+        "col": 30
       },
-      "col": 15,
-      "datatype": "let"
-    },
-    {
-      "kind": "Assignment",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "Directions",
-        "row": 2,
-        "col": 4
-      },
-      "value": {
-        "kind": "EnumLiteral",
-        "enumerators": [
-          "North",
-          "South",
-          "East",
-          "West"
-        ],
-        "row": 2,
-        "col": 17
-      },
-      "row": 2,
-      "col": 15,
-      "datatype": "let"
+      "col": 6,
+      "datatype": "let",
+      "type": "Number"
     }
   ]
 }
