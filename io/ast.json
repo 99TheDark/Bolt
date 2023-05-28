@@ -5,84 +5,84 @@
       "kind": "Assignment",
       "variable": {
         "kind": "Identifier",
-        "symbol": "x",
+        "symbol": "outerScoped",
         "row": 0,
         "col": 4
       },
       "value": {
-        "kind": "NumberLiteral",
-        "value": 5,
+        "kind": "StringLiteral",
+        "value": "Outer",
         "row": 0,
-        "col": 8,
-        "type": "Number"
+        "col": 18,
+        "type": "String"
       },
       "row": 0,
       "datatype": "let",
-      "type": "Number"
+      "type": "String"
     },
     {
-      "kind": "Assignment",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "y",
+      "kind": "IfStatement",
+      "test": {
+        "kind": "BooleanLiteral",
+        "value": true,
         "row": 1,
-        "col": 4
+        "col": 3,
+        "type": "Boolean"
       },
-      "value": {
-        "kind": "NumberLiteral",
-        "value": 12,
-        "row": 1,
-        "col": 8,
-        "type": "Number"
-      },
-      "datatype": "let",
-      "type": "Number"
-    },
-    {
-      "kind": "Assignment",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "z",
-        "row": 3,
-        "col": 4
-      },
-      "value": {
-        "kind": "Binary",
-        "left": {
-          "kind": "Identifier",
-          "symbol": "x",
-          "row": 3,
-          "col": 8,
-          "type": "Number"
+      "body": [
+        {
+          "kind": "Assignment",
+          "variable": {
+            "kind": "Identifier",
+            "symbol": "innerScoped",
+            "row": 2,
+            "col": 8
+          },
+          "value": {
+            "kind": "StringLiteral",
+            "value": "Inner",
+            "row": 2,
+            "col": 22,
+            "type": "String"
+          },
+          "datatype": "let",
+          "type": "String"
         },
-        "right": {
-          "kind": "Identifier",
-          "symbol": "y",
+        {
+          "kind": "FunctionCall",
+          "parameters": [
+            {
+              "kind": "Identifier",
+              "symbol": "innerScoped",
+              "row": 3,
+              "col": 10
+            }
+          ],
+          "caller": {
+            "kind": "Identifier",
+            "symbol": "print",
+            "row": 3,
+            "col": 4
+          },
           "row": 3,
-          "col": 12,
-          "type": "Number"
-        },
-        "operator": "+",
-        "row": 3,
-        "col": 10,
-        "type": "Number"
-      },
-      "datatype": "let",
-      "type": "Number"
+          "col": 4,
+          "type": "Unknown"
+        }
+      ],
+      "col": 0,
+      "scope": [
+        {
+          "name": "innerScoped",
+          "type": "String"
+        }
+      ],
+      "type": "Unknown"
     }
   ],
   "scope": [
     {
-      "name": "x",
-      "type": "Number"
-    },
-    {
-      "name": "y",
-      "type": "Number"
-    },
-    {
-      "name": "z",
-      "type": "Number"
+      "name": "outerScoped",
+      "type": "String"
     }
   ]
 }

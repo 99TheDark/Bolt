@@ -12,17 +12,22 @@
     - Escape strings
     - Formatted strings (`FormattedStringLiteral`)
     - Escape unicode character literal (`\u049f`)
+- Keywords
+    - `break`
+    - `continue`
+    - `defer`
+    - `assert`
 
 ### Parser
 - Function Calls
     - Make `IIFE`s valid
 - Errors
     - Easier to understand errors
+- Make keywords do something
 
 ### Type Inference
-
-### Invalid Code Detection
 - Detect reassigned code
+- Function return type detection
 
 ### Assmeble LLVM Code
 

@@ -39,10 +39,6 @@ export class Lexer {
         return count ? this.buffer.slice(0, count).join("") : this.buffer[0];
     }
 
-    private next(): string {
-        return this.buffer[1];
-    }
-
     private eat(count: number | void): string {
         let value = "";
 

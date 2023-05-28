@@ -1,5 +1,5 @@
-let x = 5
-let y = 12.8
-let a = true | false
-
-let z = x + y - a // should return number
+let outerScoped = "Outer"
+if(true) {
+    let innerScoped = "Inner"
+    print(innerScoped)
+}
