@@ -1,11 +1,3 @@
-let x = 5
-let y = true
-let z = #1a.8bf3
-x += 3
-
-if(x < z) {
-    let x = "Hello world"
-    let goodbye = "It was nice knowing you..."
-} else {
-    let z = 3
-}
+((string a) => { 
+    print(a)
+})("Hello world!")

@@ -1,5 +1,5 @@
 import { BoltError } from "../errors/error";
-import { Program, Statement, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause } from "../parser/expressions";
+import { Program, Statement, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral } from "../parser/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 
@@ -135,6 +135,11 @@ export class Inferrer {
             }
             case "ElseClause": {
                 this.scope(statement as ElseClause);
+                break;
+            }
+            case "FunctionLiteral": {
+                this.scope(statement as FunctionLiteral);
+                // set return value to type. multiple = bad
                 break;
             }
         }

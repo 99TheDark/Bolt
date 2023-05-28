@@ -89,6 +89,15 @@ export class Parser {
         }
     }
 
+    parseGroup(): Expression {
+        const value = this.at().type == Type.CloseParenthesis ? {
+            kind: "ParameterList",
+            parameters: []
+        } as ParameterList : this.parseStatement();
+        this.expect(Type.CloseParenthesis);
+        return value;
+    }
+
     parseBlock(): Statement[] {
         const body: Statement[] = [];
 
@@ -110,15 +119,6 @@ export class Parser {
         this.eat();
 
         return body;
-    }
-
-    parseGroup(): Expression {
-        const value = this.at().type == Type.CloseParenthesis ? {
-            kind: "ParameterList",
-            parameters: []
-        } as ParameterList : this.parseStatement();
-        this.expect(Type.CloseParenthesis);
-        return value;
     }
 
     parseControl(chain: boolean = false): Statement {
@@ -361,7 +361,7 @@ export class Parser {
 
     parseFunctionCall(): Expression {
         const left = this.parseLogical();
-        if(left.kind == "Identifier" && this.at().type == Type.OpenParenthesis) {
+        if((left.kind == "Identifier" || left.kind == "FunctionLiteral") && this.at().type == Type.OpenParenthesis) {
             const { row, col } = left;
             this.eat();
             const inner = this.parseGroup();
@@ -370,6 +370,7 @@ export class Parser {
             return {
                 kind: "FunctionCall",
                 parameters,
+                caller: left,
                 row,
                 col
             } as FunctionCall;

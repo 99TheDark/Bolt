@@ -2,195 +2,71 @@
   "kind": "Program",
   "body": [
     {
-      "kind": "Assignment",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "x",
-        "row": 0,
-        "col": 4
-      },
-      "value": {
-        "kind": "NumberLiteral",
-        "value": 5,
-        "row": 0,
-        "col": 8,
-        "type": "Number"
-      },
-      "row": 0,
-      "datatype": "let",
-      "type": "Number"
-    },
-    {
-      "kind": "Assignment",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "y",
-        "row": 1,
-        "col": 4
-      },
-      "value": {
-        "kind": "BooleanLiteral",
-        "value": true,
-        "row": 1,
-        "col": 8,
-        "type": "Boolean"
-      },
-      "datatype": "let",
-      "type": "Boolean"
-    },
-    {
-      "kind": "Assignment",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "z",
-        "row": 2,
-        "col": 4
-      },
-      "value": {
-        "kind": "NumberLiteral",
-        "value": 29.059,
-        "row": 2,
-        "col": 8,
-        "type": "Number"
-      },
-      "datatype": "let",
-      "type": "Number"
-    },
-    {
-      "kind": "Assignment",
-      "operator": "+",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "x",
-        "row": 3,
-        "col": 0
-      },
-      "value": {
-        "kind": "NumberLiteral",
-        "value": 3,
-        "row": 3,
-        "col": 5,
-        "type": "Number"
-      },
-      "type": "Number"
-    },
-    {
-      "kind": "IfStatement",
-      "test": {
-        "kind": "Comparator",
-        "left": {
-          "kind": "Identifier",
-          "symbol": "x",
-          "row": 5,
-          "col": 3
-        },
-        "right": {
-          "kind": "Identifier",
-          "symbol": "z",
-          "row": 5,
-          "col": 7
-        },
-        "operator": "<",
-        "row": 5,
-        "col": 5,
-        "type": "Boolean"
-      },
-      "body": [
+      "kind": "FunctionCall",
+      "parameters": [
         {
-          "kind": "Assignment",
-          "variable": {
-            "kind": "Identifier",
-            "symbol": "x",
-            "row": 7,
-            "col": 8
-          },
-          "value": {
-            "kind": "StringLiteral",
-            "value": "Hello world",
-            "row": 7,
-            "col": 12,
-            "type": "String"
-          },
-          "datatype": "let",
-          "type": "String"
-        },
-        {
-          "kind": "Assignment",
-          "variable": {
-            "kind": "Identifier",
-            "symbol": "goodbye",
-            "row": 8,
-            "col": 8
-          },
-          "value": {
-            "kind": "StringLiteral",
-            "value": "It was nice knowing you...",
-            "row": 8,
-            "col": 18,
-            "type": "String"
-          },
-          "datatype": "let",
+          "kind": "StringLiteral",
+          "value": "Hello world!",
+          "row": 2,
+          "col": 3,
           "type": "String"
         }
       ],
-      "next": {
-        "kind": "ElseClause",
+      "caller": {
+        "kind": "FunctionLiteral",
+        "parameters": {
+          "kind": "ParameterList",
+          "parameters": [
+            {
+              "kind": "Parameter",
+              "datatype": {
+                "kind": "Datatype",
+                "symbol": "string",
+                "row": 0,
+                "col": 2
+              },
+              "variable": {
+                "kind": "Identifier",
+                "symbol": "a",
+                "row": 0,
+                "col": 9
+              },
+              "row": 0,
+              "col": 1
+            }
+          ],
+          "row": 0,
+          "col": 1
+        },
         "body": [
           {
-            "kind": "Assignment",
-            "variable": {
+            "kind": "FunctionCall",
+            "parameters": [
+              {
+                "kind": "Identifier",
+                "symbol": "a",
+                "row": 1,
+                "col": 10
+              }
+            ],
+            "caller": {
               "kind": "Identifier",
-              "symbol": "z",
-              "row": 10,
-              "col": 8
+              "symbol": "print",
+              "row": 1,
+              "col": 4
             },
-            "value": {
-              "kind": "NumberLiteral",
-              "value": 3,
-              "row": 10,
-              "col": 12,
-              "type": "Number"
-            },
-            "datatype": "let",
-            "type": "Number"
+            "row": 1,
+            "col": 4
           }
         ],
-        "row": 9,
-        "col": 2,
-        "scope": [
-          {
-            "name": "z",
-            "type": "Number"
-          }
-        ],
-        "type": "Unknown"
+        "row": 0,
+        "col": 12,
+        "type": "Function"
       },
-      "col": 0,
-      "scope": [
-        {
-          "name": "x",
-          "type": "String"
-        },
-        {
-          "name": "goodbye",
-          "type": "String"
-        }
-      ],
+      "row": 0,
+      "col": 12,
       "type": "Unknown"
     }
   ],
-  "scope": [
-    {
-      "name": "x",
-      "type": "Number"
-    },
-    {
-      "name": "y",
-      "type": "Boolean"
-    },
-    {
-      "name": "z",
-      "type": "Number"
-    }
-  ]
+  "scope": []
 }

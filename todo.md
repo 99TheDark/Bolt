@@ -20,7 +20,6 @@
     - Easier to understand errors
 
 ### Type Inference
-- Type inference using scope for when values are redefined
 
 ### Invalid Code Detection
 - Detect reassigned code

@@ -99,6 +99,7 @@ export interface FunctionLiteral extends Expression, Scopeable {
     kind: "FunctionLiteral"
     type: "Function"
     parameters: ParameterList
+    return: VariableType
 }
 
 export interface EnumLiteral extends Expression {
@@ -194,4 +195,6 @@ export interface Iteration extends Expression {
 export interface FunctionCall extends Expression {
     kind: "FunctionCall"
     parameters: Expression[]
+    caller: Identifier | FunctionCall
+    return: VariableType
 }
