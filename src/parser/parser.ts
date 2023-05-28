@@ -4,6 +4,7 @@ import { isUnary, isBinary } from "./operators";
 import { isControl } from "./control";
 import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions";
 import { baseData } from "../lexer/literal";
+import { VariableType } from "../typing/types";
 
 export class Parser {
     private tokens: Token[];
@@ -41,7 +42,12 @@ export class Parser {
         this.ast = {
             kind: "Program",
             body: [],
-            scope: []
+            scope: [],
+            grab: function(name: string): VariableType | void {
+                for(const variable of this.scope) {
+                    if(variable.name == name) return variable.type;
+                }
+            }
         } as Program;
     }
 

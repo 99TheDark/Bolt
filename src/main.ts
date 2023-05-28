@@ -3,6 +3,7 @@ import { Lexer } from "./lexer/lexer";
 import { clean } from "./lexer/cleaner";
 import { Parser } from "./parser/parser";
 import { Inferrer } from "./typing/inference";
+import { ignore } from "./format/ignorer";
 
 fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     if(error) throw error;
@@ -14,7 +15,7 @@ fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     const inferrer = new Inferrer(ast);
     const typedAST = inferrer.type();
 
-    fs.writeFile("./io/ast.json", JSON.stringify(typedAST, null, "  "), err => {
+    fs.writeFile("./io/ast.json", JSON.stringify(typedAST, ignore, "  "), err => {
         if(err) throw err;
     });
 });

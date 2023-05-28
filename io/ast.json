@@ -2,188 +2,87 @@
   "kind": "Program",
   "body": [
     {
-      "kind": "FunctionCall",
-      "parameters": [
-        {
-          "kind": "StringLiteral",
-          "value": "Hello world!",
-          "row": 2,
-          "col": 3,
-          "type": "String"
-        }
-      ],
-      "caller": {
-        "kind": "FunctionLiteral",
-        "parameters": {
-          "kind": "ParameterList",
-          "parameters": [
-            {
-              "kind": "Parameter",
-              "datatype": {
-                "kind": "Datatype",
-                "symbol": "string",
-                "row": 0,
-                "col": 2
-              },
-              "variable": {
-                "kind": "Identifier",
-                "symbol": "a",
-                "row": 0,
-                "col": 9
-              },
-              "row": 0,
-              "col": 1
-            }
-          ],
-          "row": 0,
-          "col": 1
-        },
-        "body": [
-          {
-            "kind": "FunctionCall",
-            "parameters": [
-              {
-                "kind": "Identifier",
-                "symbol": "a",
-                "row": 1,
-                "col": 10
-              }
-            ],
-            "caller": {
-              "kind": "Identifier",
-              "symbol": "print",
-              "row": 1,
-              "col": 4
-            },
-            "row": 1,
-            "col": 4
-          }
-        ],
+      "kind": "Assignment",
+      "variable": {
+        "kind": "Identifier",
+        "symbol": "x",
         "row": 0,
-        "col": 12,
-        "type": "Function"
+        "col": 4
+      },
+      "value": {
+        "kind": "NumberLiteral",
+        "value": 5,
+        "row": 0,
+        "col": 8,
+        "type": "Number"
       },
       "row": 0,
-      "col": 12,
-      "type": "Unknown"
+      "datatype": "let",
+      "type": "Number"
     },
     {
       "kind": "Assignment",
       "variable": {
         "kind": "Identifier",
-        "symbol": "add",
-        "row": 4,
+        "symbol": "y",
+        "row": 1,
         "col": 4
       },
       "value": {
-        "kind": "FunctionLiteral",
-        "parameters": {
-          "kind": "ParameterList",
-          "parameters": [
-            {
-              "kind": "Parameter",
-              "datatype": {
-                "kind": "Datatype",
-                "symbol": "number",
-                "row": 4,
-                "col": 11
-              },
-              "variable": {
-                "kind": "Identifier",
-                "symbol": "a",
-                "row": 4,
-                "col": 18
-              },
-              "row": 4,
-              "col": 10
-            },
-            {
-              "kind": "Parameter",
-              "datatype": {
-                "kind": "Datatype",
-                "symbol": "number",
-                "row": 4,
-                "col": 21
-              },
-              "variable": {
-                "kind": "Identifier",
-                "symbol": "b",
-                "row": 4,
-                "col": 28
-              },
-              "row": 4,
-              "col": 19
-            }
-          ],
-          "row": 4,
-          "col": 10
-        },
-        "body": [
-          {
-            "kind": "Assignment",
-            "variable": {
-              "kind": "Identifier",
-              "symbol": "x",
-              "row": 6,
-              "col": 8
-            },
-            "value": {
-              "kind": "NumberLiteral",
-              "value": 4,
-              "row": 6,
-              "col": 12,
-              "type": "Number"
-            },
-            "datatype": "let",
-            "type": "Number"
-          },
-          {
-            "kind": "Keyword",
-            "symbol": "return",
-            "row": 7,
-            "col": 4,
-            "type": "Unknown"
-          },
-          {
-            "kind": "Binary",
-            "left": {
-              "kind": "NumberLiteral",
-              "value": 3,
-              "row": 7,
-              "col": 11,
-              "type": "Number"
-            },
-            "right": {
-              "kind": "NumberLiteral",
-              "value": 4,
-              "row": 7,
-              "col": 15,
-              "type": "Number"
-            },
-            "operator": "+",
-            "row": 7,
-            "col": 13,
-            "type": "Number"
-          }
-        ],
-        "row": 4,
-        "col": 31,
-        "type": "Unknown",
-        "scope": [
-          {
-            "name": "x",
-            "type": "Number"
-          }
-        ]
+        "kind": "NumberLiteral",
+        "value": 12,
+        "row": 1,
+        "col": 8,
+        "type": "Number"
       },
       "datatype": "let",
-      "type": "Unknown"
+      "type": "Number"
+    },
+    {
+      "kind": "Assignment",
+      "variable": {
+        "kind": "Identifier",
+        "symbol": "z",
+        "row": 3,
+        "col": 4
+      },
+      "value": {
+        "kind": "Binary",
+        "left": {
+          "kind": "Identifier",
+          "symbol": "x",
+          "row": 3,
+          "col": 8,
+          "type": "Number"
+        },
+        "right": {
+          "kind": "Identifier",
+          "symbol": "y",
+          "row": 3,
+          "col": 12,
+          "type": "Number"
+        },
+        "operator": "+",
+        "row": 3,
+        "col": 10,
+        "type": "Number"
+      },
+      "datatype": "let",
+      "type": "Number"
     }
   ],
   "scope": [
     {
-      "name": "add",
-      "type": "Unknown"
+      "name": "x",
+      "type": "Number"
+    },
+    {
+      "name": "y",
+      "type": "Number"
+    },
+    {
+      "name": "z",
+      "type": "Number"
     }
   ]
 }

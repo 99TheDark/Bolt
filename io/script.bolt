@@ -1,9 +1,5 @@
-((string a) => { 
-    print(a)
-})("Hello world!")
+let x = 5
+let y = 12.8
+let a = true | false
 
-let add = (number a, number b) => {
-    // Can't add variables yet
-    let x = 4
-    return 3 + 4
-}
+let z = x + y - a // should return number

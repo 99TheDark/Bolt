@@ -31,7 +31,11 @@ export type Node =
     "Identifier" |
     "Program"
 
-export type Precedence = "Comparative" | "Logical" | "Additive" | "Multiplicative"
+export type Precedence =
+    "Comparative" |
+    "Logical" |
+    "Additive" |
+    "Multiplicative"
 
 export interface Scopeable {
     scope: Variable[]
@@ -43,10 +47,13 @@ export interface Statement {
     type: VariableType
     row: number
     col: number
+    parent: Statement | Program
+    grab: ((name: string) => VariableType)
 }
 
 export interface Program extends Scopeable {
     kind: "Program"
+    grab: ((name: string) => VariableType)
 }
 
 // Expressions return values unlike statements

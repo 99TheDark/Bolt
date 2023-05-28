@@ -1,5 +1,5 @@
 import { BoltError } from "../errors/error";
-import { Program, Statement, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, FunctionCall } from "../parser/expressions";
+import { Program, Statement, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, FunctionCall, Identifier } from "../parser/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 
@@ -16,6 +16,7 @@ export class Inferrer {
     }
 
     type(): Program {
+        this.link(this.ast);
         this.scope(this.ast);
 
         return this.ast;
@@ -30,6 +31,17 @@ export class Inferrer {
         }
 
         switch(statement.kind) {
+            case "Identifier": {
+                const identifier = statement as Identifier;
+                const variableType = statement.grab(identifier.symbol);
+
+                if(!variableType) throw new BoltError(
+                    `The variable '${identifier.symbol}' is undefined`,
+                    identifier
+                );
+
+                return statement.type = variableType;
+            }
             case "Assignment": {
                 const assignment = statement as Assignment;
                 const valueType = this.inferType(assignment.value);
@@ -165,7 +177,7 @@ export class Inferrer {
         });
     }
 
-    scope(scopeable: Scopeable): void {
+    scope(scopeable: Scopeable & (Statement | Program)): void {
         if(!scopeable.scope) scopeable.scope = [];
         for(const statement of scopeable.body) {
             this.inferType(statement);
@@ -173,6 +185,22 @@ export class Inferrer {
             if(statement.kind == "Assignment") {
                 const assignment = statement as Assignment;
                 if(!assignment.operator) this.addVariable(scopeable, assignment);
+            }
+        }
+    }
+
+    link(obj: object): void {
+        for(const [key, value] of Object.entries(obj)) {
+            if(key == "parent" || key == "grab" || key == "scope") continue;
+            if(typeof value == "object") {
+                value.parent = obj;
+                value.grab = function(name: string): VariableType | void {
+                    if(this.scope) for(const variable of this.scope) {
+                        if(variable.name == name) return variable.type;
+                    }
+                    return this.parent.grab(name);
+                };
+                this.link(value);
             }
         }
     }
