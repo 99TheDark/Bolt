@@ -4,7 +4,6 @@ let z = #1a.8bf3
 x += 3
 
 if(x < z) {
-    // Why is this repeating 4x?
     let x = "Hello world"
     let goodbye = "It was nice knowing you..."
 } else {
