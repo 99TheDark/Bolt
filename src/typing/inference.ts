@@ -1,5 +1,5 @@
 import { BoltError } from "../errors/error";
-import { Program, Statement, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral } from "../parser/expressions";
+import { Program, Statement, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, FunctionCall } from "../parser/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 
@@ -22,7 +22,12 @@ export class Inferrer {
     }
 
     inferType(statement: Statement): VariableType {
-        if(statement.type) return statement.type;
+        if(statement.kind == "FunctionLiteral") {
+            const ret = (statement as FunctionLiteral).return;
+            if(ret) return ret;
+        } else {
+            if(statement.type) return statement.type;
+        }
 
         switch(statement.kind) {
             case "Assignment": {
@@ -137,6 +142,11 @@ export class Inferrer {
                 this.scope(statement as ElseClause);
                 break;
             }
+            case "FunctionCall": {
+                // const functioncall = statement as FunctionCall;
+                // find function
+                break;
+            }
             case "FunctionLiteral": {
                 this.scope(statement as FunctionLiteral);
                 // set return value to type. multiple = bad
@@ -149,7 +159,6 @@ export class Inferrer {
 
     addVariable(scopeable: Scopeable, assignment: Assignment): void {
         const variable = assignment.variable;
-        if(!scopeable.scope) scopeable.scope = [];
         scopeable.scope.push({
             name: variable.symbol,
             type: assignment.type
@@ -157,6 +166,7 @@ export class Inferrer {
     }
 
     scope(scopeable: Scopeable): void {
+        if(!scopeable.scope) scopeable.scope = [];
         for(const statement of scopeable.body) {
             this.inferType(statement);
 

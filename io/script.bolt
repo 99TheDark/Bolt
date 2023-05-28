@@ -1,3 +1,9 @@
 ((string a) => { 
     print(a)
 })("Hello world!")
+
+let add = (number a, number b) => {
+    // Can't add variables yet
+    let x = 4
+    return 3 + 4
+}
