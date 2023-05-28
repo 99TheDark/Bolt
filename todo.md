@@ -22,6 +22,9 @@
 ### Type Inference
 - Type inference using scope for when values are redefined
 
+### Invalid Code Detection
+- Detect reassigned code
+
 ### Assmeble LLVM Code
 
 ### Compile LLVM

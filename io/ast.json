@@ -101,13 +101,13 @@
           "variable": {
             "kind": "Identifier",
             "symbol": "x",
-            "row": 6,
+            "row": 7,
             "col": 8
           },
           "value": {
             "kind": "StringLiteral",
             "value": "Hello world",
-            "row": 6,
+            "row": 7,
             "col": 12,
             "type": "String"
           },
@@ -119,13 +119,13 @@
           "variable": {
             "kind": "Identifier",
             "symbol": "goodbye",
-            "row": 7,
+            "row": 8,
             "col": 8
           },
           "value": {
             "kind": "StringLiteral",
             "value": "It was nice knowing you...",
-            "row": 7,
+            "row": 8,
             "col": 18,
             "type": "String"
           },
@@ -133,32 +133,40 @@
           "type": "String"
         }
       ],
+      "next": {
+        "kind": "ElseClause",
+        "body": [
+          {
+            "kind": "Assignment",
+            "variable": {
+              "kind": "Identifier",
+              "symbol": "z",
+              "row": 10,
+              "col": 8
+            },
+            "value": {
+              "kind": "NumberLiteral",
+              "value": 3,
+              "row": 10,
+              "col": 12,
+              "type": "Number"
+            },
+            "datatype": "let",
+            "type": "Number"
+          }
+        ],
+        "row": 9,
+        "col": 2,
+        "scope": [
+          {
+            "name": "z",
+            "type": "Number"
+          }
+        ],
+        "type": "Unknown"
+      },
       "col": 0,
       "scope": [
-        {
-          "name": "x",
-          "type": "String"
-        },
-        {
-          "name": "goodbye",
-          "type": "String"
-        },
-        {
-          "name": "x",
-          "type": "String"
-        },
-        {
-          "name": "goodbye",
-          "type": "String"
-        },
-        {
-          "name": "x",
-          "type": "String"
-        },
-        {
-          "name": "goodbye",
-          "type": "String"
-        },
         {
           "name": "x",
           "type": "String"

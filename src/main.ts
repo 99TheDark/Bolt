@@ -14,7 +14,7 @@ fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     const inferrer = new Inferrer(ast);
     const typedAST = inferrer.type();
 
-    fs.writeFile("./io/ast.json", JSON.stringify(ast, null, "  "), err => {
+    fs.writeFile("./io/ast.json", JSON.stringify(typedAST, null, "  "), err => {
         if(err) throw err;
     });
 });

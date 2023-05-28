@@ -115,6 +115,7 @@ export class Inferrer {
                 if(ifstatement.next) this.inferType(ifstatement.next);
 
                 // Type = return value type
+                break;
             }
             case "WhileLoop": {
                 const whileloop = statement as IfStatement;
@@ -126,12 +127,15 @@ export class Inferrer {
                 );
 
                 this.scope(whileloop);
+                break;
             }
             case "ForEachLoop": {
                 this.scope(statement as ForEachLoop);
+                break;
             }
             case "ElseClause": {
                 this.scope(statement as ElseClause);
+                break;
             }
         }
 
