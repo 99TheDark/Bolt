@@ -571,7 +571,7 @@ export class Parser {
     private static filter(obj: any): Expression {
         Object.entries(obj).forEach(entry => {
             const [key, value] = entry;
-            value ?? delete obj[key];
+            if(!value && value !== 0) delete obj[key];
         });
         return obj;
     }
