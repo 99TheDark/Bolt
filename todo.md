@@ -16,6 +16,8 @@
 ### Parser
 - Function Calls
     - Make `IIFE`s valid
+- Errors
+    - Easier to understand errors
 
 ### Type Inference
 - Boolean checking in the tests of `if` and `while` loops

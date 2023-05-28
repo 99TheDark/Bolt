@@ -120,15 +120,17 @@ export class Parser {
         return value;
     }
 
-    parseControl(): Statement {
-        switch(this.at().value) {
+    parseControl(chain: boolean = false): Statement {
+        let v = this.at().value;
+        if(chain && v != "elseif" && v != "else") v = "";
+        switch(v) {
             default: return {} as Statement;
             case "if":
             case "elseif": {
                 const { row, col } = this.eat();
                 const test = this.parseExpression();
                 const body = this.parseBlock();
-                const next = this.parseControl();
+                const next = this.parseControl(true);
 
                 return Parser.filter({
                     kind: "IfStatement",
@@ -169,7 +171,7 @@ export class Parser {
                 const body = this.parseBlock();
 
                 if(iteration.kind != "Iteration") throw new BoltError(
-                    `Only iterations (value : arr) are allowed as a parameter in a foreach loop`,
+                    `Only iterations (value : arr) are allowed as a parameter in a for each loop`,
                     iteration
                 );
 
@@ -274,6 +276,16 @@ export class Parser {
         if(this.at().type == Type.Iteration) {
             const { row, col } = this.eat();
             const right = this.parseFunction();
+
+            if(left.kind != "Identifier") throw new BoltError(
+                `Unexpected left-hand side of iteration; item name expected`,
+                left
+            );
+
+            if(right.kind != "Identifier" && right.kind != "ArrayLiteral") throw new BoltError(
+                `Unexpected right-hand side of iteration; iterator must be a variable or an array literal`,
+                right
+            );
 
             return {
                 kind: "Iteration",
@@ -398,7 +410,8 @@ export class Parser {
                 right,
                 operator: value,
                 row,
-                col
+                col,
+                type: "Boolean"
             } as Comparator;
         }
 

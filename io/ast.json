@@ -2,28 +2,85 @@
   "kind": "Program",
   "body": [
     {
-      "kind": "Assignment",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "run",
-        "row": 0,
-        "col": 4
-      },
-      "value": {
-        "kind": "FunctionLiteral",
-        "parameters": {
-          "kind": "ParameterList",
-          "parameters": []
+      "kind": "IfStatement",
+      "test": {
+        "kind": "Comparator",
+        "left": {
+          "kind": "NumberLiteral",
+          "value": 5,
+          "row": 0,
+          "col": 3,
+          "type": "Number"
         },
-        "body": [],
+        "right": {
+          "kind": "Binary",
+          "left": {
+            "kind": "NumberLiteral",
+            "value": 12,
+            "row": 0,
+            "col": 7,
+            "type": "Number"
+          },
+          "right": {
+            "kind": "NumberLiteral",
+            "value": 3,
+            "row": 0,
+            "col": 12,
+            "type": "Number"
+          },
+          "operator": "-",
+          "row": 0,
+          "col": 10
+        },
+        "operator": "<",
         "row": 0,
-        "col": 13,
-        "type": "Function"
+        "col": 5,
+        "type": "Boolean"
+      },
+      "body": [],
+      "next": {
+        "type": "Unknown"
       },
       "row": 0,
-      "col": 8,
-      "datatype": "let",
-      "type": "Function"
+      "col": 0,
+      "type": "Unknown"
+    },
+    {
+      "kind": "WhileLoop",
+      "test": {
+        "kind": "BooleanLiteral",
+        "value": false,
+        "row": 4,
+        "col": 6,
+        "type": "Boolean"
+      },
+      "body": [],
+      "row": 4,
+      "col": 0,
+      "type": "Unknown"
+    },
+    {
+      "iteration": {
+        "kind": "Iteration",
+        "item": {
+          "kind": "Identifier",
+          "symbol": "x",
+          "row": 8,
+          "col": 8
+        },
+        "iterator": {
+          "kind": "Identifier",
+          "symbol": "arr",
+          "row": 8,
+          "col": 12
+        },
+        "row": 8,
+        "col": 10
+      },
+      "body": [],
+      "row": 8,
+      "col": 0,
+      "type": "Unknown"
     }
   ]
 }

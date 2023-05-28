@@ -1,5 +1,5 @@
 import { BoltError } from "../errors/error";
-import { Program, Statement, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral } from "../parser/expressions";
+import { Program, Statement, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator } from "../parser/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 
@@ -53,6 +53,21 @@ export function inferType(statement: Statement): VariableType {
 
             return statement.type = operandType;
         }
+        case "Comparator": {
+            const comparator = statement as Comparator;
+            const leftType = inferType(comparator.left);
+            const rightType = inferType(comparator.right);
+
+            if(leftType != rightType) throw new BoltError(
+                `Cannot use the '${comparator.operator}' comparator on a ${l(leftType)} and ${l(rightType)}`,
+                comparator
+            );
+
+            if(leftType != "Number") throw new BoltError(
+                `Cannot use the '${comparator.operator}' comparator on a ${l(leftType)}`,
+                comparator
+            );
+        }
         case "Assignment": {
             const assignment = statement as Assignment;
             const valueType = inferType(assignment.value);
@@ -80,6 +95,28 @@ export function inferType(statement: Statement): VariableType {
 
                 return statement.type = types[0];
             }
+        }
+        case "IfStatement": {
+            const ifstatement = statement as IfStatement;
+            const testType = inferType(ifstatement.test);
+
+            if(testType != "Boolean") throw new BoltError(
+                `The condition in an if statement must be a boolean`,
+                ifstatement
+            );
+
+            inferType(ifstatement.next);
+
+            // Type = return value type
+        }
+        case "WhileLoop": {
+            const whileloop = statement as IfStatement;
+            const testType = inferType(whileloop.test);
+
+            if(testType != "Boolean") throw new BoltError(
+                `The test in an while loop must be a boolean`,
+                whileloop
+            );
         }
     }
 
