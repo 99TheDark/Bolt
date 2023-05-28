@@ -1,5 +1,5 @@
 import { BoltError } from "../errors/error";
-import { Program, Statement, BinaryOperation, UnaryOperation, Assignment } from "../parser/expressions";
+import { Program, Statement, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral } from "../parser/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 
@@ -10,7 +10,7 @@ function l(str: string) {
 
 export function inferAST(ast: Program): Program {
     for(const statement of ast.body) {
-        statement.type = inferType(statement);
+        inferType(statement);
     }
 
     return ast;
@@ -35,7 +35,7 @@ export function inferType(statement: Statement): VariableType {
                 binary
             );
 
-            return leftType;
+            return statement.type = leftType;
         }
         case "Unary": {
             const unary = statement as UnaryOperation;
@@ -51,8 +51,7 @@ export function inferType(statement: Statement): VariableType {
                 unary
             );
 
-
-            return operandType;
+            return statement.type = operandType;
         }
         case "Assignment": {
             const assignment = statement as Assignment;
@@ -64,9 +63,25 @@ export function inferType(statement: Statement): VariableType {
                 assignment.value
             );
 
-            return valueType;
+            return statement.type = valueType;
+        }
+        case "ArrayLiteral": {
+            const array = statement as ArrayLiteral;
+            const vals = array.values;
+
+            if(vals.length > 0) {
+                const types = vals.map(val => inferType(val));
+                types.forEach((type, idx) => {
+                    if(type != types[0]) throw new BoltError(
+                        `An array can only include one type`,
+                        vals[idx]
+                    );
+                });
+
+                return statement.type = types[0];
+            }
         }
     }
 
-    return "Unknown";
+    return statement.type = "Unknown";
 }
