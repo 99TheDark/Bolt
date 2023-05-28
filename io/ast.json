@@ -6,78 +6,25 @@
       "operator": "",
       "variable": {
         "kind": "Identifier",
-        "symbol": "someArray",
+        "symbol": "run",
         "row": 0,
         "col": 4
       },
       "value": {
-        "kind": "ArrayLiteral",
-        "values": [
-          {
-            "kind": "Binary",
-            "left": {
-              "kind": "Binary",
-              "left": {
-                "kind": "NumberLiteral",
-                "value": 3,
-                "row": 0,
-                "col": 18,
-                "type": "Number"
-              },
-              "right": {
-                "kind": "NumberLiteral",
-                "value": 2,
-                "row": 0,
-                "col": 22,
-                "type": "Number"
-              },
-              "operator": "*",
-              "row": 0,
-              "col": 20,
-              "type": "Number"
-            },
-            "right": {
-              "kind": "NumberLiteral",
-              "value": 1,
-              "row": 0,
-              "col": 27,
-              "type": "Number"
-            },
-            "operator": "+",
-            "row": 0,
-            "col": 25,
-            "type": "Number"
-          },
-          {
-            "kind": "NumberLiteral",
-            "value": 4,
-            "row": 0,
-            "col": 30,
-            "type": "Number"
-          },
-          {
-            "kind": "Unary",
-            "operand": {
-              "kind": "NumberLiteral",
-              "value": 17,
-              "row": 0,
-              "col": 34,
-              "type": "Number"
-            },
-            "operator": "-",
-            "row": 0,
-            "col": 33,
-            "type": "Number"
-          }
-        ],
+        "kind": "FunctionLiteral",
+        "parameters": {
+          "kind": "ParameterList",
+          "parameters": []
+        },
+        "body": [],
         "row": 0,
-        "col": 25,
-        "type": "Number"
+        "col": 13,
+        "type": "Function"
       },
       "row": 0,
-      "col": 14,
+      "col": 8,
       "datatype": "let",
-      "type": "Number"
+      "type": "Function"
     }
   ]
 }

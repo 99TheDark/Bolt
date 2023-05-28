@@ -14,15 +14,12 @@
     - Escape unicode character literal (`\u049f`)
 
 ### Parser
-- Declaration
-    - Array
-    - Enum
-- Datatype
-    - Map type to variable type
-- Function Literals
-    - Cannot define function with no parameters
+- Function Calls
+    - Make `IIFE`s valid
 
 ### Type Inference
+- Boolean checking in the tests of `if` and `while` loops
+- Valid iteration detection in `foreach` loops
 - Type inference using scope for when values are redefined
 
 ### Invalid Code Detector
