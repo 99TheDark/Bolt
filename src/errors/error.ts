@@ -1,4 +1,4 @@
-import { Token } from "../lexer/tokens"
+import { Token } from "../lexer/tokens";
 import { Expression } from "../parser/expressions";
 
 export class BoltError extends Error {

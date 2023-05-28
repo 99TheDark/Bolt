@@ -3,7 +3,6 @@ export type VariableType =
     "Boolean" |
     "String" |
     "Function" |
-    "Date" |
-    "Time" |
     "Enum" |
-    "Regex"
+    "Regex" |
+    "Class"

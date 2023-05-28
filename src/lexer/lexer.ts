@@ -1,5 +1,5 @@
-import { Type, Token, whitespace, longerPattern, getPattern, keywords, patterns } from "./tokens"
-import { isNumber, isAlphanumeric, baseData } from "./literal"
+import { Type, Token, whitespace, longerPattern, getPattern, keywords, patterns } from "./tokens";
+import { isNumber, isAlphanumeric, baseData } from "./literal";
 
 export const modes: Type[] = [
     Type.Identifier,

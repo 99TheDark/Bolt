@@ -1,4 +1,4 @@
-import { isBinary } from "../parser/operators"
+import { isBinary } from "../parser/operators";
 
 export enum Type {
     Identifier,

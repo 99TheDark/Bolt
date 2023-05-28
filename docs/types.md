@@ -5,6 +5,7 @@
 - Function (`func`)
 - Enum (`enum`)
 - Regex (`regex`)
+- Class (`class`)
 
 # Examples
 
@@ -91,4 +92,37 @@ let capitals = /[A-Z]\w+/g
 let exclaim = /\w[?!]+/gi
 
 regex someRegex = /"((?:""|[^"])*)"/g
+```
+
+### Class
+```
+let Person = {
+
+    static string species = "Homo Sapiens"
+
+    private number name
+    public number age
+
+    constructor(string name, number age) {
+        this.name = name
+        this.age = age
+    }
+
+    destructor() {
+        print("I am dead now :(")
+    }
+
+    talk() {
+        print("Hello, my name is ${name}!")
+    }
+
+}
+
+class SomeClass = {
+
+    destructor() {
+        print("I never had a constructor...")
+    }
+
+}
 ```

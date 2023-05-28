@@ -1,4 +1,4 @@
-import { VariableType } from "../typing/types"
+import { VariableType } from "../typing/types";
 
 export type Node =
     "Declaration" |

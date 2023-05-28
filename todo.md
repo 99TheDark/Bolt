@@ -22,6 +22,7 @@
 - Try to remove all ; seperators to make the error easier to understand
 
 ### Type Inference
-### Dead Code Checks
+
 ### Assmeble LLVM Code
+
 ### Compile LLVM

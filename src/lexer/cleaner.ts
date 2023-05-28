@@ -1,4 +1,4 @@
-import { Type, Token } from "./tokens"
+import { Type, Token } from "./tokens";
 
 export function clean(tokens: Token[]): Token[] {
     let arr: Token[] = [];
