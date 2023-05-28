@@ -1,7 +1,7 @@
 import { BoltError } from "../errors/error";
 import { Program, Statement, BinaryOperation, UnaryOperation, Assignment } from "../parser/expressions";
 import { VariableType } from "./types";
-import { valid } from "./validoperations";
+import { valid, literal } from "./validoperations";
 
 // Lowercase
 function l(str: string) {
@@ -46,8 +46,12 @@ export function inferType(statement: Statement): VariableType {
         case "Assignment": {
             const assignment = statement as Assignment;
             const valueType = inferType(assignment.value);
+            const datatype = literal[assignment.datatype];
 
-            // Check against datatype in declaration
+            if(datatype != "Unknown" && datatype != valueType) throw new BoltError(
+                `The ${l(datatype)} '${assignment.variable.symbol}' cannot be assigned to a ${l(valueType)}`,
+                assignment
+            );
 
             return valueType;
         }

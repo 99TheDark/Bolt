@@ -109,10 +109,8 @@ export const keywords: Record<string, Type> = {
     "bool": Type.Datatype,
     "string": Type.Datatype,
     "func": Type.Datatype,
-    "tree": Type.Datatype,
-    "date": Type.Datatype,
-    "time": Type.Datatype,
-    "enum": Type.Datatype
+    "enum": Type.Datatype,
+    "class": Type.Datatype
 }
 
 export const whitespace = [

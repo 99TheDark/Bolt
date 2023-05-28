@@ -3,6 +3,7 @@
   "body": [
     {
       "kind": "Assignment",
+      "operator": "",
       "variable": {
         "kind": "Identifier",
         "symbol": "x",
@@ -87,6 +88,7 @@
         "row": 0,
         "col": 30
       },
+      "row": 0,
       "col": 6,
       "datatype": "let",
       "type": "Number"
