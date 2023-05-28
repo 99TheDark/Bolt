@@ -18,5 +18,3 @@ export function isUnary(operator: Token | string): boolean {
 export function isBinary(operator: Token | string): boolean {
     return operatorTypes(typeof operator == "string" ? operator : operator.value).includes("Binary");
 }
-
-export const operators = Object.entries(patterns).filter(entry => entry[1] == Type.Operator).map(entry => entry[0]);

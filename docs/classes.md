@@ -20,7 +20,8 @@
  * The class destructor never takes in any arguments.
  * A class can be extended by prefixing the class literal within brackets with the 
  * class it extends or a vector of classes.
- * Vlues of a class can be accessed via the period operator (.)
+ * Values of a class can be accessed via the period operator (.)
+ * All classes MUST be capitalized, or else an error will occur.
  */
 
 class Building = { 

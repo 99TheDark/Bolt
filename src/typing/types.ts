@@ -6,3 +6,5 @@ export type VariableType =
     "Enum" |
     "Regex" |
     "Class"
+
+export type Unknown = "Unknown"
