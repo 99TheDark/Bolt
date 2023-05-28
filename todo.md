@@ -20,10 +20,9 @@
 - Datatype
     - Map type to variable type
 
-### Errors
-- Try to remove all ; seperators to make the error easier to understand
-
 ### Type Inference
+
+### Invalid Code Detector
 
 ### Assmeble LLVM Code
 
