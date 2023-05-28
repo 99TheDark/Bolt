@@ -19,8 +19,12 @@
     - Enum
 - Datatype
     - Map type to variable type
+- Function Literals
+    - Cannot define function with no parameters
 
 ### Type Inference
+- Infer array types
+- Type inference using scope for when values are redefined
 
 ### Invalid Code Detector
 

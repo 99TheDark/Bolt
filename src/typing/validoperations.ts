@@ -21,3 +21,7 @@ export const literal: Record<string, VariableType> = {
     regex: "Regex",
     class: "Class"
 }
+
+export function literalToType(str: string): VariableType {
+    return literal[str] ?? "Unknown";
+}

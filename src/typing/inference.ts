@@ -1,7 +1,7 @@
 import { BoltError } from "../errors/error";
 import { Program, Statement, BinaryOperation, UnaryOperation, Assignment } from "../parser/expressions";
 import { VariableType } from "./types";
-import { valid, literal } from "./validoperations";
+import { valid, literalToType } from "./validoperations";
 
 // Lowercase
 function l(str: string) {
@@ -30,6 +30,11 @@ export function inferType(statement: Statement): VariableType {
                 binary
             );
 
+            if(!valid[leftType].includes(binary.operator)) throw new BoltError(
+                `Cannot use the '${binary.operator}' operator on a ${l(leftType)}`,
+                binary
+            );
+
             return leftType;
         }
         case "Unary": {
@@ -41,16 +46,22 @@ export function inferType(statement: Statement): VariableType {
                 unary
             );
 
+            if(!valid[operandType].includes(unary.operator)) throw new BoltError(
+                `Cannot use the '${unary.operator}' operator on a ${l(operandType)}`,
+                unary
+            );
+
+
             return operandType;
         }
         case "Assignment": {
             const assignment = statement as Assignment;
             const valueType = inferType(assignment.value);
-            const datatype = literal[assignment.datatype];
+            const datatype = literalToType(assignment.datatype);
 
             if(datatype != "Unknown" && datatype != valueType) throw new BoltError(
                 `The ${l(datatype)} '${assignment.variable.symbol}' cannot be assigned to a ${l(valueType)}`,
-                assignment
+                assignment.value
             );
 
             return valueType;
