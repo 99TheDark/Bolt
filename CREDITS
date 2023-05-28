@@ -1,1 +1,2 @@
-Parser heavily copied from a tutorial series by [tylerlaceby](https://www.youtube.com/@tylerlaceby)
+Lexer and parser based off a tutorial series by [tylerlaceby](https://www.youtube.com/@tylerlaceby)
+Type inference algorithm based on explanation from [Dmitry Soshnikov](https://www.youtube.com/@DmitrySoshnikov-education)
