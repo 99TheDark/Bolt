@@ -1,5 +1,5 @@
 import { BoltError } from "../errors/error";
-import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement } from "../parser/expressions";
+import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration } from "../parser/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 
@@ -37,8 +37,8 @@ export class Inferrer {
 
                 return statement.type = variableType;
             }
-            case "Assignment": {
-                const assignment = statement as Assignment;
+            case "Declaration": {
+                const assignment = statement as Declaration;
                 const valueType = this.inferType(assignment.value);
                 const datatype = literalToType(assignment.datatype);
 

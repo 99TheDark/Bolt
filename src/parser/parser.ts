@@ -4,7 +4,7 @@ import { isUnary, isBinary } from "./operators";
 import { isControl } from "./control";
 import { baseData } from "../lexer/literal";
 import { VariableType, literalMap } from "../typing/types";
-import { Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence, Return, Statement } from "./expressions";
+import { Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence, Return, Statement, Declaration } from "./expressions";
 
 export class Parser {
     private tokens: Token[];
@@ -223,10 +223,20 @@ export class Parser {
             let assignment = this.parseAssignment() as Assignment;
             let datatype = left as Datatype;
 
-            if(assignment.kind == "Assignment") {
-                assignment.datatype = datatype.symbol;
-                return assignment;
-            }
+            const { kind, operator, variable, value, row, col } = assignment;
+
+            if(operator) throw new BoltError(
+                `Declarations cannot have operators`,
+                assignment
+            );
+
+            if(kind == "Assignment") return new Declaration(
+                variable,
+                value,
+                datatype.symbol,
+                row,
+                col
+            );
         }
 
         return left;
@@ -271,7 +281,6 @@ export class Parser {
                 operator,
                 left as Identifier,
                 right,
-                "",
                 row,
                 col
             );

@@ -2,11 +2,10 @@
   "kind": "Program",
   "body": [
     {
-      "kind": "Assignment",
+      "kind": "Declaration",
       "type": "Number",
       "row": 0,
       "col": 6,
-      "operator": "",
       "variable": {
         "kind": "Identifier",
         "type": "Unknown",
@@ -24,11 +23,10 @@
       "datatype": "let"
     },
     {
-      "kind": "Assignment",
+      "kind": "Declaration",
       "type": "Number",
       "row": 1,
       "col": 6,
-      "operator": "",
       "variable": {
         "kind": "Identifier",
         "type": "Unknown",
@@ -46,14 +44,5 @@
       "datatype": "let"
     }
   ],
-  "scope": [
-    {
-      "name": "x",
-      "type": "Unknown"
-    },
-    {
-      "name": "y",
-      "type": "Unknown"
-    }
-  ]
+  "scope": []
 }

@@ -254,18 +254,29 @@ export class Keyword extends Expression {
     }
 }
 
-export class Assignment extends Expression {
-    operator: string | null;
+export class Declaration extends Expression {
     variable: Identifier;
     value: Expression;
     datatype: string;
 
-    constructor(operator: string | null, variable: Identifier, value: Expression, datatype: string, row: number, col: number) {
+    constructor(variable: Identifier, value: Expression, datatype: string, row: number, col: number) {
+        super("Declaration", "Unknown", row, col);
+        this.variable = variable;
+        this.value = value;
+        this.datatype = datatype;
+    }
+}
+
+export class Assignment extends Expression {
+    operator: string | null;
+    variable: Identifier;
+    value: Expression;
+
+    constructor(operator: string | null, variable: Identifier, value: Expression, row: number, col: number) {
         super("Assignment", "Unknown", row, col);
         this.operator = operator;
         this.variable = variable;
         this.value = value;
-        this.datatype = datatype;
     }
 }
 
