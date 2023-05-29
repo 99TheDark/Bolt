@@ -4,7 +4,7 @@ import { isUnary, isBinary } from "./operators";
 import { isControl } from "./control";
 import { baseData } from "../lexer/literal";
 import { VariableType, literalMap } from "../typing/types";
-import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence, Return, Scopeable } from "./expressions";
+import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence, Return } from "./expressions";
 
 export class Parser {
     private tokens: Token[];
@@ -39,19 +39,7 @@ export class Parser {
     constructor(tokens: Token[]) {
         this.tokens = [...tokens];
 
-        this.ast = {
-            kind: "Program",
-            body: [],
-            scope: [],
-            grab: function(name: string): VariableType | void {
-                for(const variable of this.scope) {
-                    if(variable.name == name) return variable.type;
-                }
-            },
-            top: function(): Statement | Program {
-                return this;
-            }
-        } as Program;
+        this.ast = new Program();
     }
 
     isPattern(precedence: Precedence, token: Token) {
@@ -99,10 +87,8 @@ export class Parser {
     }
 
     parseGroup(): Expression {
-        const value = this.at().type == Type.CloseParenthesis ? {
-            kind: "ParameterList",
-            values: [] as Parameter[]
-        } as ParameterList : this.parseStatement();
+        const { row, col } = this.at();
+        const value = this.at().type == Type.CloseParenthesis ? new ParameterList([], row, col) : this.parseStatement();
         this.expect(Type.CloseParenthesis);
         return value;
     }
@@ -142,42 +128,39 @@ export class Parser {
                 const body = this.parseBlock();
                 const next = this.parseControl(true);
 
-                return Parser.filter({
-                    kind: "IfStatement",
+                return new IfStatement(
                     test,
                     body,
                     next,
                     row,
                     col
-                } as IfStatement);
+                );
             }
             case "else": {
                 const { row, col } = this.eat();
                 const body = this.parseBlock();
 
-                return {
-                    kind: "ElseClause",
+                return new ElseClause(
                     body,
                     row,
                     col
-                } as ElseClause;
+                );
             }
             case "while": {
                 const { row, col } = this.eat();
                 const test = this.parseExpression();
                 const body = this.parseBlock();
 
-                return {
-                    kind: "WhileLoop",
+                return new WhileLoop(
                     test,
                     body,
                     row,
                     col
-                } as WhileLoop;
+                );
             }
             case "foreach": {
                 const { row, col } = this.eat();
-                const iteration = this.parseExpression();
+                const iteration = this.parseExpression() as Iteration;
                 const body = this.parseBlock();
 
                 if(iteration.kind != "Iteration") throw new BoltError(
@@ -185,12 +168,12 @@ export class Parser {
                     iteration
                 );
 
-                return {
+                return new ForEachLoop(
                     iteration,
                     body,
                     row,
                     col
-                } as ForEachLoop;
+                );
             }
         }
     }
@@ -222,12 +205,11 @@ export class Parser {
         if(left.kind == "Keyword") {
             const keyword = left as Keyword;
             if(keyword.symbol == "return") {
-                return {
-                    kind: "Return",
-                    value: this.parseDeclaration(),
-                    row: left.row,
-                    col: left.col
-                } as Return;
+                new Return(
+                    this.parseDeclaration(),
+                    left.row,
+                    left.col
+                );
             }
         }
 
@@ -285,14 +267,14 @@ export class Parser {
                 right
             );
 
-            return Parser.filter({
-                kind: "Assignment",
+            return new Assignment(
                 operator,
-                variable: left,
-                value: right,
+                left as Identifier,
+                right,
+                "",
                 row,
                 col
-            } as Assignment);
+            );
         }
 
         return left;
@@ -315,13 +297,12 @@ export class Parser {
                 right
             );
 
-            return {
-                kind: "Iteration",
-                item: left,
-                iterator: right,
+            return new Iteration(
+                left as Identifier | Vector,
+                right as Identifier,
                 row,
                 col
-            } as Iteration;
+            );
         }
 
         return left;
@@ -332,14 +313,12 @@ export class Parser {
         if(left.kind == "ParameterList") {
             const { row, col } = this.expect(Type.FunctionArrow);
 
-            return {
-                kind: "FunctionLiteral",
-                parameters: left,
-                body: this.parseBlock(),
+            return new FunctionLiteral(
+                left as ParameterList,
+                this.parseBlock(),
                 row,
                 col,
-                type: "Function"
-            } as FunctionLiteral;
+            );
         }
 
         return left;
@@ -373,23 +352,20 @@ export class Parser {
                     datatype
                 );
 
-                params.push({
-                    kind: "Parameter",
-                    datatype: type,
-                    variable: symbol,
+                params.push(new Parameter(
+                    symbol,
+                    type,
                     row,
-                    col,
-                    type: literalMap[type]
-                } as Parameter);
+                    col
+                ));
             } while(this.at().type == Type.Separator);
             this.expect(Type.CloseParenthesis);
 
-            return {
-                kind: "ParameterList",
-                values: params,
+            return new ParameterList(
+                params,
                 row,
                 col
-            } as ParameterList;
+            );
         }
 
         return this.parseFunctionCall();
@@ -403,13 +379,12 @@ export class Parser {
             const inner = this.parseGroup();
             const parameters = inner.kind == "Vector" ? (inner as Vector).values : [inner];
 
-            return {
-                kind: "FunctionCall",
+            return new FunctionCall(
                 parameters,
-                caller: left,
+                left as Identifier | FunctionLiteral,
                 row,
                 col
-            } as FunctionCall;
+            )
         }
 
         return left;
@@ -422,14 +397,13 @@ export class Parser {
             const { value, row, col } = this.eat();
             const right = this.parseComparator();
 
-            left = {
-                kind: "Binary",
+            left = new BinaryOperation(
                 left,
                 right,
-                operator: value,
+                value,
                 row,
                 col
-            } as BinaryOperation;
+            );
         }
 
         return left;
@@ -442,15 +416,13 @@ export class Parser {
             const { value, row, col } = this.eat();
             const right = this.parseList();
 
-            return {
-                kind: "Comparator",
+            return new Comparator(
                 left,
                 right,
-                operator: value,
+                value,
                 row,
-                col,
-                type: "Boolean"
-            } as Comparator;
+                col
+            );
         }
 
         return left;
@@ -467,12 +439,11 @@ export class Parser {
 
         const { row, col } = values[0];
 
-        return {
-            kind: "Vector",
+        return new Vector(
             values,
             row,
             col
-        } as Vector;
+        );
     }
 
     parseAdditive(): Expression {
@@ -482,14 +453,13 @@ export class Parser {
             const { value, row, col } = this.eat();
             const right = this.parseMultiplicative();
 
-            left = {
-                kind: "Binary",
+            left = new BinaryOperation(
                 left,
                 right,
-                operator: value,
+                value,
                 row,
                 col
-            } as BinaryOperation;
+            );
         }
 
         return left;
@@ -502,14 +472,13 @@ export class Parser {
             const { value, row, col } = this.eat();
             const right = this.parseUnary();
 
-            left = {
-                kind: "Binary",
+            left = new BinaryOperation(
                 left,
                 right,
-                operator: value,
+                value,
                 row,
                 col
-            } as BinaryOperation;
+            );
         }
 
         return left;
@@ -521,13 +490,12 @@ export class Parser {
         if(isUnary(this.at())) {
             this.eat();
 
-            return {
-                kind: "Unary",
-                operand: this.parsePrimary(),
-                operator: value,
+            return new UnaryOperation(
+                this.parsePrimary(),
+                value,
                 row,
                 col
-            } as UnaryOperation;
+            );
         }
 
         return this.parsePrimary();
@@ -538,62 +506,52 @@ export class Parser {
         const { row, col } = token;
         switch(token.type) {
             case Type.Identifier:
-                return {
-                    kind: "Identifier",
-                    symbol: token.value,
+                return new Identifier(
+                    token.value,
                     row,
                     col
-                } as Identifier;
+                );
             case Type.Number:
-                return {
-                    kind: "NumberLiteral",
-                    value: Parser.parseNumber(token),
+                return new NumberLiteral(
+                    Parser.parseNumber(token),
                     row,
-                    col,
-                    type: "Number"
-                } as NumberLiteral;
+                    col
+                );
             case Type.Boolean:
-                return {
-                    kind: "BooleanLiteral",
-                    value: Parser.parseBoolean(token),
+                return new BooleanLiteral(
+                    Parser.parseBoolean(token),
                     row,
-                    col,
-                    type: "Boolean"
-                } as BooleanLiteral;
+                    col
+                );
             case Type.String:
-                return {
-                    kind: "StringLiteral",
-                    value: token.value,
+                return new StringLiteral(
+                    token.value,
                     row,
-                    col,
-                    type: "String"
-                } as StringLiteral;
+                    col
+                )
             case Type.Keyword:
-                return {
-                    kind: "Keyword",
-                    symbol: token.value,
+                return new Keyword(
+                    token.value,
                     row,
                     col
-                } as Keyword;
+                );
             case Type.Datatype:
-                return {
-                    kind: "Datatype",
-                    symbol: token.value,
+                return new Datatype(
+                    token.value,
                     row,
                     col
-                } as Datatype;
+                );
             case Type.OpenParenthesis:
                 return this.parseGroup();
             case Type.OpenBracket:
                 const values = this.parseEnumerable();
                 if(values.length == 1 && values[0].kind == "Vector") {
                     const vec = values[0] as Vector;
-                    return {
-                        kind: "ArrayLiteral",
-                        values: vec.values,
-                        row: vec.row,
-                        col: vec.col
-                    } as ArrayLiteral;
+                    return new ArrayLiteral(
+                        vec.values,
+                        vec.row,
+                        vec.col
+                    );
                 }
 
                 values.forEach(exp => {
@@ -603,13 +561,11 @@ export class Parser {
                     );
                 });
 
-                return {
-                    kind: "EnumLiteral",
-                    enumerators: values.map(exp => (exp as Identifier).symbol),
+                return new EnumLiteral(
+                    values.map(exp => (exp as Identifier).symbol),
                     row,
-                    col,
-                    type: "Enum"
-                } as EnumLiteral;
+                    col
+                );
 
             default:
                 throw new BoltError(

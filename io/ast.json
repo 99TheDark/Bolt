@@ -3,198 +3,196 @@
   "body": [
     {
       "kind": "Assignment",
-      "variable": {
-        "kind": "Identifier",
-        "symbol": "x",
-        "row": 0,
-        "col": 4
-      },
-      "value": {
-        "kind": "NumberLiteral",
-        "value": 5,
-        "row": 0,
-        "col": 8,
-        "type": "Number"
-      },
+      "type": "Unknown",
       "row": 0,
-      "datatype": "let",
-      "type": "Number"
-    },
-    {
-      "kind": "Assignment",
+      "col": 6,
+      "operator": "",
       "variable": {
         "kind": "Identifier",
-        "symbol": "y",
-        "row": 1,
-        "col": 4
+        "type": "Unknown",
+        "row": 0,
+        "col": 4,
+        "symbol": "x"
       },
       "value": {
         "kind": "NumberLiteral",
-        "value": 12,
-        "row": 1,
+        "type": "Number",
+        "row": 0,
         "col": 8,
-        "type": "Number"
+        "value": 5
       },
-      "datatype": "let",
-      "type": "Number"
+      "datatype": "let"
     },
     {
       "kind": "Assignment",
+      "type": "Unknown",
+      "row": 1,
+      "col": 6,
+      "operator": "",
       "variable": {
         "kind": "Identifier",
-        "symbol": "some",
+        "type": "Unknown",
+        "row": 1,
+        "col": 4,
+        "symbol": "y"
+      },
+      "value": {
+        "kind": "NumberLiteral",
+        "type": "Number",
+        "row": 1,
+        "col": 8,
+        "value": 12
+      },
+      "datatype": "let"
+    },
+    {
+      "kind": "Assignment",
+      "type": "Unknown",
+      "row": 3,
+      "col": 9,
+      "operator": "",
+      "variable": {
+        "kind": "Identifier",
+        "type": "Unknown",
         "row": 3,
-        "col": 4
+        "col": 4,
+        "symbol": "some"
       },
       "value": {
         "kind": "FunctionLiteral",
+        "type": "Function",
+        "row": 3,
+        "col": 24,
         "parameters": {
           "kind": "ParameterList",
+          "type": "Unknown",
+          "row": 3,
+          "col": 11,
           "values": [
             {
               "kind": "Parameter",
-              "datatype": "number",
-              "variable": "val",
+              "type": "Number",
               "row": 3,
               "col": 11,
-              "type": "Number"
+              "variable": "val",
+              "datatype": "number"
             }
-          ],
-          "row": 3,
-          "col": 11
+          ]
         },
         "body": [
           {
             "kind": "IfStatement",
+            "type": "Unknown",
+            "row": 4,
+            "col": 4,
             "test": {
               "kind": "Comparator",
+              "type": "Boolean",
+              "row": 4,
+              "col": 9,
               "left": {
                 "kind": "Identifier",
-                "symbol": "y",
+                "type": "Unknown",
                 "row": 4,
-                "col": 7
+                "col": 7,
+                "symbol": "y"
               },
               "right": {
                 "kind": "Identifier",
-                "symbol": "x",
+                "type": "Unknown",
                 "row": 4,
-                "col": 11
+                "col": 11,
+                "symbol": "x"
               },
-              "operator": "<",
-              "row": 4,
-              "col": 9,
-              "type": "Boolean"
+              "operator": "<"
+            },
+            "next": {
+              "kind": "ElseClause",
+              "type": "Unknown",
+              "row": 6,
+              "col": 6,
+              "body": [
+                {
+                  "kind": "Keyword",
+                  "type": "Unknown",
+                  "row": 7,
+                  "col": 8,
+                  "symbol": "return"
+                }
+              ],
+              "scope": []
             },
             "body": [
               {
-                "kind": "Return",
-                "value": {
-                  "kind": "BooleanLiteral",
-                  "value": true,
-                  "row": 5,
-                  "col": 15,
-                  "type": "Boolean"
-                },
+                "kind": "Keyword",
+                "type": "Unknown",
                 "row": 5,
                 "col": 8,
-                "type": "Boolean"
+                "symbol": "return"
               }
             ],
-            "next": {
-              "kind": "ElseClause",
-              "body": [
-                {
-                  "kind": "Return",
-                  "value": {
-                    "kind": "Comparator",
-                    "left": {
-                      "kind": "Identifier",
-                      "symbol": "x",
-                      "row": 7,
-                      "col": 15
-                    },
-                    "right": {
-                      "kind": "Identifier",
-                      "symbol": "val",
-                      "row": 7,
-                      "col": 19
-                    },
-                    "operator": "<",
-                    "row": 7,
-                    "col": 17,
-                    "type": "Boolean"
-                  },
-                  "row": 7,
-                  "col": 8,
-                  "type": "Boolean"
-                }
-              ],
-              "row": 6,
-              "col": 6,
-              "type": "Unknown"
-            },
-            "type": "Unknown"
+            "scope": []
           }
         ],
-        "row": 3,
-        "col": 24,
-        "type": "Function",
-        "scope": [
-          {
-            "name": "val",
-            "type": "Number"
-          }
-        ],
-        "return": "Boolean"
+        "return": "Unknown",
+        "scope": []
       },
-      "datatype": "let",
-      "type": "Function"
+      "datatype": "let"
     },
     {
       "kind": "Assignment",
+      "type": "Unknown",
+      "row": 11,
+      "col": 6,
+      "operator": "",
       "variable": {
         "kind": "Identifier",
-        "symbol": "k",
+        "type": "Unknown",
         "row": 11,
-        "col": 4
+        "col": 4,
+        "symbol": "k"
       },
       "value": {
         "kind": "FunctionCall",
+        "type": "Unknown",
+        "row": 11,
+        "col": 8,
         "parameters": [
           {
             "kind": "NumberLiteral",
-            "value": 8,
+            "type": "Number",
             "row": 11,
             "col": 13,
-            "type": "Number"
+            "value": 8
           }
         ],
         "caller": {
           "kind": "Identifier",
-          "symbol": "some",
+          "type": "Unknown",
           "row": 11,
-          "col": 8
-        },
-        "row": 11,
-        "col": 8,
-        "type": "Unknown"
+          "col": 8,
+          "symbol": "some"
+        }
       },
-      "datatype": "let",
-      "type": "Unknown"
+      "datatype": "let"
     }
   ],
   "scope": [
     {
-      "name": "x"
+      "name": "x",
+      "type": "Unknown"
     },
     {
-      "name": "y"
+      "name": "y",
+      "type": "Unknown"
     },
     {
-      "name": "some"
+      "name": "some",
+      "type": "Unknown"
     },
     {
-      "name": "k"
+      "name": "k",
+      "type": "Unknown"
     }
   ]
 }

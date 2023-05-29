@@ -1,4 +1,4 @@
-import { VariableType } from "../typing/types";
+import { VariableType, literalMap } from "../typing/types";
 import { Variable } from "../typing/scope";
 
 // Types
@@ -31,6 +31,7 @@ export type Node =
     "Keyword" |
     "Return" |
     "Identifier" |
+    "Empty" |
     "Program"
 
 export type Precedence =
@@ -41,14 +42,14 @@ export type Precedence =
 
 // Interfaces
 export interface Branch {
-    kind: Node;
-    grab: Function;
-    top: Function;
+    kind: Node
+    grab: Function
+    top: Function
 }
 
 export interface Scopeable {
-    scope: Variable[]
     body: Statement[]
+    scope: Variable[]
 }
 
 // Classes
@@ -78,13 +79,13 @@ export class Statement implements Branch {
 
 export class Program implements Branch, Scopeable {
     kind: Node;
-    scope: Variable[];
     body: Statement[];
+    scope: Variable[];
 
     constructor() {
         this.kind = "Program";
-        this.scope = [];
         this.body = [];
+        this.scope = [];
     }
 
     grab(name: string): VariableType | void {
@@ -179,15 +180,15 @@ export class StringLiteral extends Expression {
 export class FunctionLiteral extends Expression implements Scopeable {
     parameters: ParameterList;
     return: VariableType;
-    scope: Variable[];
     body: Statement[];
+    scope: Variable[];
 
-    constructor(parameters: ParameterList, returnType: VariableType, row: number, col: number) {
+    constructor(parameters: ParameterList, body: Statement[], row: number, col: number) {
         super("FunctionLiteral", "Function", row, col);
         this.parameters = parameters;
-        this.return = returnType;
+        this.body = body;
+        this.return = "Unknown";
         this.scope = [];
-        this.body = [];
     }
 }
 
@@ -211,14 +212,14 @@ export class RegexLiteral extends Expression {
 
 export class ClassLiteral extends Expression implements Scopeable {
     extension: Vector;
-    scope: Variable[];
     body: Statement[];
+    scope: Variable[];
 
     constructor(extension: Vector, row: number, col: number) {
         super("ClassLiteral", "Class", row, col);
         this.extension = extension;
-        this.scope = [];
         this.body = [];
+        this.scope = [];
     }
 }
 
@@ -267,39 +268,39 @@ export class Assignment extends Expression {
 export class IfStatement extends Expression implements Scopeable {
     test: Expression;
     next: Expression;
-    scope: Variable[];
     body: Statement[];
+    scope: Variable[];
 
-    constructor(test: Expression, next: Expression, row: number, col: number) {
+    constructor(test: Expression, body: Statement[], next: Expression, row: number, col: number) {
         super("IfStatement", "Unknown", row, col);
         this.test = test;
         this.next = next;
+        this.body = body;
         this.scope = [];
-        this.body = [];
     }
 }
 
 export class WhileLoop extends Expression implements Scopeable {
     test: Expression;
-    scope: Variable[];
     body: Statement[];
+    scope: Variable[];
 
-    constructor(test: Expression, row: number, col: number) {
+    constructor(test: Expression, body: Statement[], row: number, col: number) {
         super("WhileLoop", "Unknown", row, col);
         this.test = test;
+        this.body = body;
         this.scope = [];
-        this.body = [];
     }
 }
 
 export class ElseClause extends Expression implements Scopeable {
-    scope: Variable[];
     body: Statement[];
+    scope: Variable[];
 
-    constructor(row: number, col: number) {
+    constructor(body: Statement[], row: number, col: number) {
         super("ElseClause", "Unknown", row, col);
+        this.body = body;
         this.scope = [];
-        this.body = [];
     }
 }
 
@@ -307,29 +308,29 @@ export class ForLoop extends Expression implements Scopeable {
     declarations: Expression[];
     test: Expression;
     after: Expression[];
-    scope: Variable[];
     body: Statement[];
+    scope: Variable[];
 
-    constructor(declarations: Expression[], test: Expression, after: Expression[], row: number, col: number) {
+    constructor(declarations: Expression[], test: Expression, body: Statement[], after: Expression[], row: number, col: number) {
         super("ForLoop", "Unknown", row, col);
         this.declarations = declarations;
         this.test = test;
         this.after = after;
+        this.body = body;
         this.scope = [];
-        this.body = [];
     }
 }
 
 export class ForEachLoop extends Expression implements Scopeable {
     iteration: Iteration;
-    scope: Variable[];
     body: Statement[];
+    scope: Variable[];
 
-    constructor(iteration: Iteration, row: number, col: number) {
+    constructor(iteration: Iteration, body: Statement[], row: number, col: number) {
         super("ForEachLoop", "Unknown", row, col);
         this.iteration = iteration;
+        this.body = body;
         this.scope = [];
-        this.body = [];
     }
 }
 
@@ -344,10 +345,10 @@ export class Vector extends Expression {
 
 export class Parameter extends Expression {
     variable: string;
-    datatype: VariableType;
+    datatype: string;
 
-    constructor(variable: string, datatype: VariableType, row: number, col: number) {
-        super("Parameter", "Unknown", row, col);
+    constructor(variable: string, datatype: string, row: number, col: number) {
+        super("Parameter", literalMap[datatype], row, col);
         this.variable = variable;
         this.datatype = datatype;
     }
@@ -384,13 +385,11 @@ export class Iteration extends Expression {
 
 export class FunctionCall extends Expression {
     parameters: Expression[];
-    caller: Identifier | FunctionCall;
-    return: VariableType;
+    caller: Identifier | FunctionLiteral;
 
-    constructor(parameters: Expression[], caller: Identifier | FunctionCall, returnVaue: VariableType, row: number, col: number) {
+    constructor(parameters: Expression[], caller: Identifier | FunctionLiteral, row: number, col: number) {
         super("FunctionCall", "Unknown", row, col);
         this.parameters = parameters;
         this.caller = caller;
-        this.return = returnVaue;
     }
 }

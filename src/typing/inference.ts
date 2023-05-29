@@ -231,19 +231,6 @@ export class Inferrer {
             if(key == "parent" || key == "grab" || key == "scope") continue;
             if(typeof value == "object") {
                 value.parent = obj;
-                value.grab = function(name: string): VariableType | void {
-                    if(this.scope) for(const variable of this.scope) {
-                        if(variable.name == name) return variable.type;
-                    }
-                    return this.parent.grab(name);
-                };
-                value.top = function(): Statement | Program {
-                    if(this.kind == "FunctionLiteral") {
-                        return this;
-                    } else {
-                        return this.parent.top();
-                    }
-                }
                 this.link(value);
             }
         }
