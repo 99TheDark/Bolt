@@ -24,11 +24,8 @@
 - Make keywords do something
 
 ### Type Inference
-- Detect reassigned code
-- Function return type detection
 
 ### Assmeble LLVM Code
-- Assign variables
-- Complex expressions
+- Booleans
 
 ### Compile LLVM
