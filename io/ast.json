@@ -75,7 +75,8 @@
             "name": "b",
             "type": "Number"
           }
-        ]
+        ],
+        "return": "Number"
       },
       "row": 0,
       "datatype": "let",

@@ -50,7 +50,7 @@ export interface Statement {
     col: number
     parent: Statement | Program
     grab: ((name: string) => VariableType)
-    top: (() => Scopeable)
+    top: (() => Statement | Program)
 }
 
 export interface Program extends Scopeable {

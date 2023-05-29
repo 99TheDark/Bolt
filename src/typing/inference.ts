@@ -177,6 +177,20 @@ export class Inferrer {
                 const returnvalue = statement as Return;
                 const valueType = this.inferType(returnvalue.value);
 
+                const top = returnvalue.top();
+                if(top.kind == "Program") throw new BoltError(
+                    `Return statements must be inside functions`,
+                    returnvalue
+                );
+
+                const parent = top as FunctionLiteral;
+                if(parent.return != "Unknown" && parent.return != valueType) throw new BoltError(
+                    `Cannot return both a ${l(parent.return)} and ${l(valueType)}`,
+                    returnvalue
+                );
+
+                parent.return = valueType;
+
                 return statement.type = valueType;
             }
         }
@@ -226,8 +240,8 @@ export class Inferrer {
                     }
                     return this.parent.grab(name);
                 };
-                value.top = function(): Scopeable & (Statement | Program) {
-                    if(this.scope) {
+                value.top = function(): Statement | Program {
+                    if(this.kind == "FunctionLiteral") {
                         return this;
                     } else {
                         return this.parent.top();

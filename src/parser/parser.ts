@@ -48,7 +48,7 @@ export class Parser {
                     if(variable.name == name) return variable.type;
                 }
             },
-            top: function(): Scopeable & (Statement | Program) {
+            top: function(): Statement | Program {
                 return this;
             }
         } as Program;
