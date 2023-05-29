@@ -1,9 +1,8 @@
-import { Assignment, FunctionLiteral, Parameter, Program, Scopeable, Statement } from "../parser/expressions";
+import { Program } from "../parser/expressions";
 import { VariableType } from "../typing/types";
-import { BoltLocationlessError, BoltError } from "../errors/error";
+import { BoltLocationlessError } from "../errors/error";
 import { Walker } from "./walker";
-import { IRBuilder, LLVMContext, Module, Type, Function, verifyModule, FunctionType, BasicBlock, Argument, verifyFunction, IntegerType } from "llvm-bindings";
-import llvm from "llvm-bindings";
+import { IRBuilder, LLVMContext, Module, Type, verifyModule } from "llvm-bindings";
 
 export class Builder {
     private context: LLVMContext;
@@ -20,21 +19,10 @@ export class Builder {
     }
 
     build(): string {
-        // const walker = new Walker(this.ast as Scopeable & Statement);
-        // walker.steps.forEach(step => this.generate(step));
+        const walker = new Walker(this.ast);
+        walker.steps.forEach(step => step.generate());
 
         if(verifyModule(this.module)) throw new BoltLocationlessError("Something went wrong");
         return this.module.print();
-    }
-
-    createType(type: VariableType): Type {
-        switch(type) {
-            case "Number": return this.builder.getInt32Ty();
-            case "Boolean": return this.builder.getInt1Ty();
-        }
-
-        throw new BoltLocationlessError(
-            `${type}s have not been implemented yet`
-        );
     }
 }

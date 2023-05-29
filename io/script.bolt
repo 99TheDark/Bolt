@@ -1,7 +1,7 @@
 let x = 5
 let y = 12
 
-let some = (number val) => {
+/*let some = (number val) => {
     if(y < x) {
         return true
     } else {
@@ -9,4 +9,4 @@ let some = (number val) => {
     }
 }
 
-let k = some(8)
+let k = some(8)*/

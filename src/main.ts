@@ -3,6 +3,7 @@ import { Lexer } from "./lexer/lexer";
 import { clean } from "./lexer/cleaner";
 import { Parser } from "./parser/parser";
 import { Inferrer } from "./typing/inference";
+import { Builder } from "./compiler/builder";
 import { ignore } from "./format/ignorer";
 
 fs.readFile("./io/script.bolt", "utf8", (error, data) => {
@@ -23,18 +24,16 @@ fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     const typedAST = inferrer.type();
 
     // Builder
-    /*
     const builder = new Builder(typedAST, "script");
     const irCode = builder.build();
-    */
 
     // Write intermediate files for debugging purposes
     fs.writeFile("./io/ast.json", JSON.stringify(typedAST, ignore, "  "), err => {
         if(err) throw err;
     });
-    /*fs.writeFile("./io/intermediate.ll", irCode, err => {
+    fs.writeFile("./io/intermediate.ll", irCode, err => {
         if(err) throw err;
-    });*/
+    });
 
     const time = performance.now() - start;
     console.log(`${time}ms`);

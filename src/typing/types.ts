@@ -1,5 +1,3 @@
-import { Type } from "../lexer/tokens"
-
 export type VariableType =
     "Number" |
     "Boolean" |

@@ -1,5 +1,6 @@
 import { VariableType, literalMap } from "../typing/types";
 import { Variable } from "../typing/scope";
+import llvm from "llvm-bindings";
 
 // Types
 export type Node =
@@ -74,6 +75,9 @@ export class Statement implements Branch {
         if(this.kind == "FunctionLiteral") return this;
 
         return this.parent.top();
+    }
+    generate() {
+        console.log(`Reached top`);
     }
 }
 

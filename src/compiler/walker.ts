@@ -1,4 +1,4 @@
-import { Program, Scopeable, Statement } from "../parser/expressions";
+import { Scopeable, Statement } from "../parser/expressions";
 
 export class Walker {
     steps: Statement[];
