@@ -1,6 +1,7 @@
 import { VariableType } from "../typing/types";
 import { Variable } from "../typing/scope";
 
+// Types
 export type Node =
     "Declaration" |
     "Assignment" |
@@ -38,177 +39,358 @@ export type Precedence =
     "Additive" |
     "Multiplicative"
 
+// Interfaces
+export interface Branch {
+    kind: Node;
+    grab: Function;
+    top: Function;
+}
+
 export interface Scopeable {
     scope: Variable[]
     body: Statement[]
 }
 
-export interface Statement {
-    kind: Node
-    type: VariableType
-    row: number
-    col: number
-    parent: Statement | Program
-    grab: ((name: string) => VariableType)
-    top: (() => Statement | Program)
+// Classes
+export class Statement implements Branch {
+    kind: Node;
+    type: VariableType;
+    row: number;
+    col: number;
+    parent: Statement | Program;
+
+    constructor(kind: Node, type: VariableType, row: number, col: number) {
+        this.kind = kind;
+        this.type = type;
+        this.row = row;
+        this.col = col;
+        this.parent = {} as Statement;
+    }
+    grab(name: string): VariableType | void {
+        return this.parent.grab(name);
+    }
+    top(): Statement | Program {
+        if(this.kind == "FunctionLiteral") return this;
+
+        return this.parent.top();
+    }
 }
 
-export interface Program extends Scopeable {
-    kind: "Program"
-    grab: ((name: string) => VariableType)
+export class Program implements Branch, Scopeable {
+    kind: Node;
+    scope: Variable[];
+    body: Statement[];
+
+    constructor() {
+        this.kind = "Program";
+        this.scope = [];
+        this.body = [];
+    }
+
+    grab(name: string): VariableType | void {
+        for(const variable of this.scope) {
+            if(variable.name == name) return variable.type;
+        }
+    }
+    top(): Statement | Program {
+        return this;
+    }
 }
 
-// Expressions return values unlike statements
-export interface Expression extends Statement {}
-
-export interface Identifier extends Expression {
-    kind: "Identifier"
-    symbol: string
+export class Expression extends Statement {
+    constructor(kind: Node, type: VariableType, row: number, col: number) {
+        super(kind, type, row, col);
+    }
 }
 
-export interface BinaryOperation extends Expression {
-    kind: "Binary"
-    left: Expression
-    right: Expression
-    operator: string
+export class Identifier extends Expression {
+    symbol: string;
+
+    constructor(symbol: string, row: number, col: number) {
+        super("Identifier", "Unknown", row, col);
+        this.symbol = symbol;
+    }
 }
 
-export interface UnaryOperation extends Expression {
-    kind: "Unary"
-    operand: Expression
-    operator: string
+export class BinaryOperation extends Expression {
+    left: Expression;
+    right: Expression;
+    operator: string;
+
+    constructor(left: Expression, right: Expression, operator: string, row: number, col: number) {
+        super("Binary", "Unknown", row, col);
+        this.left = left;
+        this.right = right;
+        this.operator = operator;
+    }
 }
 
-export interface Comparator extends Expression {
-    kind: "Comparator"
-    left: Expression
-    right: Expression
-    operator: string
+export class UnaryOperation extends Expression {
+    operand: Expression;
+    operator: string;
+
+    constructor(operand: Expression, operator: string, row: number, col: number) {
+        super("Unary", "Unknown", row, col);
+        this.operand = operand;
+        this.operator = operator;
+    }
 }
 
-export interface NumberLiteral extends Expression {
-    kind: "NumberLiteral"
-    type: "Number"
-    value: number
+export class Comparator extends Expression {
+    left: Expression;
+    right: Expression;
+    operator: string;
+
+    constructor(left: Expression, right: Expression, operator: string, row: number, col: number) {
+        super("Comparator", "Boolean", row, col);
+        this.left = left;
+        this.right = right;
+        this.operator = operator;
+    }
 }
 
-export interface BooleanLiteral extends Expression {
-    kind: "BooleanLiteral"
-    type: "Boolean"
-    value: boolean
+export class NumberLiteral extends Expression {
+    value: number;
+
+    constructor(value: number, row: number, col: number) {
+        super("NumberLiteral", "Number", row, col);
+        this.value = value;
+    }
 }
 
-export interface StringLiteral extends Expression {
-    kind: "StringLiteral"
-    type: "String"
-    value: string
+export class BooleanLiteral extends Expression {
+    value: boolean;
+
+    constructor(value: boolean, row: number, col: number) {
+        super("BooleanLiteral", "Boolean", row, col);
+        this.value = value;
+    }
 }
 
-export interface FunctionLiteral extends Expression, Scopeable {
-    kind: "FunctionLiteral"
-    type: "Function"
-    parameters: ParameterList
-    return: VariableType
+export class StringLiteral extends Expression {
+    value: string;
+
+    constructor(value: string, row: number, col: number) {
+        super("StringLiteral", "String", row, col);
+        this.value = value;
+    }
 }
 
-export interface EnumLiteral extends Expression {
-    kind: "EnumLiteral"
-    type: "Enum"
-    enumerators: string[]
+export class FunctionLiteral extends Expression implements Scopeable {
+    parameters: ParameterList;
+    return: VariableType;
+    scope: Variable[];
+    body: Statement[];
+
+    constructor(parameters: ParameterList, returnType: VariableType, row: number, col: number) {
+        super("FunctionLiteral", "Function", row, col);
+        this.parameters = parameters;
+        this.return = returnType;
+        this.scope = [];
+        this.body = [];
+    }
 }
 
-export interface RegexLiteral extends Expression {
-    kind: "RegexLiteral"
-    type: "Regex"
-    regex: string
+export class EnumLiteral extends Expression {
+    enumerators: string[];
+
+    constructor(enumerators: string[], row: number, col: number) {
+        super("EnumLiteral", "Enum", row, col);
+        this.enumerators = enumerators;
+    }
 }
 
-export interface ClassLiteral extends Expression, Scopeable {
-    kind: "ClassLiteral"
-    type: "Class"
-    extension: Vector
+export class RegexLiteral extends Expression {
+    regex: string;
+
+    constructor(regex: string, row: number, col: number) {
+        super("RegexLiteral", "Regex", row, col);
+        this.regex = regex;
+    }
 }
 
-export interface ArrayLiteral extends Expression {
-    kind: "ArrayLiteral"
-    values: Expression[]
+export class ClassLiteral extends Expression implements Scopeable {
+    extension: Vector;
+    scope: Variable[];
+    body: Statement[];
+
+    constructor(extension: Vector, row: number, col: number) {
+        super("ClassLiteral", "Class", row, col);
+        this.extension = extension;
+        this.scope = [];
+        this.body = [];
+    }
 }
 
-export interface Datatype extends Expression {
-    kind: "Datatype"
-    symbol: string
+export class ArrayLiteral extends Expression {
+    values: Expression[];
+
+    constructor(values: Expression[], row: number, col: number) {
+        super("ArrayLiteral", "Unknown", row, col);
+        this.values = values;
+    }
 }
 
-export interface Keyword extends Expression {
-    kind: "Keyword"
-    symbol: string
+export class Datatype extends Expression {
+    symbol: string;
+
+    constructor(symbol: string, row: number, col: number) {
+        super("Datatype", "Unknown", row, col);
+        this.symbol = symbol;
+    }
 }
 
-export interface Assignment extends Expression {
-    kind: "Assignment"
-    operator: string | null
-    variable: Identifier
-    value: Expression
-    datatype: string
+export class Keyword extends Expression {
+    symbol: string;
+
+    constructor(symbol: string, row: number, col: number) {
+        super("Keyword", "Unknown", row, col);
+        this.symbol = symbol;
+    }
 }
 
-export interface IfStatement extends Expression, Scopeable {
-    kind: "IfStatement"
-    test: Expression,
-    next: Expression
+export class Assignment extends Expression {
+    operator: string | null;
+    variable: Identifier;
+    value: Expression;
+    datatype: string;
+
+    constructor(operator: string | null, variable: Identifier, value: Expression, datatype: string, row: number, col: number) {
+        super("Assignment", "Unknown", row, col);
+        this.operator = operator;
+        this.variable = variable;
+        this.value = value;
+        this.datatype = datatype;
+    }
 }
 
-export interface WhileLoop extends Expression, Scopeable {
-    kind: "WhileLoop"
-    test: Expression,
+export class IfStatement extends Expression implements Scopeable {
+    test: Expression;
+    next: Expression;
+    scope: Variable[];
+    body: Statement[];
+
+    constructor(test: Expression, next: Expression, row: number, col: number) {
+        super("IfStatement", "Unknown", row, col);
+        this.test = test;
+        this.next = next;
+        this.scope = [];
+        this.body = [];
+    }
 }
 
-export interface ElseClause extends Expression, Scopeable {
-    kind: "ElseClause",
+export class WhileLoop extends Expression implements Scopeable {
+    test: Expression;
+    scope: Variable[];
+    body: Statement[];
+
+    constructor(test: Expression, row: number, col: number) {
+        super("WhileLoop", "Unknown", row, col);
+        this.test = test;
+        this.scope = [];
+        this.body = [];
+    }
 }
 
-export interface ForLoop extends Expression, Scopeable {
-    kind: "ForLoop"
-    declarations: Expression[]
-    test: Expression
-    after: Expression[]
+export class ElseClause extends Expression implements Scopeable {
+    scope: Variable[];
+    body: Statement[];
+
+    constructor(row: number, col: number) {
+        super("ElseClause", "Unknown", row, col);
+        this.scope = [];
+        this.body = [];
+    }
 }
 
-export interface ForEachLoop extends Expression, Scopeable {
-    kind: "ForEachLoop"
-    iteration: Iteration
+export class ForLoop extends Expression implements Scopeable {
+    declarations: Expression[];
+    test: Expression;
+    after: Expression[];
+    scope: Variable[];
+    body: Statement[];
+
+    constructor(declarations: Expression[], test: Expression, after: Expression[], row: number, col: number) {
+        super("ForLoop", "Unknown", row, col);
+        this.declarations = declarations;
+        this.test = test;
+        this.after = after;
+        this.scope = [];
+        this.body = [];
+    }
 }
 
-export interface Vector extends Expression {
-    kind: "Vector"
-    values: Expression[]
+export class ForEachLoop extends Expression implements Scopeable {
+    iteration: Iteration;
+    scope: Variable[];
+    body: Statement[];
+
+    constructor(iteration: Iteration, row: number, col: number) {
+        super("ForEachLoop", "Unknown", row, col);
+        this.iteration = iteration;
+        this.scope = [];
+        this.body = [];
+    }
 }
 
-export interface Parameter extends Expression {
-    kind: "Parameter"
-    variable: string
-    datatype: VariableType
+export class Vector extends Expression {
+    values: Expression[];
+
+    constructor(values: Expression[], row: number, col: number) {
+        super("Vector", "Unknown", row, col);
+        this.values = values;
+    }
 }
 
-export interface ParameterList extends Expression {
-    kind: "ParameterList"
-    values: []
+export class Parameter extends Expression {
+    variable: string;
+    datatype: VariableType;
+
+    constructor(variable: string, datatype: VariableType, row: number, col: number) {
+        super("Parameter", "Unknown", row, col);
+        this.variable = variable;
+        this.datatype = datatype;
+    }
 }
 
-export interface Return extends Expression {
-    kind: "Return"
-    value: Expression
+export class ParameterList extends Expression {
+    values: Parameter[];
+
+    constructor(values: Parameter[], row: number, col: number) {
+        super("ParameterList", "Unknown", row, col);
+        this.values = values;
+    }
 }
 
-export interface Iteration extends Expression {
-    kind: "Iteration"
-    item: Identifier | Vector
-    iterator: Identifier
+export class Return extends Expression {
+    value: Expression;
+
+    constructor(value: Expression, row: number, col: number) {
+        super("Return", "Unknown", row, col);
+        this.value = value;
+    }
 }
 
-export interface FunctionCall extends Expression {
-    kind: "FunctionCall"
-    parameters: Expression[]
-    caller: Identifier | FunctionCall
-    return: VariableType
+export class Iteration extends Expression {
+    item: Identifier | Vector;
+    iterator: Identifier;
+
+    constructor(item: Identifier | Vector, iterator: Identifier, row: number, col: number) {
+        super("Iteration", "Unknown", row, col);
+        this.item = item;
+        this.iterator = iterator;
+    }
+}
+
+export class FunctionCall extends Expression {
+    parameters: Expression[];
+    caller: Identifier | FunctionCall;
+    return: VariableType;
+
+    constructor(parameters: Expression[], caller: Identifier | FunctionCall, returnVaue: VariableType, row: number, col: number) {
+        super("FunctionCall", "Unknown", row, col);
+        this.parameters = parameters;
+        this.caller = caller;
+        this.return = returnVaue;
+    }
 }

@@ -149,6 +149,38 @@
       },
       "datatype": "let",
       "type": "Function"
+    },
+    {
+      "kind": "Assignment",
+      "variable": {
+        "kind": "Identifier",
+        "symbol": "k",
+        "row": 11,
+        "col": 4
+      },
+      "value": {
+        "kind": "FunctionCall",
+        "parameters": [
+          {
+            "kind": "NumberLiteral",
+            "value": 8,
+            "row": 11,
+            "col": 13,
+            "type": "Number"
+          }
+        ],
+        "caller": {
+          "kind": "Identifier",
+          "symbol": "some",
+          "row": 11,
+          "col": 8
+        },
+        "row": 11,
+        "col": 8,
+        "type": "Unknown"
+      },
+      "datatype": "let",
+      "type": "Unknown"
     }
   ],
   "scope": [
@@ -160,6 +192,9 @@
     },
     {
       "name": "some"
+    },
+    {
+      "name": "k"
     }
   ]
 }

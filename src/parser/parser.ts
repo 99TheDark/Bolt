@@ -101,7 +101,7 @@ export class Parser {
     parseGroup(): Expression {
         const value = this.at().type == Type.CloseParenthesis ? {
             kind: "ParameterList",
-            values: []
+            values: [] as Parameter[]
         } as ParameterList : this.parseStatement();
         this.expect(Type.CloseParenthesis);
         return value;

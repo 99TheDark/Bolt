@@ -4,11 +4,11 @@ import { clean } from "./lexer/cleaner";
 import { Parser } from "./parser/parser";
 import { Inferrer } from "./typing/inference";
 import { ignore } from "./format/ignorer";
-import { Builder } from "./compiler/builder";
-import { Walker } from "./compiler/walker";
 
 fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     if(error) throw error;
+
+    const start = performance.now();
 
     // Lexer
     const lexer = new Lexer(data);
@@ -35,4 +35,7 @@ fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     /*fs.writeFile("./io/intermediate.ll", irCode, err => {
         if(err) throw err;
     });*/
+
+    const time = performance.now() - start;
+    console.log(`${time}ms`);
 });
