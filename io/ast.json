@@ -5,84 +5,86 @@
       "kind": "Assignment",
       "variable": {
         "kind": "Identifier",
-        "symbol": "outerScoped",
+        "symbol": "add",
         "row": 0,
         "col": 4
       },
       "value": {
-        "kind": "StringLiteral",
-        "value": "Outer",
+        "kind": "FunctionLiteral",
+        "parameters": {
+          "kind": "ParameterList",
+          "values": [
+            {
+              "kind": "Parameter",
+              "datatype": "number",
+              "variable": "a",
+              "row": 0,
+              "col": 10,
+              "type": "Number"
+            },
+            {
+              "kind": "Parameter",
+              "datatype": "number",
+              "variable": "b",
+              "row": 0,
+              "col": 19,
+              "type": "Number"
+            }
+          ],
+          "row": 0,
+          "col": 10
+        },
+        "body": [
+          {
+            "kind": "Return",
+            "value": {
+              "kind": "Binary",
+              "left": {
+                "kind": "Identifier",
+                "symbol": "a",
+                "row": 1,
+                "col": 11,
+                "type": "Number"
+              },
+              "right": {
+                "kind": "Identifier",
+                "symbol": "b",
+                "row": 1,
+                "col": 15,
+                "type": "Number"
+              },
+              "operator": "+",
+              "row": 1,
+              "col": 13,
+              "type": "Number"
+            },
+            "row": 1,
+            "col": 4,
+            "type": "Number"
+          }
+        ],
         "row": 0,
-        "col": 18,
-        "type": "String"
+        "col": 31,
+        "type": "Unknown",
+        "scope": [
+          {
+            "name": "a",
+            "type": "Number"
+          },
+          {
+            "name": "b",
+            "type": "Number"
+          }
+        ]
       },
       "row": 0,
       "datatype": "let",
-      "type": "String"
-    },
-    {
-      "kind": "IfStatement",
-      "test": {
-        "kind": "BooleanLiteral",
-        "value": true,
-        "row": 1,
-        "col": 3,
-        "type": "Boolean"
-      },
-      "body": [
-        {
-          "kind": "Assignment",
-          "variable": {
-            "kind": "Identifier",
-            "symbol": "innerScoped",
-            "row": 2,
-            "col": 8
-          },
-          "value": {
-            "kind": "StringLiteral",
-            "value": "Inner",
-            "row": 2,
-            "col": 22,
-            "type": "String"
-          },
-          "datatype": "let",
-          "type": "String"
-        },
-        {
-          "kind": "FunctionCall",
-          "parameters": [
-            {
-              "kind": "Identifier",
-              "symbol": "innerScoped",
-              "row": 3,
-              "col": 10
-            }
-          ],
-          "caller": {
-            "kind": "Identifier",
-            "symbol": "print",
-            "row": 3,
-            "col": 4
-          },
-          "row": 3,
-          "col": 4,
-          "type": "Unknown"
-        }
-      ],
-      "col": 0,
-      "scope": [
-        {
-          "name": "innerScoped",
-          "type": "String"
-        }
-      ],
       "type": "Unknown"
     }
   ],
   "scope": [
     {
-      "name": "outerScoped",
-      "type": "String"
+      "name": "add"
     }
   ]
 }

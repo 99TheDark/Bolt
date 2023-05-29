@@ -1,5 +1,5 @@
-let outerScoped = "Outer"
-if(true) {
-    let innerScoped = "Inner"
-    print(innerScoped)
+let add = (number a, number b) => {
+    return a + b
 }
+
+return true

@@ -28,6 +28,7 @@ export type Node =
     "ParameterList" |
     "Iteration" |
     "Keyword" |
+    "Return" |
     "Identifier" |
     "Program"
 
@@ -49,6 +50,7 @@ export interface Statement {
     col: number
     parent: Statement | Program
     grab: ((name: string) => VariableType)
+    top: (() => Scopeable)
 }
 
 export interface Program extends Scopeable {
@@ -184,13 +186,18 @@ export interface Vector extends Expression {
 
 export interface Parameter extends Expression {
     kind: "Parameter"
-    datatype: Datatype
-    variable: Identifier
+    variable: string
+    datatype: VariableType
 }
 
 export interface ParameterList extends Expression {
     kind: "ParameterList"
-    parameters: []
+    values: []
+}
+
+export interface Return extends Expression {
+    kind: "Return"
+    value: Expression
 }
 
 export interface Iteration extends Expression {

@@ -1,5 +1,6 @@
+import exp from "constants";
 import { BoltError } from "../errors/error";
-import { Program, Statement, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, FunctionCall, Identifier } from "../parser/expressions";
+import { Program, Statement, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, FunctionCall, Identifier, Parameter, Expression, Return } from "../parser/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 
@@ -160,31 +161,56 @@ export class Inferrer {
                 break;
             }
             case "FunctionLiteral": {
-                this.scope(statement as FunctionLiteral);
+                const functionliteral = statement as FunctionLiteral;
+                for(const param of functionliteral.parameters.values) {
+                    const parameter = param as Parameter;
+                    this.pushScope(functionliteral, parameter.variable, parameter.type, parameter);
+                }
+
+                functionliteral.return = "Unknown";
+
+                this.scope(functionliteral);
                 // set return value to type. multiple = bad
                 break;
+            }
+            case "Return": {
+                const returnvalue = statement as Return;
+                const valueType = this.inferType(returnvalue.value);
+
+                return statement.type = valueType;
             }
         }
 
         return statement.type = "Unknown";
     }
 
-    addVariable(scopeable: Scopeable, assignment: Assignment): void {
-        const variable = assignment.variable;
+    pushScope(scopeable: Scopeable, name: string, type: VariableType, location: Expression) {
+        if(!scopeable.scope) scopeable.scope = [];
+        for(const variable of scopeable.scope) {
+            if(variable.name == name) throw new BoltError(
+                `The variable '${name}' has already been defined`,
+                location
+            );
+        }
+
         scopeable.scope.push({
-            name: variable.symbol,
-            type: assignment.type
+            name,
+            type
         });
     }
 
+    addAssignment(scopeable: Scopeable, assignment: Assignment): void {
+        const variable = assignment.variable;
+        this.pushScope(scopeable, variable.symbol, variable.type, assignment);
+    }
+
     scope(scopeable: Scopeable & (Statement | Program)): void {
-        if(!scopeable.scope) scopeable.scope = [];
         for(const statement of scopeable.body) {
             this.inferType(statement);
 
             if(statement.kind == "Assignment") {
                 const assignment = statement as Assignment;
-                if(!assignment.operator) this.addVariable(scopeable, assignment);
+                if(!assignment.operator) this.addAssignment(scopeable, assignment);
             }
         }
     }
@@ -200,6 +226,13 @@ export class Inferrer {
                     }
                     return this.parent.grab(name);
                 };
+                value.top = function(): Scopeable & (Statement | Program) {
+                    if(this.scope) {
+                        return this;
+                    } else {
+                        return this.parent.top();
+                    }
+                }
                 this.link(value);
             }
         }

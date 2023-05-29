@@ -1,3 +1,5 @@
+import { Type } from "../lexer/tokens"
+
 export type VariableType =
     "Number" |
     "Boolean" |
@@ -7,3 +9,14 @@ export type VariableType =
     "Regex" |
     "Class" |
     "Unknown"
+
+export const literalMap: Record<string, VariableType> = {
+    number: "Number",
+    bool: "Boolean",
+    string: "String",
+    func: "Function",
+    enum: "Enum",
+    regex: "Regex",
+    class: "Class",
+    let: "Unknown"
+}

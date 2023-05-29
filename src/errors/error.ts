@@ -6,3 +6,9 @@ export class BoltError extends Error {
         super(`${message} (${position.row + 1}:${position.col + 1})`);
     }
 }
+
+export class BoltBuildError extends Error {
+    constructor(message: string) {
+        super(message);
+    }
+}

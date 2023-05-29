@@ -3,8 +3,8 @@ import { Type, Token, typeString, getPattern } from "../lexer/tokens";
 import { isUnary, isBinary } from "./operators";
 import { isControl } from "./control";
 import { baseData } from "../lexer/literal";
-import { VariableType } from "../typing/types";
-import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions";
+import { VariableType, literalMap } from "../typing/types";
+import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence, Return, Scopeable } from "./expressions";
 
 export class Parser {
     private tokens: Token[];
@@ -47,6 +47,9 @@ export class Parser {
                 for(const variable of this.scope) {
                     if(variable.name == name) return variable.type;
                 }
+            },
+            top: function(): Scopeable & (Statement | Program) {
+                return this;
             }
         } as Program;
     }
@@ -98,7 +101,7 @@ export class Parser {
     parseGroup(): Expression {
         const value = this.at().type == Type.CloseParenthesis ? {
             kind: "ParameterList",
-            parameters: []
+            values: []
         } as ParameterList : this.parseStatement();
         this.expect(Type.CloseParenthesis);
         return value;
@@ -194,11 +197,12 @@ export class Parser {
 
     // Kind of useless
     parseExpression(): Expression {
-        return this.parseDeclaration();
+        return this.parseReturn();
     }
 
     /*
     Order of Precedence:
+    Return
     Declaration
     Assignment
     Iteration
@@ -213,6 +217,23 @@ export class Parser {
     Negate
     Primary
     */
+    parseReturn(): Expression {
+        const left = this.parseDeclaration();
+        if(left.kind == "Keyword") {
+            const keyword = left as Keyword;
+            if(keyword.symbol == "return") {
+                return {
+                    kind: "Return",
+                    value: this.parseDeclaration(),
+                    row: left.row,
+                    col: left.col
+                } as Return;
+            }
+        }
+
+        return left;
+    }
+
     parseDeclaration(): Expression {
         const left = this.parseAssignment();
 
@@ -344,19 +365,28 @@ export class Parser {
                     datatype
                 );
 
+                const type = (datatype as Datatype).symbol;
+                const symbol = (variable as Identifier).symbol;
+
+                if(type == "let") throw new BoltError(
+                    `Parameter types have to be explicit`,
+                    datatype
+                );
+
                 params.push({
                     kind: "Parameter",
-                    datatype,
-                    variable,
+                    datatype: type,
+                    variable: symbol,
                     row,
-                    col
+                    col,
+                    type: literalMap[type]
                 } as Parameter);
             } while(this.at().type == Type.Separator);
             this.expect(Type.CloseParenthesis);
 
             return {
                 kind: "ParameterList",
-                parameters: params,
+                values: params,
                 row,
                 col
             } as ParameterList;

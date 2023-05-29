@@ -19,8 +19,6 @@
     - `assert`
 
 ### Parser
-- Function Calls
-    - Make `IIFE`s valid
 - Errors
     - Easier to understand errors
 - Make keywords do something
