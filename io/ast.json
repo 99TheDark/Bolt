@@ -65,7 +65,7 @@
         ],
         "row": 0,
         "col": 31,
-        "type": "Unknown",
+        "type": "Function",
         "scope": [
           {
             "name": "a",
@@ -80,7 +80,7 @@
       },
       "row": 0,
       "datatype": "let",
-      "type": "Unknown"
+      "type": "Function"
     }
   ],
   "scope": [

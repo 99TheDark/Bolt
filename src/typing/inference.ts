@@ -24,10 +24,7 @@ export class Inferrer {
     }
 
     inferType(statement: Statement): VariableType {
-        if(statement.kind == "FunctionLiteral") {
-            const ret = (statement as FunctionLiteral).return;
-            if(ret) return ret;
-        } else {
+        if(statement.kind != "FunctionLiteral") {
             if(statement.type) return statement.type;
         }
 
@@ -170,8 +167,8 @@ export class Inferrer {
                 functionliteral.return = "Unknown";
 
                 this.scope(functionliteral);
-                // set return value to type. multiple = bad
-                break;
+
+                return functionliteral.type;
             }
             case "Return": {
                 const returnvalue = statement as Return;
