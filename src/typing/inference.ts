@@ -24,9 +24,7 @@ export class Inferrer {
     }
 
     inferType(statement: Statement): VariableType {
-        if(statement.kind != "FunctionLiteral") {
-            if(statement.type) return statement.type;
-        }
+        if(statement.kind != "FunctionLiteral" && statement.type != "Unknown") return statement.type;
 
         switch(statement.kind) {
             case "Identifier": {

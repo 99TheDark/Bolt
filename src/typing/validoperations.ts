@@ -2,7 +2,7 @@ import { VariableType } from "./types";
 
 export const valid: Record<VariableType, string[]> = {
     Unknown: [],
-    Number: ["+", "-", "*", "/", "^", "%", "&", "|", "!"],
+    Number: ["+", "-", "*", "/", "^", "%"],
     Boolean: ["!", "&", "|"],
     String: ["+"],
     Function: [],
