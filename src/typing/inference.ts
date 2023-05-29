@@ -1,5 +1,6 @@
 import { BoltError } from "../errors/error";
 import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration } from "../parser/expressions";
+import { Variable } from "./scope";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 
@@ -201,33 +202,29 @@ export class Inferrer {
             );
         }
 
-        scopeable.scope.push({
+        scopeable.scope.push(new Variable(
             name,
             type
-        });
-    }
-
-    addAssignment(scopeable: Scopeable, assignment: Assignment): void {
-        const variable = assignment.variable;
-        this.pushScope(scopeable, variable.symbol, variable.type, assignment);
+        ));
     }
 
     scope(scopeable: Scopeable & (Statement | Program)): void {
         for(const statement of scopeable.body) {
             this.inferType(statement);
 
-            if(statement.kind == "Assignment") {
-                const assignment = statement as Assignment;
-                if(!assignment.operator) this.addAssignment(scopeable, assignment);
+            if(statement.kind == "Declaration") {
+                const declaration = statement as Declaration;
+                const variable = declaration.variable;
+                this.pushScope(scopeable, variable.symbol, declaration.type, declaration);
             }
         }
     }
 
-    link(obj: object): void {
+    link(obj: Statement | Program): void {
         for(const [key, value] of Object.entries(obj)) {
             if(key == "parent" || key == "grab" || key == "scope") continue;
             if(typeof value == "object") {
-                value.parent = obj;
+                value.parent = obj.kind == "Program" ? obj : (obj as Statement).kind ? obj : (obj as Statement).parent;
                 this.link(value);
             }
         }

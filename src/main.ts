@@ -3,7 +3,7 @@ import { Lexer } from "./lexer/lexer";
 import { clean } from "./lexer/cleaner";
 import { Parser } from "./parser/parser";
 import { Inferrer } from "./typing/inference";
-import { Builder } from "./compiler/builder";
+import { Generator } from "./compiler/generator";
 import { ignore } from "./format/ignorer";
 
 fs.readFile("./io/script.bolt", "utf8", (error, data) => {
@@ -24,7 +24,7 @@ fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     const typedAST = inferrer.type();
 
     // Builder
-    const builder = new Builder(typedAST, "script");
+    const builder = new Generator(typedAST, "script");
     const irCode = builder.build();
 
     // Write intermediate files for debugging purposes

@@ -22,12 +22,13 @@
 - Errors
     - Easier to understand errors
 - Make keywords do something
-- Seperate assignments and declarations
 
 ### Type Inference
 - Detect reassigned code
 - Function return type detection
 
 ### Assmeble LLVM Code
+- Assign variables
+- Complex expressions
 
 ### Compile LLVM

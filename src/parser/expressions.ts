@@ -1,6 +1,8 @@
 import { VariableType, literalMap } from "../typing/types";
-import { Variable } from "../typing/scope";
-import llvm from "llvm-bindings";
+import { LLVMVariable, Variable } from "../typing/scope";
+import { Generator } from "../compiler/generator";
+import { APFloat, ConstantFP, Value } from "llvm-bindings";
+import { BoltLocationlessError } from "../errors/error";
 
 // Types
 export type Node =
@@ -59,14 +61,14 @@ export class Statement implements Branch {
     type: VariableType;
     row: number;
     col: number;
-    parent: Statement | Program;
+    parent: Branch;
 
     constructor(kind: Node, type: VariableType, row: number, col: number) {
         this.kind = kind;
         this.type = type;
         this.row = row;
         this.col = col;
-        this.parent = {} as Statement;
+        this.parent = {} as Branch;
     }
     grab(name: string): VariableType | void {
         return this.parent.grab(name);
@@ -76,8 +78,8 @@ export class Statement implements Branch {
 
         return this.parent.top();
     }
-    generate() {
-        console.log(`Reached top`);
+    generate(gen: Generator): Value {
+        throw `Reached the top. Not yet defined.`;
     }
 }
 
@@ -115,6 +117,9 @@ export class Identifier extends Expression {
         super("Identifier", "Unknown", row, col);
         this.symbol = symbol;
     }
+    generate(gen: Generator): Value {
+        return gen.getVariable(this.symbol).value;
+    }
 }
 
 export class BinaryOperation extends Expression {
@@ -127,6 +132,15 @@ export class BinaryOperation extends Expression {
         this.left = left;
         this.right = right;
         this.operator = operator;
+    }
+    generate(gen: Generator): Value {
+        switch(this.operator) {
+            default: throw new BoltLocationlessError(`The '${this.operator}' operator has not been implemented yet`);
+            case "+": return gen.builder.CreateFAdd(this.left.generate(gen), this.right.generate(gen), "add");
+            case "-": return gen.builder.CreateFSub(this.left.generate(gen), this.right.generate(gen), "sub");
+            case "*": return gen.builder.CreateFMul(this.left.generate(gen), this.right.generate(gen), "mult");
+            case "/": return gen.builder.CreateFDiv(this.left.generate(gen), this.right.generate(gen), "div");
+        }
     }
 }
 
@@ -160,6 +174,9 @@ export class NumberLiteral extends Expression {
     constructor(value: number, row: number, col: number) {
         super("NumberLiteral", "Number", row, col);
         this.value = value;
+    }
+    generate(gen: Generator): Value {
+        return ConstantFP.get(gen.context, new APFloat(this.value));
     }
 }
 
@@ -264,6 +281,11 @@ export class Declaration extends Expression {
         this.variable = variable;
         this.value = value;
         this.datatype = datatype;
+    }
+    generate(gen: Generator): Value {
+        const value = this.value.generate(gen);
+        gen.scope.push(new LLVMVariable(this.variable.symbol, value));
+        return value;
     }
 }
 

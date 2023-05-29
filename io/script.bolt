@@ -1,6 +1,8 @@
 let x = 5
 let y = 12
 
+let z = x + y
+
 /*let some = (number val) => {
     if(y < x) {
         return true

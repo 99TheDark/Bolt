@@ -42,7 +42,55 @@
         "value": 12
       },
       "datatype": "let"
+    },
+    {
+      "kind": "Declaration",
+      "type": "Number",
+      "row": 3,
+      "col": 6,
+      "variable": {
+        "kind": "Identifier",
+        "type": "Unknown",
+        "row": 3,
+        "col": 4,
+        "symbol": "z"
+      },
+      "value": {
+        "kind": "Binary",
+        "type": "Number",
+        "row": 3,
+        "col": 10,
+        "left": {
+          "kind": "Identifier",
+          "type": "Number",
+          "row": 3,
+          "col": 8,
+          "symbol": "x"
+        },
+        "right": {
+          "kind": "Identifier",
+          "type": "Number",
+          "row": 3,
+          "col": 12,
+          "symbol": "y"
+        },
+        "operator": "+"
+      },
+      "datatype": "let"
     }
   ],
-  "scope": []
+  "scope": [
+    {
+      "name": "x",
+      "type": "Number"
+    },
+    {
+      "name": "y",
+      "type": "Number"
+    },
+    {
+      "name": "z",
+      "type": "Number"
+    }
+  ]
 }
