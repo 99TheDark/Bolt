@@ -205,7 +205,7 @@ export class Parser {
         if(left.kind == "Keyword") {
             const keyword = left as Keyword;
             if(keyword.symbol == "return") {
-                new Return(
+                return new Return(
                     this.parseDeclaration(),
                     left.row,
                     left.col

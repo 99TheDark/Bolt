@@ -1,3 +1,7 @@
+import { IRBuilder, Type } from "llvm-bindings";
+import { Expression, NumberLiteral } from "../parser/expressions";
+import { BoltLocationlessError } from "../errors/error";
+
 export type VariableType =
     "Number" |
     "Boolean" |
@@ -17,4 +21,11 @@ export const literalMap: Record<string, VariableType> = {
     regex: "Regex",
     class: "Class",
     let: "Unknown"
+}
+
+export function fromLiteralToLLVMType(builder: IRBuilder, type: VariableType): Type {
+    if(type == "Number") return builder.getDoubleTy();
+    if(type == "Boolean") return builder.getInt1Ty();
+
+    throw new BoltLocationlessError(`The ${type.toLowerCase()} type has not been implemented`);
 }

@@ -1,7 +1,7 @@
-import { VariableType, literalMap } from "../typing/types";
+import { VariableType, fromLiteralToLLVMType, literalMap } from "../typing/types";
 import { LLVMVariable, Variable } from "../typing/scope";
 import { Generator } from "../compiler/generator";
-import { APFloat, ConstantFP, Value } from "llvm-bindings";
+import { APFloat, ConstantFP, Function, FunctionType, IRBuilder, Type, Value } from "llvm-bindings";
 import { BoltLocationlessError } from "../errors/error";
 
 // Types
@@ -46,8 +46,8 @@ export type Precedence =
 // Interfaces
 export interface Branch {
     kind: Node
-    grab: Function
-    top: Function
+    grab: (name: string) => VariableType | void
+    top: () => Statement | Program
 }
 
 export interface Scopeable {
@@ -211,6 +211,16 @@ export class FunctionLiteral extends Expression implements Scopeable {
         this.return = "Unknown";
         this.scope = [];
     }
+    generate(gen: Generator, name: string | void): Value {
+        const funcName = name ? name : `anonymous${~~(Math.random() * 100000)}`;
+
+        const returnType = fromLiteralToLLVMType(gen.builder, this.return);
+        const paramTypes = this.parameters.values.map(val => fromLiteralToLLVMType(gen.builder, val.type));
+        const functionType = FunctionType.get(returnType, paramTypes, false);
+        const func = Function.Create(functionType, Function.LinkageTypes.ExternalLinkage, `fn_${funcName}`, gen.module);
+
+        return func;
+    }
 }
 
 export class EnumLiteral extends Expression {
@@ -283,7 +293,10 @@ export class Declaration extends Expression {
         this.datatype = datatype;
     }
     generate(gen: Generator): Value {
-        const value = this.value.generate(gen);
+        const value =
+            this.value.kind == "FunctionLiteral" ?
+                (this.value as FunctionLiteral).generate(gen, this.variable.symbol) :
+                this.value.generate(gen);
         gen.scope.push(new LLVMVariable(this.variable.symbol, value));
         return value;
     }
