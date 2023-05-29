@@ -7,7 +7,7 @@ export class BoltError extends Error {
     }
 }
 
-export class BoltBuildError extends Error {
+export class BoltLocationlessError extends Error {
     constructor(message: string) {
         super(message);
     }

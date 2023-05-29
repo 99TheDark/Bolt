@@ -22,6 +22,7 @@
 - Errors
     - Easier to understand errors
 - Make keywords do something
+- Convert all interfaces to classes
 
 ### Type Inference
 - Detect reassigned code

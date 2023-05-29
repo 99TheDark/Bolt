@@ -5,6 +5,7 @@ import { Parser } from "./parser/parser";
 import { Inferrer } from "./typing/inference";
 import { ignore } from "./format/ignorer";
 import { Builder } from "./compiler/builder";
+import { Walker } from "./compiler/walker";
 
 fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     if(error) throw error;
@@ -22,14 +23,16 @@ fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     const typedAST = inferrer.type();
 
     // Builder
+    /*
     const builder = new Builder(typedAST, "script");
     const irCode = builder.build();
+    */
 
     // Write intermediate files for debugging purposes
     fs.writeFile("./io/ast.json", JSON.stringify(typedAST, ignore, "  "), err => {
         if(err) throw err;
     });
-    fs.writeFile("./io/intermediate.ll", irCode, err => {
+    /*fs.writeFile("./io/intermediate.ll", irCode, err => {
         if(err) throw err;
-    });
+    });*/
 });
