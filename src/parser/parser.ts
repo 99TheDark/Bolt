@@ -2,9 +2,9 @@ import { BoltError } from "../errors/error";
 import { Type, Token, typeString, getPattern } from "../lexer/tokens";
 import { isUnary, isBinary } from "./operators";
 import { isControl } from "./control";
-import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions";
 import { baseData } from "../lexer/literal";
 import { VariableType } from "../typing/types";
+import { Statement, Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence } from "./expressions";
 
 export class Parser {
     private tokens: Token[];
