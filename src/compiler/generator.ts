@@ -21,7 +21,7 @@ export class Generator {
     }
 
     build(): string {
-        const functionType = FunctionType.get(Type.getVoidTy(this.context), [], false);
+        const functionType = FunctionType.get(Type.getVoidTy(this.context), false);
         const func = Function.Create(functionType, Function.LinkageTypes.ExternalLinkage, "main", this.module);
 
         const entry = BasicBlock.Create(this.context, "entry", func);

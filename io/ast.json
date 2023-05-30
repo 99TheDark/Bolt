@@ -81,121 +81,81 @@
     {
       "kind": "Declaration",
       "type": "Function",
-      "row": 9,
-      "col": 9,
+      "row": 19,
+      "col": 8,
       "variable": {
         "kind": "Identifier",
         "type": "Unknown",
-        "row": 9,
+        "row": 19,
         "col": 4,
-        "symbol": "some"
+        "symbol": "add"
       },
       "value": {
         "kind": "FunctionLiteral",
         "type": "Function",
-        "row": 9,
-        "col": 24,
+        "row": 19,
+        "col": 31,
         "parameters": {
           "kind": "ParameterList",
           "type": "Unknown",
-          "row": 9,
-          "col": 11,
+          "row": 19,
+          "col": 10,
           "values": [
             {
               "kind": "Parameter",
               "type": "Number",
-              "row": 9,
-              "col": 11,
-              "variable": "val",
+              "row": 19,
+              "col": 10,
+              "variable": "a",
+              "datatype": "number"
+            },
+            {
+              "kind": "Parameter",
+              "type": "Number",
+              "row": 19,
+              "col": 19,
+              "variable": "b",
               "datatype": "number"
             }
           ]
         },
         "body": [
           {
-            "kind": "IfStatement",
-            "type": "Unknown",
-            "row": 10,
+            "kind": "Return",
+            "type": "Number",
+            "row": 20,
             "col": 4,
-            "test": {
-              "kind": "Comparator",
-              "type": "Boolean",
-              "row": 10,
-              "col": 9,
+            "value": {
+              "kind": "Binary",
+              "type": "Number",
+              "row": 20,
+              "col": 13,
               "left": {
                 "kind": "Identifier",
-                "type": "Unknown",
-                "row": 10,
-                "col": 7,
-                "symbol": "y"
+                "type": "Number",
+                "row": 20,
+                "col": 11,
+                "symbol": "a"
               },
               "right": {
                 "kind": "Identifier",
-                "type": "Unknown",
-                "row": 10,
-                "col": 11,
-                "symbol": "x"
+                "type": "Number",
+                "row": 20,
+                "col": 15,
+                "symbol": "b"
               },
-              "operator": "<"
-            },
-            "next": {
-              "kind": "ElseClause",
-              "type": "Unknown",
-              "row": 12,
-              "col": 6,
-              "body": [
-                {
-                  "kind": "Return",
-                  "type": "Boolean",
-                  "row": 13,
-                  "col": 8,
-                  "value": {
-                    "kind": "Comparator",
-                    "type": "Boolean",
-                    "row": 13,
-                    "col": 17,
-                    "left": {
-                      "kind": "Identifier",
-                      "type": "Unknown",
-                      "row": 13,
-                      "col": 15,
-                      "symbol": "x"
-                    },
-                    "right": {
-                      "kind": "Identifier",
-                      "type": "Unknown",
-                      "row": 13,
-                      "col": 19,
-                      "symbol": "val"
-                    },
-                    "operator": "<"
-                  }
-                }
-              ],
-              "scope": []
-            },
-            "body": [
-              {
-                "kind": "Return",
-                "type": "Boolean",
-                "row": 11,
-                "col": 8,
-                "value": {
-                  "kind": "BooleanLiteral",
-                  "type": "Boolean",
-                  "row": 11,
-                  "col": 15,
-                  "value": true
-                }
-              }
-            ],
-            "scope": []
+              "operator": "+"
+            }
           }
         ],
-        "return": "Boolean",
+        "return": "Number",
         "scope": [
           {
-            "name": "val",
+            "name": "a",
+            "type": "Number"
+          },
+          {
+            "name": "b",
             "type": "Number"
           }
         ]
@@ -217,7 +177,7 @@
       "type": "Number"
     },
     {
-      "name": "some",
+      "name": "add",
       "type": "Function"
     }
   ]

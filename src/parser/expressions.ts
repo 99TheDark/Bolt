@@ -3,6 +3,7 @@ import { LLVMVariable, Variable } from "../typing/scope";
 import { Generator } from "../compiler/generator";
 import { APFloat, BasicBlock, ConstantFP, Function, FunctionType, Type, Value, verifyFunction } from "llvm-bindings";
 import { BoltLocationlessError } from "../errors/error";
+import { Walker } from "../compiler/walker";
 
 // Types
 export type Node =
@@ -71,6 +72,11 @@ export class Statement implements Branch {
         this.parent = {} as Branch;
     }
     grab(name: string): VariableType | void {
+        const scope = (this as unknown as Statement & Scopeable).scope;
+        if(scope) for(const variable of scope) {
+            if(variable.name == name) return variable.type;
+        }
+
         return this.parent.grab(name);
     }
     top(): Statement | Program {
@@ -233,7 +239,13 @@ export class FunctionLiteral extends Expression implements Scopeable {
         const functionType = FunctionType.get(returnType, paramTypes, false);
         const func = Function.Create(functionType, Function.LinkageTypes.ExternalLinkage, `fn_${funcName}`, gen.module);
 
-        // TODO: Finish
+        // TODO: Again, make automatic
+        this.parameters.values.forEach((val, idx) => gen.scope.push(new LLVMVariable(
+            val.variable,
+            func.getArg(idx),
+            2,
+            0
+        )));
 
         if(verifyFunction(func)) throw new BoltLocationlessError(`Something went wrong in the ${name ? name : "anonymous"} function`);
 
@@ -315,7 +327,9 @@ export class Declaration extends Expression {
             this.value.kind == "FunctionLiteral" ?
                 (this.value as FunctionLiteral).generate(gen, this.variable.symbol) :
                 this.value.generate(gen);
-        gen.scope.push(new LLVMVariable(this.variable.symbol, value));
+
+        // TODO: Make scoping work automatically
+        gen.scope.push(new LLVMVariable(this.variable.symbol, value, 1, 0));
         return value;
     }
 }
@@ -437,6 +451,9 @@ export class Return extends Expression {
     constructor(value: Expression, row: number, col: number) {
         super("Return", "Unknown", row, col);
         this.value = value;
+    }
+    generate(gen: Generator): Value {
+        return gen.builder.CreateRet(this.value.generate(gen));
     }
 }
 

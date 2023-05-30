@@ -6,4 +6,4 @@ entry:
   ret void
 }
 
-declare i1 @fn_some(double)
+declare double @fn_add(double, double)

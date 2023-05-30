@@ -14,9 +14,13 @@ export class Variable {
 export class LLVMVariable {
     name: string;
     value: Value;
+    depth: number;
+    id: number;
 
-    constructor(name: string, value: Value) {
+    constructor(name: string, value: Value, depth: number, id: number) {
         this.name = name;
         this.value = value;
+        this.depth = depth;
+        this.id = id;
     }
 }
