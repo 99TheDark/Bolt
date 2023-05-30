@@ -23,9 +23,5 @@
     - Easier to understand errors
 - Make keywords do something
 
-### Type Inference
-
 ### Assmeble LLVM Code
-- Booleans
-
-### Compile LLVM
+- If/ifelse/else statements

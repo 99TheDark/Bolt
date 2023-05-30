@@ -79,39 +79,34 @@
       "datatype": "let"
     },
     {
-      "kind": "Declaration",
-      "type": "Boolean",
+      "kind": "IfStatement",
+      "type": "Unknown",
       "row": 5,
-      "col": 26,
-      "variable": {
-        "kind": "Identifier",
-        "type": "Unknown",
-        "row": 5,
-        "col": 4,
-        "symbol": "someBoolFromCondition"
-      },
-      "value": {
+      "col": 0,
+      "test": {
         "kind": "Comparator",
         "type": "Boolean",
         "row": 5,
-        "col": 30,
+        "col": 5,
         "left": {
           "kind": "Identifier",
           "type": "Unknown",
           "row": 5,
-          "col": 28,
+          "col": 3,
           "symbol": "x"
         },
         "right": {
           "kind": "Identifier",
           "type": "Unknown",
           "row": 5,
-          "col": 33,
-          "symbol": "y"
+          "col": 7,
+          "symbol": "z"
         },
-        "operator": "!="
+        "operator": "<"
       },
-      "datatype": "let"
+      "next": {},
+      "body": [],
+      "scope": []
     }
   ],
   "scope": [
@@ -126,10 +121,6 @@
     {
       "name": "z",
       "type": "Number"
-    },
-    {
-      "name": "someBoolFromCondition",
-      "type": "Boolean"
     }
   ]
 }

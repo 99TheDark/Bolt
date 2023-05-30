@@ -3,6 +3,10 @@ let y = 12
 
 let z = x + y
 
+if(x < z) {
+    
+}
+
 /*let some = (number val) => {
     if(y < x) {
         return true

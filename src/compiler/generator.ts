@@ -25,7 +25,6 @@ export class Generator {
         walker.steps.forEach(step => {
             step.generate(this);
         });
-        console.log(this.scope);
 
         if(verifyModule(this.module)) throw new BoltLocationlessError("Something went wrong");
         return this.module.print();
