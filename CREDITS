@@ -1,2 +1,3 @@
 Lexer and parser based off a tutorial series by [tylerlaceby](https://www.youtube.com/@tylerlaceby)
 Type inference algorithm based on explanation from [Dmitry Soshnikov](https://www.youtube.com/@DmitrySoshnikov-education)
+LLVM Comparator Keywords on [Stackoverflow](https://stackoverflow.com/questions/40327806/what-are-ordered-and-unordered-llvm-cmpinst-compare-instructions)

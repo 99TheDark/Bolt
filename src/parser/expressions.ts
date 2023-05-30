@@ -1,7 +1,7 @@
 import { VariableType, fromLiteralToLLVMType, literalMap } from "../typing/types";
 import { LLVMVariable, Variable } from "../typing/scope";
 import { Generator } from "../compiler/generator";
-import { APFloat, ConstantFP, Function, FunctionType, IRBuilder, Type, Value } from "llvm-bindings";
+import { APFloat, BasicBlock, ConstantFP, Function, FunctionType, Type, Value, verifyFunction } from "llvm-bindings";
 import { BoltLocationlessError } from "../errors/error";
 
 // Types
@@ -166,6 +166,20 @@ export class Comparator extends Expression {
         this.right = right;
         this.operator = operator;
     }
+    generate(gen: Generator): Value {
+        let booleanCompare: Value;
+        switch(this.operator) {
+            default: throw new BoltLocationlessError(`The '${this.operator}' comparator has not been implemented yet`);
+            case "<": booleanCompare = gen.builder.CreateFCmpULT(this.left.generate(gen), this.right.generate(gen)); break;
+            case ">": booleanCompare = gen.builder.CreateFCmpUGT(this.left.generate(gen), this.right.generate(gen)); break;
+            case "<=": booleanCompare = gen.builder.CreateFCmpULE(this.left.generate(gen), this.right.generate(gen)); break;
+            case ">=": booleanCompare = gen.builder.CreateFCmpUGE(this.left.generate(gen), this.right.generate(gen)); break;
+            case "==": booleanCompare = gen.builder.CreateFCmpUEQ(this.left.generate(gen), this.right.generate(gen)); break;
+            case "!=": booleanCompare = gen.builder.CreateFCmpUNE(this.left.generate(gen), this.right.generate(gen)); break;
+        }
+
+        return gen.builder.CreateUIToFP(booleanCompare, Type.getDoubleTy(gen.context));
+    }
 }
 
 export class NumberLiteral extends Expression {
@@ -218,6 +232,13 @@ export class FunctionLiteral extends Expression implements Scopeable {
         const paramTypes = this.parameters.values.map(val => fromLiteralToLLVMType(gen.builder, val.type));
         const functionType = FunctionType.get(returnType, paramTypes, false);
         const func = Function.Create(functionType, Function.LinkageTypes.ExternalLinkage, `fn_${funcName}`, gen.module);
+
+        const entry = BasicBlock.Create(gen.context, "entry", func);
+        gen.builder.SetInsertPoint(entry);
+
+        // TODO: Finish
+
+        if(verifyFunction(func)) throw new BoltLocationlessError(`Something went wrong in the ${name ? name : "anonymous"} function`);
 
         return func;
     }

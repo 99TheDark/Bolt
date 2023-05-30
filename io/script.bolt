@@ -3,7 +3,7 @@ let y = 12
 
 let z = x + y
 
-let some = (number val) => {
+/*let some = (number val) => {
     if(y < x) {
         return true
     } else {
@@ -11,4 +11,4 @@ let some = (number val) => {
     }
 }
 
-/*let k = some(8)*/
+let k = some(8)*/

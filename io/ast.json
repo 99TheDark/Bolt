@@ -80,125 +80,36 @@
     },
     {
       "kind": "Declaration",
-      "type": "Function",
+      "type": "Boolean",
       "row": 5,
-      "col": 9,
+      "col": 26,
       "variable": {
         "kind": "Identifier",
         "type": "Unknown",
         "row": 5,
         "col": 4,
-        "symbol": "some"
+        "symbol": "someBoolFromCondition"
       },
       "value": {
-        "kind": "FunctionLiteral",
-        "type": "Function",
+        "kind": "Comparator",
+        "type": "Boolean",
         "row": 5,
-        "col": 24,
-        "parameters": {
-          "kind": "ParameterList",
+        "col": 30,
+        "left": {
+          "kind": "Identifier",
           "type": "Unknown",
           "row": 5,
-          "col": 11,
-          "values": [
-            {
-              "kind": "Parameter",
-              "type": "Number",
-              "row": 5,
-              "col": 11,
-              "variable": "val",
-              "datatype": "number"
-            }
-          ]
+          "col": 28,
+          "symbol": "x"
         },
-        "body": [
-          {
-            "kind": "IfStatement",
-            "type": "Unknown",
-            "row": 6,
-            "col": 4,
-            "test": {
-              "kind": "Comparator",
-              "type": "Boolean",
-              "row": 6,
-              "col": 9,
-              "left": {
-                "kind": "Identifier",
-                "type": "Unknown",
-                "row": 6,
-                "col": 7,
-                "symbol": "y"
-              },
-              "right": {
-                "kind": "Identifier",
-                "type": "Unknown",
-                "row": 6,
-                "col": 11,
-                "symbol": "x"
-              },
-              "operator": "<"
-            },
-            "next": {
-              "kind": "ElseClause",
-              "type": "Unknown",
-              "row": 8,
-              "col": 6,
-              "body": [
-                {
-                  "kind": "Return",
-                  "type": "Boolean",
-                  "row": 9,
-                  "col": 8,
-                  "value": {
-                    "kind": "Comparator",
-                    "type": "Boolean",
-                    "row": 9,
-                    "col": 17,
-                    "left": {
-                      "kind": "Identifier",
-                      "type": "Unknown",
-                      "row": 9,
-                      "col": 15,
-                      "symbol": "x"
-                    },
-                    "right": {
-                      "kind": "Identifier",
-                      "type": "Unknown",
-                      "row": 9,
-                      "col": 19,
-                      "symbol": "val"
-                    },
-                    "operator": "<"
-                  }
-                }
-              ],
-              "scope": []
-            },
-            "body": [
-              {
-                "kind": "Return",
-                "type": "Boolean",
-                "row": 7,
-                "col": 8,
-                "value": {
-                  "kind": "BooleanLiteral",
-                  "type": "Boolean",
-                  "row": 7,
-                  "col": 15,
-                  "value": true
-                }
-              }
-            ],
-            "scope": []
-          }
-        ],
-        "return": "Boolean",
-        "scope": [
-          {
-            "name": "val",
-            "type": "Number"
-          }
-        ]
+        "right": {
+          "kind": "Identifier",
+          "type": "Unknown",
+          "row": 5,
+          "col": 33,
+          "symbol": "y"
+        },
+        "operator": "!="
       },
       "datatype": "let"
     }
@@ -217,8 +128,8 @@
       "type": "Number"
     },
     {
-      "name": "some",
-      "type": "Function"
+      "name": "someBoolFromCondition",
+      "type": "Boolean"
     }
   ]
 }
