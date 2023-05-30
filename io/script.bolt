@@ -3,9 +3,9 @@ let y = 12
 
 let z = x + y
 
-if(x < z) {
+/*if(x < z) {
     
-}
+}*/
 
 /*let some = (number val) => {
     if(y < x) {
@@ -16,3 +16,7 @@ if(x < z) {
 }
 
 let k = some(8)*/
+
+let add = (number a, number b) => {
+    return a + b
+}

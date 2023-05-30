@@ -79,34 +79,128 @@
       "datatype": "let"
     },
     {
-      "kind": "IfStatement",
-      "type": "Unknown",
-      "row": 5,
-      "col": 0,
-      "test": {
-        "kind": "Comparator",
-        "type": "Boolean",
-        "row": 5,
-        "col": 5,
-        "left": {
-          "kind": "Identifier",
-          "type": "Unknown",
-          "row": 5,
-          "col": 3,
-          "symbol": "x"
-        },
-        "right": {
-          "kind": "Identifier",
-          "type": "Unknown",
-          "row": 5,
-          "col": 7,
-          "symbol": "z"
-        },
-        "operator": "<"
+      "kind": "Declaration",
+      "type": "Function",
+      "row": 9,
+      "col": 9,
+      "variable": {
+        "kind": "Identifier",
+        "type": "Unknown",
+        "row": 9,
+        "col": 4,
+        "symbol": "some"
       },
-      "next": {},
-      "body": [],
-      "scope": []
+      "value": {
+        "kind": "FunctionLiteral",
+        "type": "Function",
+        "row": 9,
+        "col": 24,
+        "parameters": {
+          "kind": "ParameterList",
+          "type": "Unknown",
+          "row": 9,
+          "col": 11,
+          "values": [
+            {
+              "kind": "Parameter",
+              "type": "Number",
+              "row": 9,
+              "col": 11,
+              "variable": "val",
+              "datatype": "number"
+            }
+          ]
+        },
+        "body": [
+          {
+            "kind": "IfStatement",
+            "type": "Unknown",
+            "row": 10,
+            "col": 4,
+            "test": {
+              "kind": "Comparator",
+              "type": "Boolean",
+              "row": 10,
+              "col": 9,
+              "left": {
+                "kind": "Identifier",
+                "type": "Unknown",
+                "row": 10,
+                "col": 7,
+                "symbol": "y"
+              },
+              "right": {
+                "kind": "Identifier",
+                "type": "Unknown",
+                "row": 10,
+                "col": 11,
+                "symbol": "x"
+              },
+              "operator": "<"
+            },
+            "next": {
+              "kind": "ElseClause",
+              "type": "Unknown",
+              "row": 12,
+              "col": 6,
+              "body": [
+                {
+                  "kind": "Return",
+                  "type": "Boolean",
+                  "row": 13,
+                  "col": 8,
+                  "value": {
+                    "kind": "Comparator",
+                    "type": "Boolean",
+                    "row": 13,
+                    "col": 17,
+                    "left": {
+                      "kind": "Identifier",
+                      "type": "Unknown",
+                      "row": 13,
+                      "col": 15,
+                      "symbol": "x"
+                    },
+                    "right": {
+                      "kind": "Identifier",
+                      "type": "Unknown",
+                      "row": 13,
+                      "col": 19,
+                      "symbol": "val"
+                    },
+                    "operator": "<"
+                  }
+                }
+              ],
+              "scope": []
+            },
+            "body": [
+              {
+                "kind": "Return",
+                "type": "Boolean",
+                "row": 11,
+                "col": 8,
+                "value": {
+                  "kind": "BooleanLiteral",
+                  "type": "Boolean",
+                  "row": 11,
+                  "col": 15,
+                  "value": true
+                }
+              }
+            ],
+            "scope": []
+          }
+        ],
+        "return": "Boolean",
+        "scope": [
+          {
+            "name": "val",
+            "type": "Number"
+          }
+        ]
+      },
+      "datatype": "let"
     }
   ],
   "scope": [
@@ -121,6 +215,10 @@
     {
       "name": "z",
       "type": "Number"
+    },
+    {
+      "name": "some",
+      "type": "Function"
     }
   ]
 }

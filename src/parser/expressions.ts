@@ -170,12 +170,12 @@ export class Comparator extends Expression {
         let booleanCompare: Value;
         switch(this.operator) {
             default: throw new BoltLocationlessError(`The '${this.operator}' comparator has not been implemented yet`);
-            case "<": booleanCompare = gen.builder.CreateFCmpULT(this.left.generate(gen), this.right.generate(gen)); break;
-            case ">": booleanCompare = gen.builder.CreateFCmpUGT(this.left.generate(gen), this.right.generate(gen)); break;
-            case "<=": booleanCompare = gen.builder.CreateFCmpULE(this.left.generate(gen), this.right.generate(gen)); break;
-            case ">=": booleanCompare = gen.builder.CreateFCmpUGE(this.left.generate(gen), this.right.generate(gen)); break;
-            case "==": booleanCompare = gen.builder.CreateFCmpUEQ(this.left.generate(gen), this.right.generate(gen)); break;
-            case "!=": booleanCompare = gen.builder.CreateFCmpUNE(this.left.generate(gen), this.right.generate(gen)); break;
+            case "<": booleanCompare = gen.builder.CreateFCmpOLT(this.left.generate(gen), this.right.generate(gen)); break;
+            case ">": booleanCompare = gen.builder.CreateFCmpOGT(this.left.generate(gen), this.right.generate(gen)); break;
+            case "<=": booleanCompare = gen.builder.CreateFCmpOLE(this.left.generate(gen), this.right.generate(gen)); break;
+            case ">=": booleanCompare = gen.builder.CreateFCmpOGE(this.left.generate(gen), this.right.generate(gen)); break;
+            case "==": booleanCompare = gen.builder.CreateFCmpOEQ(this.left.generate(gen), this.right.generate(gen)); break;
+            case "!=": booleanCompare = gen.builder.CreateFCmpONE(this.left.generate(gen), this.right.generate(gen)); break;
         }
 
         return gen.builder.CreateUIToFP(booleanCompare, Type.getDoubleTy(gen.context));
@@ -232,9 +232,6 @@ export class FunctionLiteral extends Expression implements Scopeable {
         const paramTypes = this.parameters.values.map(val => fromLiteralToLLVMType(gen.builder, val.type));
         const functionType = FunctionType.get(returnType, paramTypes, false);
         const func = Function.Create(functionType, Function.LinkageTypes.ExternalLinkage, `fn_${funcName}`, gen.module);
-
-        const entry = BasicBlock.Create(gen.context, "entry", func);
-        gen.builder.SetInsertPoint(entry);
 
         // TODO: Finish
 
