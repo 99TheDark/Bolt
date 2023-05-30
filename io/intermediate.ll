@@ -6,4 +6,8 @@ entry:
   ret void
 }
 
-declare double @fn_add(double, double)
+define double @fn_add(double %0, double %1) {
+entry:
+  %2 = fadd double %0, %1
+  ret double %2
+}

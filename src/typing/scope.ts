@@ -4,23 +4,11 @@ import { VariableType } from "./types"
 export class Variable {
     name: string;
     type: VariableType;
+    value: Value | null;
 
-    constructor(name: string, type: VariableType) {
+    constructor(name: string, type: VariableType, value: Value | void) {
         this.name = name;
         this.type = type;
-    }
-}
-
-export class LLVMVariable {
-    name: string;
-    value: Value;
-    depth: number;
-    id: number;
-
-    constructor(name: string, value: Value, depth: number, id: number) {
-        this.name = name;
-        this.value = value;
-        this.depth = depth;
-        this.id = id;
+        this.value = value ? value : null;
     }
 }

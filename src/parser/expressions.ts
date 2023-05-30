@@ -1,8 +1,8 @@
 import { VariableType, fromLiteralToLLVMType, literalMap } from "../typing/types";
-import { LLVMVariable, Variable } from "../typing/scope";
+import { Variable } from "../typing/scope";
 import { Generator } from "../compiler/generator";
 import { APFloat, BasicBlock, ConstantFP, Function, FunctionType, Type, Value, verifyFunction } from "llvm-bindings";
-import { BoltLocationlessError } from "../errors/error";
+import { BoltError, BoltLocationlessError } from "../errors/error";
 import { Walker } from "../compiler/walker";
 
 // Types
@@ -47,7 +47,8 @@ export type Precedence =
 // Interfaces
 export interface Branch {
     kind: Node
-    grab: (name: string) => VariableType | void
+    grab: (name: string) => Variable
+    put: (name: string, value: Value) => void
     top: () => Statement | Program
 }
 
@@ -71,13 +72,24 @@ export class Statement implements Branch {
         this.col = col;
         this.parent = {} as Branch;
     }
-    grab(name: string): VariableType | void {
+    grab(name: string): Variable {
         const scope = (this as unknown as Statement & Scopeable).scope;
         if(scope) for(const variable of scope) {
-            if(variable.name == name) return variable.type;
+            if(variable.name == name) return variable;
         }
 
         return this.parent.grab(name);
+    }
+    put(name: string, value: Value): void {
+        const scope = (this as unknown as Statement & Scopeable).scope;
+        if(scope) for(const variable of scope) {
+            if(variable.name == name) {
+                variable.value = value;
+                return;
+            }
+        }
+
+        this.parent.put(name, value);
     }
     top(): Statement | Program {
         if(this.kind == "FunctionLiteral") return this;
@@ -100,9 +112,18 @@ export class Program implements Branch, Scopeable {
         this.scope = [];
     }
 
-    grab(name: string): VariableType | void {
+    grab(name: string): Variable {
         for(const variable of this.scope) {
-            if(variable.name == name) return variable.type;
+            if(variable.name == name) return variable;
+        }
+        throw new BoltLocationlessError(`The variable '${name}' is undefined`);
+    }
+    put(name: string, value: Value): void {
+        for(const variable of this.scope) {
+            if(variable.name == name) {
+                variable.value = value;
+                return;
+            }
         }
     }
     top(): Statement | Program {
@@ -124,7 +145,9 @@ export class Identifier extends Expression {
         this.symbol = symbol;
     }
     generate(gen: Generator): Value {
-        return gen.getVariable(this.symbol).value;
+        const value = this.grab(this.symbol).value;
+        if(!value) throw new BoltError(`Value of ${this.symbol} is undefined`, this);
+        return value;
     }
 }
 
@@ -142,10 +165,10 @@ export class BinaryOperation extends Expression {
     generate(gen: Generator): Value {
         switch(this.operator) {
             default: throw new BoltLocationlessError(`The '${this.operator}' operator has not been implemented yet`);
-            case "+": return gen.builder.CreateFAdd(this.left.generate(gen), this.right.generate(gen), "add");
-            case "-": return gen.builder.CreateFSub(this.left.generate(gen), this.right.generate(gen), "sub");
-            case "*": return gen.builder.CreateFMul(this.left.generate(gen), this.right.generate(gen), "mult");
-            case "/": return gen.builder.CreateFDiv(this.left.generate(gen), this.right.generate(gen), "div");
+            case "+": return gen.builder.CreateFAdd(this.left.generate(gen), this.right.generate(gen));
+            case "-": return gen.builder.CreateFSub(this.left.generate(gen), this.right.generate(gen));
+            case "*": return gen.builder.CreateFMul(this.left.generate(gen), this.right.generate(gen));
+            case "/": return gen.builder.CreateFDiv(this.left.generate(gen), this.right.generate(gen));
         }
     }
 }
@@ -239,13 +262,17 @@ export class FunctionLiteral extends Expression implements Scopeable {
         const functionType = FunctionType.get(returnType, paramTypes, false);
         const func = Function.Create(functionType, Function.LinkageTypes.ExternalLinkage, `fn_${funcName}`, gen.module);
 
-        // TODO: Again, make automatic
-        this.parameters.values.forEach((val, idx) => gen.scope.push(new LLVMVariable(
-            val.variable,
-            func.getArg(idx),
-            2,
-            0
-        )));
+        this.parameters.values.forEach((val, idx) => {
+            this.put(val.variable, func.getArg(idx));
+        });
+
+        const entry = BasicBlock.Create(gen.context, "entry", func);
+        gen.builder.SetInsertPoint(entry);
+
+        const walker = new Walker(this);
+        for(const step of walker.steps) {
+            const val = step.generate(gen);
+        }
 
         if(verifyFunction(func)) throw new BoltLocationlessError(`Something went wrong in the ${name ? name : "anonymous"} function`);
 
@@ -328,8 +355,7 @@ export class Declaration extends Expression {
                 (this.value as FunctionLiteral).generate(gen, this.variable.symbol) :
                 this.value.generate(gen);
 
-        // TODO: Make scoping work automatically
-        gen.scope.push(new LLVMVariable(this.variable.symbol, value, 1, 0));
+        this.put(this.variable.symbol, value);
         return value;
     }
 }
@@ -453,7 +479,8 @@ export class Return extends Expression {
         this.value = value;
     }
     generate(gen: Generator): Value {
-        return gen.builder.CreateRet(this.value.generate(gen));
+        const ret = gen.builder.CreateRet(this.value.generate(gen));
+        return ret;
     }
 }
 

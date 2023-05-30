@@ -29,7 +29,7 @@ export class Inferrer {
         switch(statement.kind) {
             case "Identifier": {
                 const identifier = statement as Identifier;
-                const variableType = statement.grab(identifier.symbol);
+                const variableType = statement.grab(identifier.symbol).type;
 
                 if(!variableType) throw new BoltError(
                     `The variable '${identifier.symbol}' is undefined`,
