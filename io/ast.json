@@ -81,30 +81,30 @@
     {
       "kind": "Declaration",
       "type": "Function",
-      "row": 19,
+      "row": 9,
       "col": 8,
       "variable": {
         "kind": "Identifier",
         "type": "Unknown",
-        "row": 19,
+        "row": 9,
         "col": 4,
         "symbol": "add"
       },
       "value": {
         "kind": "FunctionLiteral",
         "type": "Function",
-        "row": 19,
+        "row": 9,
         "col": 31,
         "parameters": {
           "kind": "ParameterList",
           "type": "Unknown",
-          "row": 19,
+          "row": 9,
           "col": 10,
           "values": [
             {
               "kind": "Parameter",
               "type": "Number",
-              "row": 19,
+              "row": 9,
               "col": 10,
               "variable": "a",
               "datatype": "number"
@@ -112,7 +112,7 @@
             {
               "kind": "Parameter",
               "type": "Number",
-              "row": 19,
+              "row": 9,
               "col": 19,
               "variable": "b",
               "datatype": "number"
@@ -123,24 +123,24 @@
           {
             "kind": "Return",
             "type": "Number",
-            "row": 20,
+            "row": 10,
             "col": 4,
             "value": {
               "kind": "Binary",
               "type": "Number",
-              "row": 20,
+              "row": 10,
               "col": 13,
               "left": {
                 "kind": "Identifier",
                 "type": "Number",
-                "row": 20,
+                "row": 10,
                 "col": 11,
                 "symbol": "a"
               },
               "right": {
                 "kind": "Identifier",
                 "type": "Number",
-                "row": 20,
+                "row": 10,
                 "col": 15,
                 "symbol": "b"
               },

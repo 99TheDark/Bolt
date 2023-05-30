@@ -7,6 +7,10 @@ let z = x + y
     
 }*/
 
+let add = (number a, number b) => {
+    return a + b
+}
+
 /*let some = (number val) => {
     if(y < x) {
         return true
@@ -16,7 +20,3 @@ let z = x + y
 }
 
 let k = some(8)*/
-
-let add = (number a, number b) => {
-    return a + b
-}

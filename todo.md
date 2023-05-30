@@ -23,5 +23,8 @@
     - Easier to understand errors
 - Make keywords do something
 
+### Inferrer
+- Function call correct parameter detection
+
 ### Assmeble LLVM Code
 - If/ifelse/else statements
