@@ -386,6 +386,34 @@ export class IfStatement extends Expression implements Scopeable {
         this.body = body;
         this.scope = [];
     }
+    generate(gen: Generator): Value {
+        const floatCondition = this.test.generate(gen);
+        const booleanCondition = gen.builder.CreateFCmpONE(floatCondition, ConstantFP.get(gen.context, new APFloat(0.0)), "ifcond");
+
+        const parent = gen.builder.GetInsertBlock()?.getParent();
+        if(!parent) throw new BoltLocationlessError("Could not find parent function");
+
+        const thenblock = BasicBlock.Create(gen.context, "then", parent);
+        const elseblock = BasicBlock.Create(gen.context, "else");
+        const mergeblock = BasicBlock.Create(gen.context, "ifcont");
+
+        gen.builder.CreateCondBr(booleanCondition, thenblock, elseblock);
+        gen.builder.SetInsertPoint(thenblock);
+
+        const walker = new Walker(this);
+        for(const step of walker.steps) {
+            step.generate(gen);
+        }
+
+        gen.builder.CreateBr(mergeblock);
+        // const thenpos = gen.builder.GetInsertBlock();
+
+        // parent.get
+
+        console.log(gen.module.print());
+
+        return booleanCondition;
+    }
 }
 
 export class WhileLoop extends Expression implements Scopeable {

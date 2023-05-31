@@ -3,9 +3,11 @@ let y = 12
 
 let z = x + y
 
-/*if(x < z) {
-    
-}*/
+if(x < z) {
+    let test = 123
+} else {
+    let test = 456
+}
 
 let add = (number a, number b) => {
     return a + b
