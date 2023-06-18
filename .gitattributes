@@ -1,3 +1,8 @@
 *.md linguist-detectable=true
 *.md linguist-language=Markdown
 *.md linguist-documentation=false
+
+*.wat linguist-language=WebAssembly
+*.wasm linguist-language=WebAssembly
+*.wat linguist-detectable=true
+*.wasm linguist-detectable=true
