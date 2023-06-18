@@ -1,10 +1,8 @@
 import { Program } from "../parser/expressions";
-import { BoltLocationlessError } from "../errors/error";
 import { WebAssemblyGenerator } from "webassembly-generator";
 
 export class Generator {
     generator: WebAssemblyGenerator;
-
     ast: Program;
 
     constructor(ast: Program, location: string) {

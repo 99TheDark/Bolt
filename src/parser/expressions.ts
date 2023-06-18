@@ -2,6 +2,7 @@ import { VariableType, literalMap } from "../typing/types";
 import { Generator } from "../compiler/generator";
 import { BoltError, BoltLocationlessError } from "../errors/error";
 import { WebAssemblyGenerator, WebAssemblyType } from "webassembly-generator";
+import { WASMVariable } from "../typing/variables";
 
 // Types
 export type Node =
@@ -44,11 +45,15 @@ export type Precedence =
 
 // Interfaces
 export interface Branch {
-    kind: Node
+    kind: Node;
 }
 
 export interface Scopeable {
-    body: Statement[]
+    body: Statement[];
+}
+
+export interface Storage {
+    variables: WASMVariable[];
 }
 
 // Classes
@@ -71,13 +76,15 @@ export class Statement implements Branch {
     }
 }
 
-export class Program implements Branch, Scopeable {
+export class Program implements Branch, Scopeable, Storage {
     kind: Node;
     body: Statement[];
+    variables: WASMVariable[];
 
     constructor() {
         this.kind = "Program";
         this.body = [];
+        this.variables = [];
     }
 }
 
@@ -191,16 +198,18 @@ export class StringLiteral extends Expression {
     }
 }
 
-export class FunctionLiteral extends Expression implements Scopeable {
+export class FunctionLiteral extends Expression implements Scopeable, Storage {
     parameters: ParameterList;
     return: VariableType;
     body: Statement[];
+    variables: WASMVariable[];
 
     constructor(parameters: ParameterList, body: Statement[], row: number, col: number) {
         super("FunctionLiteral", "Function", row, col);
         this.parameters = parameters;
         this.body = body;
         this.return = "Unknown";
+        this.variables = [];
     }
     generate(gen: WebAssemblyGenerator, name: string | void): void {
         const funcName = name ? name : `anonymous${~~(Math.random() * 100000)}`;
@@ -290,10 +299,10 @@ export class Declaration extends Expression {
         if(this.value.kind == "FunctionLiteral") {
             (this.value as FunctionLiteral).generate(gen, this.variable.symbol);
         } else {
-            if(this.variable.symbol != "Number") throw new BoltError("Only numbers are supported", this);
+            if(this.value.type != "Number") throw new BoltError("Only numbers are supported", this);
 
             gen.set(this.variable.symbol, () => {
-                this.generate(gen);
+                this.value.generate(gen);
             });
         }
     }

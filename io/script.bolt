@@ -1,24 +1,2 @@
 let x = 5
 let y = 12
-
-let z = x + y
-
-if(x < z) {
-    let test = 123
-} else {
-    let test = 456
-}
-
-let add = (number a, number b) => {
-    return a + b
-}
-
-/*let some = (number val) => {
-    if(y < x) {
-        return true
-    } else {
-        return x < val
-    }
-}
-
-let k = some(8)*/

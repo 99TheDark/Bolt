@@ -25,13 +25,11 @@ fs.readFile("./io/script.bolt", "utf8", (error, data) => {
 
     // Builder
     const builder = new Generator(typedAST, "io/ir");
-    const irCode = builder.build();
+    builder.build();
+    builder.generator.compile().then(() => builder.generator.run());
 
     // Write intermediate files for debugging purposes
     fs.writeFile("./io/ast.json", JSON.stringify(typedAST, ignore, "  "), err => {
-        if(err) throw err;
-    });
-    fs.writeFile("./io/intermediate.ll", irCode, err => {
         if(err) throw err;
     });
 
