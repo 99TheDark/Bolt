@@ -1,8 +1,7 @@
-import { VariableType, fromLiteralToLLVMType, literalMap } from "../typing/types";
-import { Variable } from "../typing/scope";
+import { VariableType, literalMap } from "../typing/types";
 import { Generator } from "../compiler/generator";
 import { BoltError, BoltLocationlessError } from "../errors/error";
-import { Walker } from "../compiler/walker";
+import { WebAssemblyGenerator } from "webassembly-generator";
 
 // Types
 export type Node =
@@ -46,14 +45,10 @@ export type Precedence =
 // Interfaces
 export interface Branch {
     kind: Node
-    grab: (name: string) => Variable
-    put: (name: string, value: Value) => void
-    top: () => Statement | Program
 }
 
 export interface Scopeable {
     body: Statement[]
-    scope: Variable[]
 }
 
 // Classes
@@ -71,31 +66,7 @@ export class Statement implements Branch {
         this.col = col;
         this.parent = {} as Branch;
     }
-    grab(name: string): Variable {
-        const scope = (this as unknown as Statement & Scopeable).scope;
-        if(scope) for(const variable of scope) {
-            if(variable.name == name) return variable;
-        }
-
-        return this.parent.grab(name);
-    }
-    put(name: string, value: Value): void {
-        const scope = (this as unknown as Statement & Scopeable).scope;
-        if(scope) for(const variable of scope) {
-            if(variable.name == name) {
-                variable.value = value;
-                return;
-            }
-        }
-
-        this.parent.put(name, value);
-    }
-    top(): Statement | Program {
-        if(this.kind == "FunctionLiteral") return this;
-
-        return this.parent.top();
-    }
-    generate(gen: Generator): Value {
+    generate(gen: WebAssemblyGenerator): void {
         throw `Reached the top. Not yet defined.`;
     }
 }
@@ -103,30 +74,10 @@ export class Statement implements Branch {
 export class Program implements Branch, Scopeable {
     kind: Node;
     body: Statement[];
-    scope: Variable[];
 
     constructor() {
         this.kind = "Program";
         this.body = [];
-        this.scope = [];
-    }
-
-    grab(name: string): Variable {
-        for(const variable of this.scope) {
-            if(variable.name == name) return variable;
-        }
-        throw new BoltLocationlessError(`The variable '${name}' is undefined`);
-    }
-    put(name: string, value: Value): void {
-        for(const variable of this.scope) {
-            if(variable.name == name) {
-                variable.value = value;
-                return;
-            }
-        }
-    }
-    top(): Statement | Program {
-        return this;
     }
 }
 
@@ -143,10 +94,8 @@ export class Identifier extends Expression {
         super("Identifier", "Unknown", row, col);
         this.symbol = symbol;
     }
-    generate(gen: Generator): Value {
-        const value = this.grab(this.symbol).value;
-        if(!value) throw new BoltError(`Value of ${this.symbol} is undefined`, this);
-        return value;
+    generate(gen: WebAssemblyGenerator): void {
+
     }
 }
 
@@ -161,13 +110,16 @@ export class BinaryOperation extends Expression {
         this.right = right;
         this.operator = operator;
     }
-    generate(gen: Generator): Value {
+    generate(gen: WebAssemblyGenerator): void {
+        const left = () => this.left.generate(gen);
+        const right = () => this.right.generate(gen);
         switch(this.operator) {
             default: throw new BoltLocationlessError(`The '${this.operator}' operator has not been implemented yet`);
-            case "+": return gen.builder.CreateFAdd(this.left.generate(gen), this.right.generate(gen));
-            case "-": return gen.builder.CreateFSub(this.left.generate(gen), this.right.generate(gen));
-            case "*": return gen.builder.CreateFMul(this.left.generate(gen), this.right.generate(gen));
-            case "/": return gen.builder.CreateFDiv(this.left.generate(gen), this.right.generate(gen));
+            case "+": return gen.add("double", left, right);
+            case "-": return gen.subtract("double", left, right);
+            case "*": return gen.multiply("double", left, right);
+            case "/": return gen.divide("double", left, right);
+            case "%": return gen.remainder("double", left, right);
         }
     }
 }
@@ -194,19 +146,18 @@ export class Comparator extends Expression {
         this.right = right;
         this.operator = operator;
     }
-    generate(gen: Generator): Value {
-        let booleanCompare: Value;
+    generate(gen: WebAssemblyGenerator): void {
+        const left = () => this.left.generate(gen);
+        const right = () => this.right.generate(gen);
         switch(this.operator) {
             default: throw new BoltLocationlessError(`The '${this.operator}' comparator has not been implemented yet`);
-            case "<": booleanCompare = gen.builder.CreateFCmpOLT(this.left.generate(gen), this.right.generate(gen)); break;
-            case ">": booleanCompare = gen.builder.CreateFCmpOGT(this.left.generate(gen), this.right.generate(gen)); break;
-            case "<=": booleanCompare = gen.builder.CreateFCmpOLE(this.left.generate(gen), this.right.generate(gen)); break;
-            case ">=": booleanCompare = gen.builder.CreateFCmpOGE(this.left.generate(gen), this.right.generate(gen)); break;
-            case "==": booleanCompare = gen.builder.CreateFCmpOEQ(this.left.generate(gen), this.right.generate(gen)); break;
-            case "!=": booleanCompare = gen.builder.CreateFCmpONE(this.left.generate(gen), this.right.generate(gen)); break;
+            case "<": gen.lessThan("double", left, right); return;
+            case ">": gen.greaterThan("double", left, right); return;
+            case "<=": gen.lessThanOrEqualTo("double", left, right); return;
+            case ">=": gen.greaterThanOrEqualTo("double", left, right); return;
+            case "==": gen.equalTo("double", left, right); return;
+            case "!=": gen.notEqualTo("double", left, right); return;
         }
-
-        return gen.builder.CreateUIToFP(booleanCompare, Type.getDoubleTy(gen.context));
     }
 }
 
@@ -217,8 +168,8 @@ export class NumberLiteral extends Expression {
         super("NumberLiteral", "Number", row, col);
         this.value = value;
     }
-    generate(gen: Generator): Value {
-        return ConstantFP.get(gen.context, new APFloat(this.value));
+    generate(gen: WebAssemblyGenerator): void {
+        return gen.const("double", this.value);
     }
 }
 
@@ -244,38 +195,27 @@ export class FunctionLiteral extends Expression implements Scopeable {
     parameters: ParameterList;
     return: VariableType;
     body: Statement[];
-    scope: Variable[];
 
     constructor(parameters: ParameterList, body: Statement[], row: number, col: number) {
         super("FunctionLiteral", "Function", row, col);
         this.parameters = parameters;
         this.body = body;
         this.return = "Unknown";
-        this.scope = [];
     }
-    generate(gen: Generator, name: string | void): Value {
+    generate(gen: WebAssemblyGenerator, name: string | void): void {
         const funcName = name ? name : `anonymous${~~(Math.random() * 100000)}`;
 
-        const returnType = fromLiteralToLLVMType(gen.builder, this.return);
-        const paramTypes = this.parameters.values.map(val => fromLiteralToLLVMType(gen.builder, val.type));
-        const functionType = FunctionType.get(returnType, paramTypes, false);
-        const func = Function.Create(functionType, Function.LinkageTypes.ExternalLinkage, `fn_${funcName}`, gen.module);
+        if(this.return != "Number") throw new BoltError("Only numbers are supported", this);
 
-        this.parameters.values.forEach((val, idx) => {
-            this.put(val.variable, func.getArg(idx));
+        const params = {};
+        this.parameters.values.forEach(param => {
+            if(param.datatype != "Number") throw new BoltError("Only numbers are supported", this);
+            params[param.variable] = "double";
         });
 
-        const entry = BasicBlock.Create(gen.context, "entry", func);
-        gen.builder.SetInsertPoint(entry);
-
-        const walker = new Walker(this);
-        for(const step of walker.steps) {
-            const val = step.generate(gen);
-        }
-
-        if(verifyFunction(func)) throw new BoltLocationlessError(`Something went wrong in the ${name ? name : "anonymous"} function`);
-
-        return func;
+        gen.func(funcName, params, "double", () => {
+            this.body.forEach(statement => statement.generate(gen));
+        });
     }
 }
 
@@ -300,13 +240,11 @@ export class RegexLiteral extends Expression {
 export class ClassLiteral extends Expression implements Scopeable {
     extension: Vector;
     body: Statement[];
-    scope: Variable[];
 
     constructor(extension: Vector, row: number, col: number) {
         super("ClassLiteral", "Class", row, col);
         this.extension = extension;
         this.body = [];
-        this.scope = [];
     }
 }
 
@@ -348,14 +286,16 @@ export class Declaration extends Expression {
         this.value = value;
         this.datatype = datatype;
     }
-    generate(gen: Generator): Value {
-        const value =
-            this.value.kind == "FunctionLiteral" ?
-                (this.value as FunctionLiteral).generate(gen, this.variable.symbol) :
-                this.value.generate(gen);
+    generate(gen: WebAssemblyGenerator): void {
+        if(this.value.kind == "FunctionLiteral") {
+            (this.value as FunctionLiteral).generate(gen, this.variable.symbol);
+        } else {
+            if(this.variable.symbol != "Number") throw new BoltError("Only numbers are supported", this);
 
-        this.put(this.variable.symbol, value);
-        return value;
+            gen.set(this.variable.symbol, () => {
+                this.generate(gen);
+            });
+        }
     }
 }
 
@@ -376,66 +316,39 @@ export class IfStatement extends Expression implements Scopeable {
     test: Expression;
     next: Expression;
     body: Statement[];
-    scope: Variable[];
 
     constructor(test: Expression, body: Statement[], next: Expression, row: number, col: number) {
         super("IfStatement", "Unknown", row, col);
         this.test = test;
         this.next = next;
         this.body = body;
-        this.scope = [];
     }
-    generate(gen: Generator): Value {
-        const floatCondition = this.test.generate(gen);
-        const booleanCondition = gen.builder.CreateFCmpONE(floatCondition, ConstantFP.get(gen.context, new APFloat(0.0)), "ifcond");
-
-        const parent = gen.builder.GetInsertBlock()?.getParent();
-        if(!parent) throw new BoltLocationlessError("Could not find parent function");
-
-        const thenblock = BasicBlock.Create(gen.context, "then", parent);
-        const elseblock = BasicBlock.Create(gen.context, "else");
-        const mergeblock = BasicBlock.Create(gen.context, "ifcont");
-
-        gen.builder.CreateCondBr(booleanCondition, thenblock, elseblock);
-        gen.builder.SetInsertPoint(thenblock);
-
-        const walker = new Walker(this);
-        for(const step of walker.steps) {
-            step.generate(gen);
-        }
-
-        gen.builder.CreateBr(mergeblock);
-        // const thenpos = gen.builder.GetInsertBlock();
-
-        // parent.get
-
-        console.log(gen.module.print());
-
-        return booleanCondition;
+    generate(gen: WebAssemblyGenerator): void {
+        gen.if("double",
+            () => this.test.generate(gen),
+            () => this.body.forEach(statement => statement.generate(gen)),
+            () => this.next.generate(gen)
+        );
     }
 }
 
 export class WhileLoop extends Expression implements Scopeable {
     test: Expression;
     body: Statement[];
-    scope: Variable[];
 
     constructor(test: Expression, body: Statement[], row: number, col: number) {
         super("WhileLoop", "Unknown", row, col);
         this.test = test;
         this.body = body;
-        this.scope = [];
     }
 }
 
 export class ElseClause extends Expression implements Scopeable {
     body: Statement[];
-    scope: Variable[];
 
     constructor(body: Statement[], row: number, col: number) {
         super("ElseClause", "Unknown", row, col);
         this.body = body;
-        this.scope = [];
     }
 }
 
@@ -444,7 +357,6 @@ export class ForLoop extends Expression implements Scopeable {
     test: Expression;
     after: Expression[];
     body: Statement[];
-    scope: Variable[];
 
     constructor(declarations: Expression[], test: Expression, body: Statement[], after: Expression[], row: number, col: number) {
         super("ForLoop", "Unknown", row, col);
@@ -452,20 +364,17 @@ export class ForLoop extends Expression implements Scopeable {
         this.test = test;
         this.after = after;
         this.body = body;
-        this.scope = [];
     }
 }
 
 export class ForEachLoop extends Expression implements Scopeable {
     iteration: Iteration;
     body: Statement[];
-    scope: Variable[];
 
     constructor(iteration: Iteration, body: Statement[], row: number, col: number) {
         super("ForEachLoop", "Unknown", row, col);
         this.iteration = iteration;
         this.body = body;
-        this.scope = [];
     }
 }
 
@@ -505,9 +414,8 @@ export class Return extends Expression {
         super("Return", "Unknown", row, col);
         this.value = value;
     }
-    generate(gen: Generator): Value {
-        const ret = gen.builder.CreateRet(this.value.generate(gen));
-        return ret;
+    generate(gen: WebAssemblyGenerator): void {
+        gen.return(() => this.value.generate(gen));
     }
 }
 

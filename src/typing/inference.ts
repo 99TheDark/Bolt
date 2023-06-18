@@ -1,6 +1,5 @@
 import { BoltError } from "../errors/error";
 import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration } from "../parser/expressions";
-import { Variable } from "./scope";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 
@@ -17,8 +16,7 @@ export class Inferrer {
     }
 
     type(): Program {
-        this.link(this.ast);
-        this.scope(this.ast);
+        this.ast.body.forEach(statement => this.inferType(statement));
 
         return this.ast;
     }
@@ -27,7 +25,7 @@ export class Inferrer {
         if(statement.kind != "FunctionLiteral" && statement.type != "Unknown") return statement.type;
 
         switch(statement.kind) {
-            case "Identifier": {
+            /*case "Identifier": {
                 const identifier = statement as Identifier;
                 const variableType = statement.grab(identifier.symbol).type;
 
@@ -37,7 +35,7 @@ export class Inferrer {
                 );
 
                 return statement.type = variableType;
-            }
+            }*/
             case "Declaration": {
                 const assignment = statement as Declaration;
                 const valueType = this.inferType(assignment.value);
@@ -114,7 +112,7 @@ export class Inferrer {
                     return statement.type = types[0];
                 }
             }
-            case "IfStatement": {
+            /*case "IfStatement": {
                 const ifstatement = statement as IfStatement;
                 const testType = this.inferType(ifstatement.test);
 
@@ -149,13 +147,13 @@ export class Inferrer {
             case "ElseClause": {
                 this.scope(statement as ElseClause);
                 break;
-            }
+            }*/
             case "FunctionCall": {
                 // const functioncall = statement as FunctionCall;
                 // find function
                 break;
             }
-            case "FunctionLiteral": {
+            /*case "FunctionLiteral": {
                 const functionliteral = statement as FunctionLiteral;
                 for(const param of functionliteral.parameters.values) {
                     const parameter = param as Parameter;
@@ -187,46 +185,9 @@ export class Inferrer {
                 parent.return = valueType;
 
                 return statement.type = valueType;
-            }
+            }*/
         }
 
         return statement.type = "Unknown";
-    }
-
-    pushScope(scopeable: Scopeable, name: string, type: VariableType, location: Expression) {
-        if(!scopeable.scope) scopeable.scope = [];
-        for(const variable of scopeable.scope) {
-            if(variable.name == name) throw new BoltError(
-                `The variable '${name}' has already been defined`,
-                location
-            );
-        }
-
-        scopeable.scope.push(new Variable(
-            name,
-            type
-        ));
-    }
-
-    scope(scopeable: Scopeable & (Statement | Program)): void {
-        for(const statement of scopeable.body) {
-            this.inferType(statement);
-
-            if(statement.kind == "Declaration") {
-                const declaration = statement as Declaration;
-                const variable = declaration.variable;
-                this.pushScope(scopeable, variable.symbol, declaration.type, declaration);
-            }
-        }
-    }
-
-    link(obj: Statement | Program): void {
-        for(const [key, value] of Object.entries(obj)) {
-            if(key == "parent" || key == "grab" || key == "scope") continue;
-            if(typeof value == "object") {
-                value.parent = obj.kind == "Program" ? obj : (obj as Statement).kind ? obj : (obj as Statement).parent;
-                this.link(value);
-            }
-        }
     }
 }

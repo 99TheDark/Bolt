@@ -25,6 +25,5 @@
 
 ### Inferrer
 - Function call correct parameter detection
-
-### Assmeble LLVM Code
-- If/ifelse/else statements
+- Fix scope
+- Find all variables that will be declared
