@@ -24,7 +24,7 @@ fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     const typedAST = inferrer.type();
 
     // Builder
-    const builder = new Generator(typedAST, "script");
+    const builder = new Generator(typedAST, "io/ir");
     const irCode = builder.build();
 
     // Write intermediate files for debugging purposes

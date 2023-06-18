@@ -1,7 +1,7 @@
 import { VariableType, literalMap } from "../typing/types";
 import { Generator } from "../compiler/generator";
 import { BoltError, BoltLocationlessError } from "../errors/error";
-import { WebAssemblyGenerator } from "webassembly-generator";
+import { WebAssemblyGenerator, WebAssemblyType } from "webassembly-generator";
 
 // Types
 export type Node =
@@ -207,7 +207,7 @@ export class FunctionLiteral extends Expression implements Scopeable {
 
         if(this.return != "Number") throw new BoltError("Only numbers are supported", this);
 
-        const params = {};
+        const params: Record<string, WebAssemblyType> = {};
         this.parameters.values.forEach(param => {
             if(param.datatype != "Number") throw new BoltError("Only numbers are supported", this);
             params[param.variable] = "double";
