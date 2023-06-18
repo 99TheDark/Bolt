@@ -1,4 +1,3 @@
-import { Value } from "llvm-bindings";
 import { VariableType } from "./types"
 
 export class Variable {

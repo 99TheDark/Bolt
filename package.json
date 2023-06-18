@@ -3,6 +3,6 @@
     "@types/node": "^20.2.1"
   },
   "dependencies": {
-    "llvm-bindings": "^0.4.2"
+    "webassembly-generator": "^1.2.0"
   }
 }
