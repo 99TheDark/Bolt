@@ -1,7 +1,6 @@
 import { VariableType, fromLiteralToLLVMType, literalMap } from "../typing/types";
 import { Variable } from "../typing/scope";
 import { Generator } from "../compiler/generator";
-import { APFloat, BasicBlock, ConstantFP, Function, FunctionType, Type, Value, verifyFunction } from "llvm-bindings";
 import { BoltError, BoltLocationlessError } from "../errors/error";
 import { Walker } from "../compiler/walker";
 

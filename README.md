@@ -14,6 +14,5 @@ An easy to read, compiled, whitespace independent, multi-paradigm statically and
 > 2. Lexer
 > 3. Parser
 > 4. Inferrer
-> 5. LLVM Code Generator
-> 6. Machine Code
-> 7. Run Code
+> 5. WASM Code Generator
+> 6. Run Code
