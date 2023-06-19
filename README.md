@@ -7,7 +7,7 @@
 
 An easy to read, compiled, whitespace independent, multi-paradigm statically and strongly typed language with type inference and null saftey.
 
-<br><br>
+<br>
 
 > The Bolt compiler is split into many different parts, the furthest in being the least done.
 > 1. File Reader
