@@ -25,9 +25,11 @@
 
 ### Inferrer
 - Function call correct parameter detection
+- Function literal return type detection
 
 ### WASM Generator
 - Add signatures
 - Unary operations
 - Strings
-- Move functions to outer-most scope
+- Incremental annonymous ids rather than random
+- Variables outside of functions should become global

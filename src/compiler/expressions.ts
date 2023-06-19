@@ -109,6 +109,7 @@ export class Program implements Branch, Scopeable, Storage {
     kind: Node;
     body: Statement[];
     variables: WASMVariable[];
+    functions: FunctionLiteral[];
     scope: WASMVariable[];
     parent: Branch;
 
@@ -116,6 +117,7 @@ export class Program implements Branch, Scopeable, Storage {
         this.kind = "Program";
         this.body = [];
         this.variables = [];
+        this.functions = [];
         this.scope = [];
         this.parent = {} as Branch;
     }
@@ -253,7 +255,7 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
     body: Statement[];
     variables: WASMVariable[];
     scope: WASMVariable[];
-    symbol: string | null;
+    symbol: string;
 
     constructor(parameters: ParameterList, body: Statement[], row: number, col: number) {
         super("FunctionLiteral", "Function", row, col);
@@ -262,9 +264,10 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
         this.return = "Unknown";
         this.variables = [];
         this.scope = [];
-        this.symbol = null;
+        this.symbol = `anonymous${~~(Math.random() * 100000)}`;
     }
     generate(gen: WebAssemblyGenerator): void {
+        // Add back after return types work
         // supportCheck(this.return);
 
         const params: Parameters = {};
@@ -276,7 +279,7 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
         const options: Parameters = {};
         this.variables.forEach(variable => options[variable.name] = fromLiteralToWASMType(variable.type));
 
-        gen.func(this.symbol as string, params, "double", options, () => {
+        gen.func(`fn_${this.symbol}`, params, "double", options, () => { // TODO: Replace "double" with WASM type
             this.body.forEach(statement => statement.generate(gen));
         });
     }
@@ -352,9 +355,7 @@ export class Declaration extends Expression {
         this.datatype = datatype;
     }
     generate(gen: WebAssemblyGenerator): void {
-        if(this.value.kind == "FunctionLiteral") {
-            (this.value as FunctionLiteral).generate(gen);
-        } else {
+        if(this.value.kind != "FunctionLiteral") {
             supportCheck(this.value.type);
 
             gen.set(this.variable.symbol, () => {

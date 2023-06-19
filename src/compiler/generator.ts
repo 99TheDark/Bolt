@@ -21,6 +21,9 @@ export class Generator {
         gen.module(() => {
             // TODO: Auto import standard library
             gen.import("std", "println", "fn_println", ["double"]);
+
+            this.ast.functions.forEach(func => func.generate(gen));
+
             gen.func("main", {}, null, options, () => {
                 this.ast.body.forEach(statemenet => statemenet.generate(gen));
             });

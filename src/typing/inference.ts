@@ -62,7 +62,8 @@ export class Inferrer {
 
                 if(declaration.value.kind == "FunctionLiteral") {
                     const func = declaration.value as FunctionLiteral;
-                    func.symbol ??= `anonymous${~~(Math.random() * 100000)}`
+                    func.symbol = declaration.variable.symbol;
+                    this.ast.functions.push(func);
                 }
 
                 if(datatype != "Unknown" && datatype != valueType) throw new BoltError(
@@ -181,17 +182,10 @@ export class Inferrer {
             }
             case "FunctionLiteral": {
                 const funcliteral = statement as FunctionLiteral;
-                for(const param of funcliteral.parameters.values) {
-                    const parameter = param as Parameter;
-                    const variable = new WASMVariable(parameter.variable, parameter.type);
-                    funcliteral.push(variable);
-                    funcliteral.top().push(variable);
-                }
 
                 funcliteral.return = "Unknown";
 
-                const variable = new WASMVariable(funcliteral.symbol as string, funcliteral.type);
-                funcliteral.push(variable);
+                const variable = new WASMVariable(funcliteral.symbol, funcliteral.type);
                 funcliteral.top().push(variable);
 
                 return funcliteral.type;
