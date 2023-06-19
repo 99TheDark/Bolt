@@ -44,7 +44,7 @@ export class Inferrer {
         if(statement.kind != "FunctionLiteral" && statement.type != "Unknown") return statement.type;
 
         switch(statement.kind) {
-            /*case "Identifier": {
+            case "Identifier": {
                 const identifier = statement as Identifier;
                 const variableType = statement.grab(identifier.symbol).type;
 
@@ -54,7 +54,7 @@ export class Inferrer {
                 );
 
                 return statement.type = variableType;
-            }*/
+            }
             case "Declaration": {
                 const declaration = statement as Declaration;
                 const valueType = this.inferType(declaration.value);
@@ -65,7 +65,9 @@ export class Inferrer {
                     declaration.value
                 );
 
-                declaration.push(new WASMVariable(declaration.variable.symbol, valueType));
+                const variable = new WASMVariable(declaration.variable.symbol, valueType);
+                declaration.top().push(variable);
+                declaration.push(variable);
 
                 return statement.type = valueType;
             }

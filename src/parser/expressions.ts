@@ -46,11 +46,14 @@ export type Precedence =
 export interface Branch {
     kind: Node;
     parent: Branch;
-    push: (variable: WASMVariable) => void
+    push: (variable: WASMVariable) => void;
+    grab: (name: string) => WASMVariable;
+    top: () => WASMVariable[];
 }
 
 export interface Scopeable {
     body: Statement[];
+    scope: WASMVariable[];
 }
 
 export interface Storage {
@@ -72,12 +75,29 @@ export class Statement implements Branch {
         this.col = col;
         this.parent = {} as Branch;
     }
+    top(): WASMVariable[] {
+        if("scope" in this.parent) {
+            return (this.parent as unknown as Scopeable).scope;
+        } else {
+            return this.parent.top();
+        }
+    }
     push(variable: WASMVariable): void {
         if("variables" in this.parent) {
             (this.parent as Storage).variables.push(variable);
         } else {
             this.parent.push(variable);
         }
+    }
+    grab(name: string): WASMVariable {
+        if("scope" in this.parent) {
+            const scopable = this.parent as unknown as Scopeable;
+            for(const variable of scopable.scope) {
+                if(variable.name == name) return variable;
+            }
+        }
+
+        return this.parent.grab(name);
     }
     generate(_: WebAssemblyGenerator): void {
         throw `Reached the top. Not yet defined.`;
@@ -88,13 +108,25 @@ export class Program implements Branch, Scopeable, Storage {
     kind: Node;
     body: Statement[];
     variables: WASMVariable[];
+    scope: WASMVariable[];
     parent: Branch;
 
     constructor() {
         this.kind = "Program";
         this.body = [];
         this.variables = [];
+        this.scope = [];
         this.parent = {} as Branch;
+    }
+    top(): WASMVariable[] {
+        return this.scope;
+    }
+    grab(name: string): WASMVariable {
+        for(const variable of this.scope) {
+            if(variable.name == name) return variable;
+        }
+
+        throw new BoltLocationlessError(`The variable '${name}' is undefined`);
     }
     push(variable: WASMVariable): void {
         this.variables.push(variable);
@@ -216,6 +248,7 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
     return: VariableType;
     body: Statement[];
     variables: WASMVariable[];
+    scope: WASMVariable[];
 
     constructor(parameters: ParameterList, body: Statement[], row: number, col: number) {
         super("FunctionLiteral", "Function", row, col);
@@ -223,6 +256,7 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
         this.body = body;
         this.return = "Unknown";
         this.variables = [];
+        this.scope = [];
     }
     generate(gen: WebAssemblyGenerator, name: string | void): void {
         const funcName = name ? name : `anonymous${~~(Math.random() * 100000)}`;
@@ -262,11 +296,13 @@ export class RegexLiteral extends Expression {
 export class ClassLiteral extends Expression implements Scopeable {
     extension: Vector;
     body: Statement[];
+    scope: WASMVariable[];
 
     constructor(extension: Vector, row: number, col: number) {
         super("ClassLiteral", "Class", row, col);
         this.extension = extension;
         this.body = [];
+        this.scope = [];
     }
 }
 
@@ -338,12 +374,14 @@ export class IfStatement extends Expression implements Scopeable {
     test: Expression;
     next: Expression;
     body: Statement[];
+    scope: WASMVariable[];
 
     constructor(test: Expression, body: Statement[], next: Expression, row: number, col: number) {
         super("IfStatement", "Unknown", row, col);
         this.test = test;
         this.next = next;
         this.body = body;
+        this.scope = [];
     }
     generate(gen: WebAssemblyGenerator): void {
         gen.if("double",
@@ -357,20 +395,24 @@ export class IfStatement extends Expression implements Scopeable {
 export class WhileLoop extends Expression implements Scopeable {
     test: Expression;
     body: Statement[];
+    scope: WASMVariable[];
 
     constructor(test: Expression, body: Statement[], row: number, col: number) {
         super("WhileLoop", "Unknown", row, col);
         this.test = test;
         this.body = body;
+        this.scope = [];
     }
 }
 
 export class ElseClause extends Expression implements Scopeable {
     body: Statement[];
+    scope: WASMVariable[];
 
     constructor(body: Statement[], row: number, col: number) {
         super("ElseClause", "Unknown", row, col);
         this.body = body;
+        this.scope = [];
     }
 }
 
@@ -379,6 +421,7 @@ export class ForLoop extends Expression implements Scopeable {
     test: Expression;
     after: Expression[];
     body: Statement[];
+    scope: WASMVariable[];
 
     constructor(declarations: Expression[], test: Expression, body: Statement[], after: Expression[], row: number, col: number) {
         super("ForLoop", "Unknown", row, col);
@@ -386,17 +429,20 @@ export class ForLoop extends Expression implements Scopeable {
         this.test = test;
         this.after = after;
         this.body = body;
+        this.scope = [];
     }
 }
 
 export class ForEachLoop extends Expression implements Scopeable {
     iteration: Iteration;
     body: Statement[];
+    scope: WASMVariable[];
 
     constructor(iteration: Iteration, body: Statement[], row: number, col: number) {
         super("ForEachLoop", "Unknown", row, col);
         this.iteration = iteration;
         this.body = body;
+        this.scope = [];
     }
 }
 
