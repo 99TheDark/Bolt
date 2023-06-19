@@ -3,7 +3,7 @@
 </div>
 
 # Bolt
-> I tried coding a programming language not once, but twice. And failed both times. Hoping this one is different! I've been working hard at this for just over a last week.
+> I tried coding a programming language not once, but twice. And failed both times. Hoping this one is different! I've been working hard at this for the last few months.
 
 An easy to read, compiled, whitespace independent, multi-paradigm statically and strongly typed language with type inference and null saftey.
 
