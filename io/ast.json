@@ -21,6 +21,39 @@
         "value": 5
       },
       "datatype": "let"
+    },
+    {
+      "kind": "Declaration",
+      "type": "Number",
+      "row": 1,
+      "col": 6,
+      "variable": {
+        "kind": "Identifier",
+        "type": "Unknown",
+        "row": 1,
+        "col": 4,
+        "symbol": "y"
+      },
+      "value": {
+        "kind": "NumberLiteral",
+        "type": "Number",
+        "row": 1,
+        "col": 8,
+        "value": 12
+      },
+      "datatype": "let"
+    }
+  ],
+  "variables": [
+    {
+      "signature": "",
+      "name": "x",
+      "type": "Number"
+    },
+    {
+      "signature": "",
+      "name": "y",
+      "type": "Number"
     }
   ]
 }

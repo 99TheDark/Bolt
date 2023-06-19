@@ -27,3 +27,6 @@
 - Function call correct parameter detection
 - Fix scope
 - Find all variables that will be declared
+
+### WASM Generator
+- Add signatures

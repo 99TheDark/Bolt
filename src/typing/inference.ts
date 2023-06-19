@@ -1,7 +1,8 @@
 import { BoltError } from "../errors/error";
-import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration } from "../parser/expressions";
+import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration, Branch } from "../parser/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
+import { WASMVariable } from "./variables";
 
 // Lowercase
 function l(str: string) {
@@ -15,7 +16,25 @@ export class Inferrer {
         this.ast = ast;
     }
 
+    link(branch: Branch): void {
+        for(const prop of Object.values(branch)) {
+            if(Array.isArray(prop)) {
+                prop.forEach(sub => {
+                    if(typeof sub == "object") {
+                        this.link(sub);
+                        sub.parent = branch;
+                    }
+                });
+            } else if(typeof prop == "object") {
+                this.link(prop);
+                prop.parent = branch;
+            }
+        }
+    }
+
     type(): Program {
+        this.link(this.ast);
+
         this.ast.body.forEach(statement => this.inferType(statement));
 
         return this.ast;
@@ -37,14 +56,16 @@ export class Inferrer {
                 return statement.type = variableType;
             }*/
             case "Declaration": {
-                const assignment = statement as Declaration;
-                const valueType = this.inferType(assignment.value);
-                const datatype = literalToType(assignment.datatype);
+                const declaration = statement as Declaration;
+                const valueType = this.inferType(declaration.value);
+                const datatype = literalToType(declaration.datatype);
 
                 if(datatype != "Unknown" && datatype != valueType) throw new BoltError(
-                    `The ${l(datatype)} '${assignment.variable.symbol}' cannot be assigned to a ${l(valueType)}`,
-                    assignment.value
+                    `The ${l(datatype)} '${declaration.variable.symbol}' cannot be assigned to a ${l(valueType)}`,
+                    declaration.value
                 );
+
+                declaration.push(new WASMVariable(declaration.variable.symbol, valueType));
 
                 return statement.type = valueType;
             }

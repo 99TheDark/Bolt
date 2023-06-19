@@ -1,5 +1,4 @@
 import { VariableType, literalMap } from "../typing/types";
-import { Generator } from "../compiler/generator";
 import { BoltError, BoltLocationlessError } from "../errors/error";
 import { WebAssemblyGenerator, WebAssemblyType } from "webassembly-generator";
 import { WASMVariable } from "../typing/variables";
@@ -46,6 +45,8 @@ export type Precedence =
 // Interfaces
 export interface Branch {
     kind: Node;
+    parent: Branch;
+    push: (variable: WASMVariable) => void
 }
 
 export interface Scopeable {
@@ -71,7 +72,14 @@ export class Statement implements Branch {
         this.col = col;
         this.parent = {} as Branch;
     }
-    generate(gen: WebAssemblyGenerator): void {
+    push(variable: WASMVariable): void {
+        if("variables" in this.parent) {
+            (this.parent as Storage).variables.push(variable);
+        } else {
+            this.parent.push(variable);
+        }
+    }
+    generate(_: WebAssemblyGenerator): void {
         throw `Reached the top. Not yet defined.`;
     }
 }
@@ -80,11 +88,16 @@ export class Program implements Branch, Scopeable, Storage {
     kind: Node;
     body: Statement[];
     variables: WASMVariable[];
+    parent: Branch;
 
     constructor() {
         this.kind = "Program";
         this.body = [];
         this.variables = [];
+        this.parent = {} as Branch;
+    }
+    push(variable: WASMVariable): void {
+        this.variables.push(variable);
     }
 }
 
@@ -102,7 +115,7 @@ export class Identifier extends Expression {
         this.symbol = symbol;
     }
     generate(gen: WebAssemblyGenerator): void {
-
+        gen.get(this.symbol);
     }
 }
 
@@ -126,7 +139,7 @@ export class BinaryOperation extends Expression {
             case "-": return gen.subtract("double", left, right);
             case "*": return gen.multiply("double", left, right);
             case "/": return gen.divide("double", left, right);
-            case "%": return gen.remainder("double", left, right);
+            // case "%": return gen.modulo("double", left, right); 
         }
     }
 }
@@ -222,7 +235,7 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
             params[param.variable] = "double";
         });
 
-        gen.func(funcName, params, "double", () => {
+        gen.func(funcName, params, "double", {}, () => {
             this.body.forEach(statement => statement.generate(gen));
         });
     }

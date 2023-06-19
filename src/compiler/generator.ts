@@ -1,5 +1,6 @@
 import { Program } from "../parser/expressions";
-import { WebAssemblyGenerator } from "webassembly-generator";
+import { WebAssemblyGenerator, Parameters } from "webassembly-generator";
+import { fromLiteralToWASMType } from "../typing/types";
 
 export class Generator {
     generator: WebAssemblyGenerator;
@@ -11,8 +12,11 @@ export class Generator {
     }
 
     build(): string {
+        const options: Parameters = {};
+        this.ast.variables.forEach(variable => options[variable.name] = fromLiteralToWASMType(variable.type));
+
         this.generator.module(() => {
-            this.generator.func("main", {}, null, () => {
+            this.generator.func("main", {}, null, options, () => {
                 this.ast.body.forEach(statemenet => statemenet.generate(this.generator));
             });
             this.generator.start("main");
