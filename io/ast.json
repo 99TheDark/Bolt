@@ -72,118 +72,16 @@
           }
         ],
         "return": "Unknown",
-        "variables": [],
         "scope": [],
         "symbol": "add"
       },
       "datatype": "let"
-    },
-    {
-      "kind": "FunctionCall",
-      "type": "Unknown",
-      "row": 5,
-      "col": 0,
-      "parameters": [
-        {
-          "kind": "NumberLiteral",
-          "type": "Number",
-          "row": 5,
-          "col": 4,
-          "value": 3
-        },
-        {
-          "kind": "NumberLiteral",
-          "type": "Number",
-          "row": 5,
-          "col": 7,
-          "value": 8
-        }
-      ],
-      "caller": {
-        "kind": "Identifier",
-        "type": "Unknown",
-        "row": 5,
-        "col": 0,
-        "symbol": "add"
-      }
-    }
-  ],
-  "variables": [
-    {
-      "signature": "",
-      "name": "add",
-      "type": "Function"
-    }
-  ],
-  "functions": [
-    {
-      "kind": "FunctionLiteral",
-      "type": "Function",
-      "row": 0,
-      "col": 31,
-      "parameters": {
-        "kind": "ParameterList",
-        "type": "Unknown",
-        "row": 0,
-        "col": 10,
-        "values": [
-          {
-            "kind": "Parameter",
-            "type": "Number",
-            "row": 0,
-            "col": 10,
-            "variable": "a",
-            "datatype": "number"
-          },
-          {
-            "kind": "Parameter",
-            "type": "Number",
-            "row": 0,
-            "col": 19,
-            "variable": "b",
-            "datatype": "number"
-          }
-        ]
-      },
-      "body": [
-        {
-          "kind": "Return",
-          "type": "Unknown",
-          "row": 1,
-          "col": 4,
-          "value": {
-            "kind": "Binary",
-            "type": "Unknown",
-            "row": 1,
-            "col": 13,
-            "left": {
-              "kind": "Identifier",
-              "type": "Unknown",
-              "row": 1,
-              "col": 11,
-              "symbol": "a"
-            },
-            "right": {
-              "kind": "Identifier",
-              "type": "Unknown",
-              "row": 1,
-              "col": 15,
-              "symbol": "b"
-            },
-            "operator": "+"
-          }
-        }
-      ],
-      "return": "Unknown",
-      "variables": [],
-      "scope": [],
-      "symbol": "add"
     }
   ],
   "scope": [
     {
       "signature": "",
-      "name": "anonymous87599",
+      "name": "anonymous6948",
       "type": "Function"
     },
     {

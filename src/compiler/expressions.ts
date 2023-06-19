@@ -1,5 +1,5 @@
 import { VariableType, fromLiteralToWASMType, literalMap } from "../typing/types";
-import { BoltLocationlessError } from "../errors/error";
+import { BoltError, BoltLocationlessError } from "../errors/error";
 import { WebAssemblyGenerator, Parameters } from "webassembly-generator";
 import { WASMVariable } from "../typing/variables";
 import { supportCheck } from "./supported";
@@ -48,6 +48,7 @@ export interface Branch {
     kind: Node;
     parent: Branch;
     push: (variable: WASMVariable) => void;
+    pushReturn: (type: VariableType) => void;
     grab: (name: string) => WASMVariable;
     top: () => WASMVariable[];
 }
@@ -90,6 +91,18 @@ export class Statement implements Branch {
             this.parent.push(variable);
         }
     }
+    pushReturn(type: VariableType): void {
+        if("return" in this) {
+            const func = this as unknown as FunctionLiteral;
+            if(func.return == "Unknown") {
+                func.return = type;
+            } else if(func.return != type) {
+                throw new BoltError(`Function cannot return both ${func.return.toLowerCase()}s and ${type.toLowerCase()}s`, this);
+            }
+        } else {
+            this.parent.pushReturn(type);
+        }
+    }
     grab(name: string): WASMVariable {
         if("scope" in this.parent) {
             const scopable = this.parent as unknown as Scopeable;
@@ -124,15 +137,18 @@ export class Program implements Branch, Scopeable, Storage {
     top(): WASMVariable[] {
         return this.scope;
     }
+    push(variable: WASMVariable): void {
+        this.variables.push(variable);
+    }
+    pushReturn(): void {
+        throw new BoltLocationlessError("Cannot return outside a function");
+    }
     grab(name: string): WASMVariable {
         for(const variable of this.scope) {
             if(variable.name == name) return variable;
         }
 
         throw new BoltLocationlessError(`The variable '${name}' is undefined`);
-    }
-    push(variable: WASMVariable): void {
-        this.variables.push(variable);
     }
 }
 

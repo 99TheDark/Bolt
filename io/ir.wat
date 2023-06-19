@@ -10,10 +10,6 @@
  )
  (export "fn_add" (func $fn_add))
  (func $main
-  (call $fn_add
-   (f64.const 3)
-   (f64.const 8)
-  )
  )
  (export "main" (func $main))
  (start $main)
