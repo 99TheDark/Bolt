@@ -3,52 +3,31 @@
   "body": [
     {
       "kind": "Declaration",
-      "type": "Number",
-      "row": 15,
-      "col": 8,
-      "variable": {
-        "kind": "Identifier",
-        "type": "Unknown",
-        "row": 15,
-        "col": 4,
-        "symbol": "abc"
-      },
-      "value": {
-        "kind": "NumberLiteral",
-        "type": "Number",
-        "row": 15,
-        "col": 10,
-        "value": 12
-      },
-      "datatype": "let"
-    },
-    {
-      "kind": "Declaration",
       "type": "Function",
-      "row": 17,
+      "row": 0,
       "col": 8,
       "variable": {
         "kind": "Identifier",
         "type": "Unknown",
-        "row": 17,
+        "row": 0,
         "col": 4,
         "symbol": "add"
       },
       "value": {
         "kind": "FunctionLiteral",
         "type": "Function",
-        "row": 17,
+        "row": 0,
         "col": 31,
         "parameters": {
           "kind": "ParameterList",
           "type": "Unknown",
-          "row": 17,
+          "row": 0,
           "col": 10,
           "values": [
             {
               "kind": "Parameter",
               "type": "Number",
-              "row": 17,
+              "row": 0,
               "col": 10,
               "variable": "a",
               "datatype": "number"
@@ -56,7 +35,7 @@
             {
               "kind": "Parameter",
               "type": "Number",
-              "row": 17,
+              "row": 0,
               "col": 19,
               "variable": "b",
               "datatype": "number"
@@ -67,24 +46,24 @@
           {
             "kind": "Return",
             "type": "Unknown",
-            "row": 18,
+            "row": 1,
             "col": 4,
             "value": {
               "kind": "Binary",
               "type": "Unknown",
-              "row": 18,
+              "row": 1,
               "col": 13,
               "left": {
                 "kind": "Identifier",
                 "type": "Unknown",
-                "row": 18,
+                "row": 1,
                 "col": 11,
                 "symbol": "a"
               },
               "right": {
                 "kind": "Identifier",
                 "type": "Unknown",
-                "row": 18,
+                "row": 1,
                 "col": 15,
                 "symbol": "b"
               },
@@ -98,14 +77,38 @@
         "symbol": "add"
       },
       "datatype": "let"
+    },
+    {
+      "kind": "FunctionCall",
+      "type": "Unknown",
+      "row": 5,
+      "col": 0,
+      "parameters": [
+        {
+          "kind": "NumberLiteral",
+          "type": "Number",
+          "row": 5,
+          "col": 4,
+          "value": 3
+        },
+        {
+          "kind": "NumberLiteral",
+          "type": "Number",
+          "row": 5,
+          "col": 7,
+          "value": 8
+        }
+      ],
+      "caller": {
+        "kind": "Identifier",
+        "type": "Unknown",
+        "row": 5,
+        "col": 0,
+        "symbol": "add"
+      }
     }
   ],
   "variables": [
-    {
-      "signature": "",
-      "name": "abc",
-      "type": "Number"
-    },
     {
       "signature": "",
       "name": "add",
@@ -116,18 +119,18 @@
     {
       "kind": "FunctionLiteral",
       "type": "Function",
-      "row": 17,
+      "row": 0,
       "col": 31,
       "parameters": {
         "kind": "ParameterList",
         "type": "Unknown",
-        "row": 17,
+        "row": 0,
         "col": 10,
         "values": [
           {
             "kind": "Parameter",
             "type": "Number",
-            "row": 17,
+            "row": 0,
             "col": 10,
             "variable": "a",
             "datatype": "number"
@@ -135,7 +138,7 @@
           {
             "kind": "Parameter",
             "type": "Number",
-            "row": 17,
+            "row": 0,
             "col": 19,
             "variable": "b",
             "datatype": "number"
@@ -146,24 +149,24 @@
         {
           "kind": "Return",
           "type": "Unknown",
-          "row": 18,
+          "row": 1,
           "col": 4,
           "value": {
             "kind": "Binary",
             "type": "Unknown",
-            "row": 18,
+            "row": 1,
             "col": 13,
             "left": {
               "kind": "Identifier",
               "type": "Unknown",
-              "row": 18,
+              "row": 1,
               "col": 11,
               "symbol": "a"
             },
             "right": {
               "kind": "Identifier",
               "type": "Unknown",
-              "row": 18,
+              "row": 1,
               "col": 15,
               "symbol": "b"
             },
@@ -180,12 +183,7 @@
   "scope": [
     {
       "signature": "",
-      "name": "abc",
-      "type": "Number"
-    },
-    {
-      "signature": "",
-      "name": "anonymous64836",
+      "name": "anonymous87599",
       "type": "Function"
     },
     {

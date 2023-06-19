@@ -1,20 +1,5 @@
-/*let x = 5
-let y = 12
-
-let z = x * y - x
-
-if(y * 4 < z) {
-    println(3.14159)
-
-    let someBool = true
-} else {
-    println(x)
-    println(y)
-    println(z)
-}*/
-
-let abc = 12
-
 let add = (number a, number b) => {
     return a + b
 }
+
+// let sum = add(5, 4)
