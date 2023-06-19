@@ -28,7 +28,7 @@
 - IIFEs
 
 ### WASM Generator
-- Add signatures
+- Add signatures for scoping
 - Unary operations
 - Strings
 - Incremental annonymous ids rather than random
