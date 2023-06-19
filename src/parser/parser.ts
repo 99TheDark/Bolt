@@ -614,9 +614,9 @@ export class Parser {
             token
         );
 
-        const decimal = (s.indexOf(".") + 1) || (s.length + 1) - 1;
-        const strIntegral = s.substring(0, decimal);
-        const strFractional = s.substring(decimal + 1);
+        const decimal = (s.indexOf(".") + 1) || (s.length + 2) - 1;
+        const strIntegral = s.substring(0, decimal - 1);
+        const strFractional = s.substring(decimal);
 
         const integral = parseInt(strIntegral, base);
         const fractional = parseInt(strFractional, base);

@@ -93,69 +93,136 @@
       "datatype": "let"
     },
     {
-      "kind": "FunctionCall",
+      "kind": "IfStatement",
       "type": "Unknown",
       "row": 5,
+      "col": 0,
+      "test": {
+        "kind": "Comparator",
+        "type": "Boolean",
+        "row": 5,
+        "col": 9,
+        "left": {
+          "kind": "Binary",
+          "type": "Unknown",
+          "row": 5,
+          "col": 5,
+          "left": {
+            "kind": "Identifier",
+            "type": "Unknown",
+            "row": 5,
+            "col": 3,
+            "symbol": "y"
+          },
+          "right": {
+            "kind": "NumberLiteral",
+            "type": "Number",
+            "row": 5,
+            "col": 7,
+            "value": 4
+          },
+          "operator": "*"
+        },
+        "right": {
+          "kind": "Identifier",
+          "type": "Unknown",
+          "row": 5,
+          "col": 11,
+          "symbol": "z"
+        },
+        "operator": "<"
+      },
+      "next": {},
+      "body": [
+        {
+          "kind": "FunctionCall",
+          "type": "Unknown",
+          "row": 6,
+          "col": 4,
+          "parameters": [
+            {
+              "kind": "NumberLiteral",
+              "type": "Number",
+              "row": 6,
+              "col": 12,
+              "value": 3.4159
+            }
+          ],
+          "caller": {
+            "kind": "Identifier",
+            "type": "Unknown",
+            "row": 6,
+            "col": 4,
+            "symbol": "println"
+          }
+        }
+      ],
+      "scope": []
+    },
+    {
+      "kind": "FunctionCall",
+      "type": "Unknown",
+      "row": 9,
       "col": 0,
       "parameters": [
         {
           "kind": "Identifier",
           "type": "Unknown",
-          "row": 5,
-          "col": 6,
+          "row": 9,
+          "col": 8,
           "symbol": "x"
         }
       ],
       "caller": {
         "kind": "Identifier",
         "type": "Unknown",
-        "row": 5,
+        "row": 9,
         "col": 0,
-        "symbol": "print"
+        "symbol": "println"
       }
     },
     {
       "kind": "FunctionCall",
       "type": "Unknown",
-      "row": 6,
+      "row": 10,
       "col": 0,
       "parameters": [
         {
           "kind": "Identifier",
           "type": "Unknown",
-          "row": 6,
-          "col": 6,
+          "row": 10,
+          "col": 8,
           "symbol": "y"
         }
       ],
       "caller": {
         "kind": "Identifier",
         "type": "Unknown",
-        "row": 6,
+        "row": 10,
         "col": 0,
-        "symbol": "print"
+        "symbol": "println"
       }
     },
     {
       "kind": "FunctionCall",
       "type": "Unknown",
-      "row": 7,
+      "row": 11,
       "col": 0,
       "parameters": [
         {
           "kind": "Identifier",
           "type": "Unknown",
-          "row": 7,
-          "col": 6,
+          "row": 11,
+          "col": 8,
           "symbol": "z"
         }
       ],
       "caller": {
         "kind": "Identifier",
         "type": "Unknown",
-        "row": 7,
+        "row": 11,
         "col": 0,
-        "symbol": "print"
+        "symbol": "println"
       }
     }
   ],

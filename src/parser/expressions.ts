@@ -387,10 +387,13 @@ export class IfStatement extends Expression implements Scopeable {
         this.scope = [];
     }
     generate(gen: WebAssemblyGenerator): void {
-        gen.if("double",
+        let elseClause: Function | void = undefined;
+        if("kind" in this.next) elseClause = () => this.next.generate(gen);
+
+        gen.if(null, // TODO: Type check
             () => this.test.generate(gen),
             () => this.body.forEach(statement => statement.generate(gen)),
-            () => this.next.generate(gen)
+            elseClause
         );
     }
 }

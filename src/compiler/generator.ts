@@ -8,7 +8,7 @@ export class Generator {
 
     constructor(ast: Program, location: string) {
         this.ast = ast;
-        this.generator = new WebAssemblyGenerator(location, { std: { print: console.log } });
+        this.generator = new WebAssemblyGenerator(location, { std: { println: console.log } });
     }
 
     build(): string {
@@ -17,7 +17,8 @@ export class Generator {
         this.ast.variables.forEach(variable => options[variable.name] = fromLiteralToWASMType(variable.type));
 
         gen.module(() => {
-            gen.import("std", "print", "fn_print", ["double"]);
+            // TODO: Auto import standard library
+            gen.import("std", "println", "fn_println", ["double"]);
             gen.func("main", {}, null, options, () => {
                 this.ast.body.forEach(statemenet => statemenet.generate(gen));
             });

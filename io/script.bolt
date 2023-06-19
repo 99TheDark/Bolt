@@ -3,6 +3,10 @@ let y = 12
 
 let z = x * y - x
 
-print(x)
-print(y)
-print(z)
+if(y * 4 < z) {
+    println(3.14159)
+} else {
+    println(x)
+    println(y)
+    println(z)
+}
