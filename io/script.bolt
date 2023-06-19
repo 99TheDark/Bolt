@@ -5,6 +5,8 @@ let z = x * y - x
 
 if(y * 4 < z) {
     println(3.14159)
+
+    let someBool = true
 } else {
     println(x)
     println(y)

@@ -132,7 +132,81 @@
         },
         "operator": "<"
       },
-      "next": {},
+      "next": {
+        "kind": "ElseClause",
+        "type": "Unknown",
+        "row": 7,
+        "col": 2,
+        "body": [
+          {
+            "kind": "FunctionCall",
+            "type": "Unknown",
+            "row": 8,
+            "col": 4,
+            "parameters": [
+              {
+                "kind": "Identifier",
+                "type": "Unknown",
+                "row": 8,
+                "col": 12,
+                "symbol": "x"
+              }
+            ],
+            "caller": {
+              "kind": "Identifier",
+              "type": "Unknown",
+              "row": 8,
+              "col": 4,
+              "symbol": "println"
+            }
+          },
+          {
+            "kind": "FunctionCall",
+            "type": "Unknown",
+            "row": 9,
+            "col": 4,
+            "parameters": [
+              {
+                "kind": "Identifier",
+                "type": "Unknown",
+                "row": 9,
+                "col": 12,
+                "symbol": "y"
+              }
+            ],
+            "caller": {
+              "kind": "Identifier",
+              "type": "Unknown",
+              "row": 9,
+              "col": 4,
+              "symbol": "println"
+            }
+          },
+          {
+            "kind": "FunctionCall",
+            "type": "Unknown",
+            "row": 10,
+            "col": 4,
+            "parameters": [
+              {
+                "kind": "Identifier",
+                "type": "Unknown",
+                "row": 10,
+                "col": 12,
+                "symbol": "z"
+              }
+            ],
+            "caller": {
+              "kind": "Identifier",
+              "type": "Unknown",
+              "row": 10,
+              "col": 4,
+              "symbol": "println"
+            }
+          }
+        ],
+        "scope": []
+      },
       "body": [
         {
           "kind": "FunctionCall",
@@ -145,7 +219,7 @@
               "type": "Number",
               "row": 6,
               "col": 12,
-              "value": 3.4159
+              "value": 3.14159
             }
           ],
           "caller": {
@@ -158,72 +232,6 @@
         }
       ],
       "scope": []
-    },
-    {
-      "kind": "FunctionCall",
-      "type": "Unknown",
-      "row": 9,
-      "col": 0,
-      "parameters": [
-        {
-          "kind": "Identifier",
-          "type": "Unknown",
-          "row": 9,
-          "col": 8,
-          "symbol": "x"
-        }
-      ],
-      "caller": {
-        "kind": "Identifier",
-        "type": "Unknown",
-        "row": 9,
-        "col": 0,
-        "symbol": "println"
-      }
-    },
-    {
-      "kind": "FunctionCall",
-      "type": "Unknown",
-      "row": 10,
-      "col": 0,
-      "parameters": [
-        {
-          "kind": "Identifier",
-          "type": "Unknown",
-          "row": 10,
-          "col": 8,
-          "symbol": "y"
-        }
-      ],
-      "caller": {
-        "kind": "Identifier",
-        "type": "Unknown",
-        "row": 10,
-        "col": 0,
-        "symbol": "println"
-      }
-    },
-    {
-      "kind": "FunctionCall",
-      "type": "Unknown",
-      "row": 11,
-      "col": 0,
-      "parameters": [
-        {
-          "kind": "Identifier",
-          "type": "Unknown",
-          "row": 11,
-          "col": 8,
-          "symbol": "z"
-        }
-      ],
-      "caller": {
-        "kind": "Identifier",
-        "type": "Unknown",
-        "row": 11,
-        "col": 0,
-        "symbol": "println"
-      }
     }
   ],
   "variables": [

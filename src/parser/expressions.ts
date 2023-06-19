@@ -420,6 +420,9 @@ export class ElseClause extends Expression implements Scopeable {
         this.body = body;
         this.scope = [];
     }
+    generate(gen: WebAssemblyGenerator): void {
+        this.body.forEach(statement => statement.generate(gen));
+    }
 }
 
 export class ForLoop extends Expression implements Scopeable {

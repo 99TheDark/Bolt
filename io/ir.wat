@@ -26,18 +26,20 @@
    )
    (then
     (call $fn_println
-     (f64.const 3.4159)
+     (f64.const 3.14159)
     )
    )
-  )
-  (call $fn_println
-   (local.get $x)
-  )
-  (call $fn_println
-   (local.get $y)
-  )
-  (call $fn_println
-   (local.get $z)
+   (else
+    (call $fn_println
+     (local.get $x)
+    )
+    (call $fn_println
+     (local.get $y)
+    )
+    (call $fn_println
+     (local.get $z)
+    )
+   )
   )
  )
  (export "main" (func $main))
