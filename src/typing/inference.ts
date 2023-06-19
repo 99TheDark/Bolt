@@ -1,5 +1,5 @@
 import { BoltError } from "../errors/error";
-import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration, Branch } from "../compiler/expressions";
+import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration, Branch, ParameterList } from "../compiler/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 import { WASMVariable } from "./variables";
@@ -46,7 +46,7 @@ export class Inferrer {
         switch(statement.kind) {
             case "Identifier": {
                 const identifier = statement as Identifier;
-                const variableType = statement.grab(identifier.symbol).type;
+                const variableType = identifier.grab(identifier.symbol).type;
 
                 if(!variableType) throw new BoltError(
                     `The variable '${identifier.symbol}' is undefined`,
@@ -124,6 +124,8 @@ export class Inferrer {
                     `Cannot use the '${comparator.operator}' comparator on a ${l(leftType)}`,
                     comparator
                 );
+
+                break;
             }
             case "ArrayLiteral": {
                 const array = statement as ArrayLiteral;
@@ -140,6 +142,8 @@ export class Inferrer {
 
                     return statement.type = types[0];
                 }
+
+                break;
             }
             case "IfStatement": {
                 const ifstatement = statement as IfStatement;
@@ -188,28 +192,22 @@ export class Inferrer {
                 const variable = new WASMVariable(funcliteral.symbol, funcliteral.type);
                 funcliteral.top().push(variable);
 
+                funcliteral.parameters.values.forEach(param => {
+                    param.top().push(new WASMVariable(param.variable, param.type));
+                });
+
+                funcliteral.body.forEach(statement => this.inferType(statement));
+
                 return funcliteral.type;
             }
-            /*case "Return": {
+            case "Return": {
                 const returnvalue = statement as Return;
                 const valueType = this.inferType(returnvalue.value);
 
-                const top = returnvalue.top();
-                if(top.kind == "Program") throw new BoltError(
-                    `Return statements must be inside functions`,
-                    returnvalue
-                );
-
-                const parent = top as FunctionLiteral;
-                if(parent.return != "Unknown" && parent.return != valueType) throw new BoltError(
-                    `Cannot return both a ${l(parent.return)} and ${l(valueType)}`,
-                    returnvalue
-                );
-
-                parent.return = valueType;
+                returnvalue.pushReturn(valueType);
 
                 return statement.type = valueType;
-            }*/
+            }
         }
 
         return statement.type = "Unknown";

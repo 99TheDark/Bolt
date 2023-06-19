@@ -283,8 +283,7 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
         this.symbol = `anonymous${~~(Math.random() * 100000)}`;
     }
     generate(gen: WebAssemblyGenerator): void {
-        // Add back after return types work
-        // supportCheck(this.return);
+        supportCheck(this.return);
 
         const params: Parameters = {};
         this.parameters.values.forEach(param => {
@@ -295,7 +294,7 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
         const options: Parameters = {};
         this.variables.forEach(variable => options[variable.name] = fromLiteralToWASMType(variable.type));
 
-        gen.func(`fn_${this.symbol}`, params, "double", options, () => { // TODO: Replace "double" with WASM type
+        gen.func(`fn_${this.symbol}`, params, fromLiteralToWASMType(this.return), options, () => {
             this.body.forEach(statement => statement.generate(gen));
         });
     }

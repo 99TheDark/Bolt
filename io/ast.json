@@ -45,24 +45,24 @@
         "body": [
           {
             "kind": "Return",
-            "type": "Unknown",
+            "type": "Number",
             "row": 1,
             "col": 4,
             "value": {
               "kind": "Binary",
-              "type": "Unknown",
+              "type": "Number",
               "row": 1,
               "col": 13,
               "left": {
                 "kind": "Identifier",
-                "type": "Unknown",
+                "type": "Number",
                 "row": 1,
                 "col": 11,
                 "symbol": "a"
               },
               "right": {
                 "kind": "Identifier",
-                "type": "Unknown",
+                "type": "Number",
                 "row": 1,
                 "col": 15,
                 "symbol": "b"
@@ -71,8 +71,19 @@
             }
           }
         ],
-        "return": "Unknown",
-        "scope": [],
+        "return": "Number",
+        "scope": [
+          {
+            "signature": "",
+            "name": "a",
+            "type": "Number"
+          },
+          {
+            "signature": "",
+            "name": "b",
+            "type": "Number"
+          }
+        ],
         "symbol": "add"
       },
       "datatype": "let"
@@ -81,7 +92,7 @@
   "scope": [
     {
       "signature": "",
-      "name": "anonymous6948",
+      "name": "anonymous21630",
       "type": "Function"
     },
     {
