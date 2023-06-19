@@ -4,6 +4,8 @@ let add = (number a, number b) => {
 
 let sum = add(5, 4)
 
-/*let iife = ((number a) => {
+println(sum)
+
+let iife = ((bool a) => {
     return a
-})(5)*/
+})(true)

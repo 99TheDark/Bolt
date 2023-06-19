@@ -84,7 +84,8 @@
             "type": "Number"
           }
         ],
-        "symbol": "add"
+        "symbol": "add",
+        "anonymous": false
       },
       "datatype": "let"
     },
@@ -130,12 +131,88 @@
         }
       },
       "datatype": "let"
+    },
+    {
+      "kind": "Declaration",
+      "type": "Boolean",
+      "row": 6,
+      "col": 9,
+      "variable": {
+        "kind": "Identifier",
+        "type": "Unknown",
+        "row": 6,
+        "col": 4,
+        "symbol": "iife"
+      },
+      "value": {
+        "kind": "FunctionCall",
+        "type": "Boolean",
+        "row": 6,
+        "col": 21,
+        "parameters": [
+          {
+            "kind": "BooleanLiteral",
+            "type": "Boolean",
+            "row": 8,
+            "col": 3,
+            "value": true
+          }
+        ],
+        "caller": {
+          "kind": "FunctionLiteral",
+          "type": "Function",
+          "row": 6,
+          "col": 21,
+          "parameters": {
+            "kind": "ParameterList",
+            "type": "Unknown",
+            "row": 6,
+            "col": 12,
+            "values": [
+              {
+                "kind": "Parameter",
+                "type": "Boolean",
+                "row": 6,
+                "col": 12,
+                "variable": "a",
+                "datatype": "bool"
+              }
+            ]
+          },
+          "body": [
+            {
+              "kind": "Return",
+              "type": "Boolean",
+              "row": 7,
+              "col": 4,
+              "value": {
+                "kind": "Identifier",
+                "type": "Boolean",
+                "row": 7,
+                "col": 11,
+                "symbol": "a"
+              }
+            }
+          ],
+          "return": "Boolean",
+          "scope": [
+            {
+              "signature": "",
+              "name": "a",
+              "type": "Boolean"
+            }
+          ],
+          "symbol": "anonymous_22143",
+          "anonymous": true
+        }
+      },
+      "datatype": "let"
     }
   ],
   "scope": [
     {
       "signature": "",
-      "name": "anonymous48813",
+      "name": "anonymous_18935",
       "type": "Function"
     },
     {
@@ -147,6 +224,16 @@
       "signature": "",
       "name": "sum",
       "type": "Number"
+    },
+    {
+      "signature": "",
+      "name": "anonymous_22143",
+      "type": "Function"
+    },
+    {
+      "signature": "",
+      "name": "iife",
+      "type": "Boolean"
     }
   ]
 }

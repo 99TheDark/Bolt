@@ -63,6 +63,7 @@ export class Inferrer {
                 if(declaration.value.kind == "FunctionLiteral") {
                     const func = declaration.value as FunctionLiteral;
                     func.symbol = declaration.variable.symbol;
+                    func.anonymous = false;
                     this.ast.functions.push(func);
                 }
 
@@ -184,9 +185,15 @@ export class Inferrer {
 
                 this.inferType(functioncall.caller);
 
-                for(const func of this.ast.functions) {
-                    if(func.symbol == functioncall.caller.symbol) {
-                        return statement.type = func.return;
+                if(functioncall.caller.kind == "FunctionLiteral") {
+                    const func = functioncall.caller as FunctionLiteral;
+                    this.ast.functions.push(func);
+                    return statement.type = func.return;
+                } else {
+                    for(const func of this.ast.functions) {
+                        if(func.symbol == functioncall.caller.symbol) {
+                            return statement.type = func.return;
+                        }
                     }
                 }
 

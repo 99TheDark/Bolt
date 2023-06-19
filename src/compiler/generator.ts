@@ -15,7 +15,7 @@ export class Generator {
         const gen = this.generator;
         const options: Parameters = {};
         this.ast.variables.forEach(variable => {
-            if(variable.type != "Function") options[variable.name] = fromLiteralToWASMType(variable.type)
+            if(variable.type != "Function") options[variable.name] = fromLiteralToWASMType(variable.type);
         });
 
         gen.module(() => {

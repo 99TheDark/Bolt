@@ -272,6 +272,7 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
     variables: WASMVariable[];
     scope: WASMVariable[];
     symbol: string;
+    anonymous: boolean;
 
     constructor(parameters: ParameterList, body: Statement[], row: number, col: number) {
         super("FunctionLiteral", "Function", row, col);
@@ -280,7 +281,8 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
         this.return = "Unknown";
         this.variables = [];
         this.scope = [];
-        this.symbol = `anonymous${~~(Math.random() * 100000)}`;
+        this.symbol = `anonymous_${~~(Math.random() * 100000)}`;
+        this.anonymous = true;
     }
     generate(gen: WebAssemblyGenerator): void {
         supportCheck(this.return);
@@ -294,7 +296,9 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
         const options: Parameters = {};
         this.variables.forEach(variable => options[variable.name] = fromLiteralToWASMType(variable.type));
 
-        gen.func(`fn_${this.symbol}`, params, fromLiteralToWASMType(this.return), options, () => {
+        const name = this.anonymous ? this.symbol : `fn_${this.symbol}`;
+
+        gen.func(name, params, fromLiteralToWASMType(this.return), options, () => {
             this.body.forEach(statement => statement.generate(gen));
         });
     }
@@ -537,6 +541,7 @@ export class FunctionCall extends Expression {
         this.caller = caller;
     }
     generate(gen: WebAssemblyGenerator): void {
-        gen.call(`fn_${this.caller.symbol}`, ...this.parameters.map(param => () => param.generate(gen)));
+        const name = (this.caller as FunctionLiteral).anonymous ? this.caller.symbol : `fn_${this.caller.symbol}`
+        gen.call(name, ...this.parameters.map(param => () => param.generate(gen)));
     }
 }
