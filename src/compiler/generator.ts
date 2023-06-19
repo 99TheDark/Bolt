@@ -1,4 +1,4 @@
-import { Program } from "../parser/expressions";
+import { Program } from "./expressions";
 import { WebAssemblyGenerator, Parameters } from "webassembly-generator";
 import { fromLiteralToWASMType } from "../typing/types";
 
@@ -14,7 +14,9 @@ export class Generator {
     build(): string {
         const gen = this.generator;
         const options: Parameters = {};
-        this.ast.variables.forEach(variable => options[variable.name] = fromLiteralToWASMType(variable.type));
+        this.ast.variables.forEach(variable => {
+            if(variable.type != "Function") options[variable.name] = fromLiteralToWASMType(variable.type)
+        });
 
         gen.module(() => {
             // TODO: Auto import standard library

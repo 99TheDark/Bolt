@@ -3,7 +3,7 @@ import { Type, Token, typeString, getPattern } from "../lexer/tokens";
 import { isUnary, isBinary } from "./operators";
 import { isControl } from "./control";
 import { baseData } from "../lexer/literal";
-import { Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence, Return, Statement, Declaration } from "./expressions";
+import { Program, Expression, Identifier, UnaryOperation, BinaryOperation, Comparator, IfStatement, ElseClause, WhileLoop, ForEachLoop, NumberLiteral, BooleanLiteral, StringLiteral, FunctionLiteral, EnumLiteral, ArrayLiteral, Vector, Parameter, ParameterList, Iteration, FunctionCall, Keyword, Datatype, Assignment, Precedence, Return, Statement, Declaration } from "../compiler/expressions";
 
 export class Parser {
     private tokens: Token[];

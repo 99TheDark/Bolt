@@ -1,7 +1,8 @@
-import { VariableType, literalMap } from "../typing/types";
-import { BoltError, BoltLocationlessError } from "../errors/error";
-import { WebAssemblyGenerator, WebAssemblyType } from "webassembly-generator";
+import { VariableType, fromLiteralToWASMType, literalMap } from "../typing/types";
+import { BoltLocationlessError } from "../errors/error";
+import { WebAssemblyGenerator, Parameters } from "webassembly-generator";
 import { WASMVariable } from "../typing/variables";
+import { supportCheck } from "./supported";
 
 // Types
 export type Node =
@@ -232,6 +233,9 @@ export class BooleanLiteral extends Expression {
         super("BooleanLiteral", "Boolean", row, col);
         this.value = value;
     }
+    generate(gen: WebAssemblyGenerator): void {
+        return gen.const("int", this.value ? 1 : 0);
+    }
 }
 
 export class StringLiteral extends Expression {
@@ -260,19 +264,19 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
         this.scope = [];
         this.symbol = null;
     }
-    generate(gen: WebAssemblyGenerator, name: string | void): void {
-        const funcName = name ? name : `anonymous${~~(Math.random() * 100000)}`;
-        this.symbol = funcName;
+    generate(gen: WebAssemblyGenerator): void {
+        // supportCheck(this.return);
 
-        if(this.return != "Number") throw new BoltError("Only numbers are supported", this);
-
-        const params: Record<string, WebAssemblyType> = {};
+        const params: Parameters = {};
         this.parameters.values.forEach(param => {
-            if(param.datatype != "Number") throw new BoltError("Only numbers are supported", this);
-            params[param.variable] = "double";
+            supportCheck(param.type);
+            params[param.variable] = fromLiteralToWASMType(param.type);
         });
 
-        gen.func(funcName, params, "double", {}, () => {
+        const options: Parameters = {};
+        this.variables.forEach(variable => options[variable.name] = fromLiteralToWASMType(variable.type));
+
+        gen.func(this.symbol as string, params, "double", options, () => {
             this.body.forEach(statement => statement.generate(gen));
         });
     }
@@ -349,9 +353,9 @@ export class Declaration extends Expression {
     }
     generate(gen: WebAssemblyGenerator): void {
         if(this.value.kind == "FunctionLiteral") {
-            (this.value as FunctionLiteral).generate(gen, this.variable.symbol);
+            (this.value as FunctionLiteral).generate(gen);
         } else {
-            if(this.value.type != "Number") throw new BoltError("Only numbers are supported", this);
+            supportCheck(this.value.type);
 
             gen.set(this.variable.symbol, () => {
                 this.value.generate(gen);

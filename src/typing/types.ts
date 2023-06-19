@@ -1,4 +1,4 @@
-import { Expression, NumberLiteral } from "../parser/expressions";
+import { Expression, NumberLiteral } from "../compiler/expressions";
 import { BoltLocationlessError } from "../errors/error";
 import { WebAssemblyType } from "webassembly-generator";
 

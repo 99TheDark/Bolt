@@ -1,46 +1,18 @@
 (module
  (import "std" "println" (func $fn_println (param f64)))
- (func $main (local $x f64) (local $y f64) (local $z f64)
-  (local.set $x
-   (f64.const 5)
-  )
-  (local.set $y
+ (func $main (local $abc f64) (local $a f64) (local $b f64)
+  (local.set $abc
    (f64.const 12)
   )
-  (local.set $z
-   (f64.sub
-    (f64.mul
-     (local.get $x)
-     (local.get $y)
-    )
-    (local.get $x)
-   )
-  )
-  (if
-   (f64.lt
-    (f64.mul
-     (local.get $y)
-     (f64.const 4)
-    )
-    (local.get $z)
-   )
-   (then
-    (call $fn_println
-     (f64.const 3.14159)
-    )
-   )
-   (else
-    (call $fn_println
-     (local.get $x)
-    )
-    (call $fn_println
-     (local.get $y)
-    )
-    (call $fn_println
-     (local.get $z)
+  (func $anonymous42350 (param $a f64) (param $b f64) (result f64)
+   (return
+    (f64.add
+     (local.get $a)
+     (local.get $b)
     )
    )
   )
+  (export "anonymous42350" (func $anonymous42350))
  )
  (export "main" (func $main))
  (start $main)

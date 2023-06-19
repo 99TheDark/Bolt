@@ -1,5 +1,5 @@
 import { Token } from "../lexer/tokens";
-import { Expression } from "../parser/expressions";
+import { Expression } from "../compiler/expressions";
 
 export class BoltError extends Error {
     constructor(message: string, position: Expression | Token) {

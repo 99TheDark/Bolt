@@ -1,5 +1,5 @@
 import { BoltError } from "../errors/error";
-import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration, Branch } from "../parser/expressions";
+import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration, Branch } from "../compiler/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 import { WASMVariable } from "./variables";
@@ -20,12 +20,12 @@ export class Inferrer {
         for(const prop of Object.values(branch)) {
             if(Array.isArray(prop)) {
                 prop.forEach(sub => {
-                    if(typeof sub == "object") {
+                    if(typeof sub == "object" && sub != null) {
                         this.link(sub);
                         sub.parent = branch;
                     }
                 });
-            } else if(typeof prop == "object") {
+            } else if(typeof prop == "object" && prop != null) {
                 this.link(prop);
                 prop.parent = branch;
             }
@@ -59,6 +59,11 @@ export class Inferrer {
                 const declaration = statement as Declaration;
                 const valueType = this.inferType(declaration.value);
                 const datatype = literalToType(declaration.datatype);
+
+                if(declaration.value.kind == "FunctionLiteral") {
+                    const func = declaration.value as FunctionLiteral;
+                    func.symbol ??= `anonymous${~~(Math.random() * 100000)}`
+                }
 
                 if(datatype != "Unknown" && datatype != valueType) throw new BoltError(
                     `The ${l(datatype)} '${declaration.variable.symbol}' cannot be assigned to a ${l(valueType)}`,
@@ -135,7 +140,7 @@ export class Inferrer {
                     return statement.type = types[0];
                 }
             }
-            /*case "IfStatement": {
+            case "IfStatement": {
                 const ifstatement = statement as IfStatement;
                 const testType = this.inferType(ifstatement.test);
 
@@ -144,14 +149,12 @@ export class Inferrer {
                     ifstatement
                 );
 
-                this.scope(ifstatement);
-
                 if(ifstatement.next) this.inferType(ifstatement.next);
 
-                // Type = return value type
+                // ifstatement.type = get return value type
                 break;
             }
-            case "WhileLoop": {
+            /*case "WhileLoop": {
                 const whileloop = statement as IfStatement;
                 const testType = this.inferType(whileloop.test);
 
@@ -176,20 +179,24 @@ export class Inferrer {
                 // find function
                 break;
             }
-            /*case "FunctionLiteral": {
-                const functionliteral = statement as FunctionLiteral;
-                for(const param of functionliteral.parameters.values) {
+            case "FunctionLiteral": {
+                const funcliteral = statement as FunctionLiteral;
+                for(const param of funcliteral.parameters.values) {
                     const parameter = param as Parameter;
-                    this.pushScope(functionliteral, parameter.variable, parameter.type, parameter);
+                    const variable = new WASMVariable(parameter.variable, parameter.type);
+                    funcliteral.push(variable);
+                    funcliteral.top().push(variable);
                 }
 
-                functionliteral.return = "Unknown";
+                funcliteral.return = "Unknown";
 
-                this.scope(functionliteral);
+                const variable = new WASMVariable(funcliteral.symbol as string, funcliteral.type);
+                funcliteral.push(variable);
+                funcliteral.top().push(variable);
 
-                return functionliteral.type;
+                return funcliteral.type;
             }
-            case "Return": {
+            /*case "Return": {
                 const returnvalue = statement as Return;
                 const valueType = this.inferType(returnvalue.value);
 
