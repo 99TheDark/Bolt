@@ -25,7 +25,6 @@
 
 ### Inferrer
 - Function call correct parameter detection
-- Function literal return type detection
 - Function call return type detection 
 
 ### WASM Generator
