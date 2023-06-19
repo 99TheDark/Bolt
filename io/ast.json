@@ -91,6 +91,72 @@
         "operator": "-"
       },
       "datatype": "let"
+    },
+    {
+      "kind": "FunctionCall",
+      "type": "Unknown",
+      "row": 5,
+      "col": 0,
+      "parameters": [
+        {
+          "kind": "Identifier",
+          "type": "Unknown",
+          "row": 5,
+          "col": 6,
+          "symbol": "x"
+        }
+      ],
+      "caller": {
+        "kind": "Identifier",
+        "type": "Unknown",
+        "row": 5,
+        "col": 0,
+        "symbol": "print"
+      }
+    },
+    {
+      "kind": "FunctionCall",
+      "type": "Unknown",
+      "row": 6,
+      "col": 0,
+      "parameters": [
+        {
+          "kind": "Identifier",
+          "type": "Unknown",
+          "row": 6,
+          "col": 6,
+          "symbol": "y"
+        }
+      ],
+      "caller": {
+        "kind": "Identifier",
+        "type": "Unknown",
+        "row": 6,
+        "col": 0,
+        "symbol": "print"
+      }
+    },
+    {
+      "kind": "FunctionCall",
+      "type": "Unknown",
+      "row": 7,
+      "col": 0,
+      "parameters": [
+        {
+          "kind": "Identifier",
+          "type": "Unknown",
+          "row": 7,
+          "col": 6,
+          "symbol": "z"
+        }
+      ],
+      "caller": {
+        "kind": "Identifier",
+        "type": "Unknown",
+        "row": 7,
+        "col": 0,
+        "symbol": "print"
+      }
     }
   ],
   "variables": [

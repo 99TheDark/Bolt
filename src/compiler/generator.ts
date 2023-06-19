@@ -12,15 +12,17 @@ export class Generator {
     }
 
     build(): string {
+        const gen = this.generator;
         const options: Parameters = {};
         this.ast.variables.forEach(variable => options[variable.name] = fromLiteralToWASMType(variable.type));
 
-        this.generator.module(() => {
-            this.generator.func("main", {}, null, options, () => {
-                this.ast.body.forEach(statemenet => statemenet.generate(this.generator));
+        gen.module(() => {
+            gen.import("std", "print", "fn_print", ["double"]);
+            gen.func("main", {}, null, options, () => {
+                this.ast.body.forEach(statemenet => statemenet.generate(gen));
             });
-            this.generator.start("main");
+            gen.start("main");
         });
-        return this.generator.stringify();
+        return gen.stringify();
     }
 }

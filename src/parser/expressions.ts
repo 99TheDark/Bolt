@@ -99,7 +99,7 @@ export class Statement implements Branch {
 
         return this.parent.grab(name);
     }
-    generate(_: WebAssemblyGenerator): void {
+    generate(gen: WebAssemblyGenerator): void {
         throw `Reached the top. Not yet defined.`;
     }
 }
@@ -249,6 +249,7 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
     body: Statement[];
     variables: WASMVariable[];
     scope: WASMVariable[];
+    symbol: string | null;
 
     constructor(parameters: ParameterList, body: Statement[], row: number, col: number) {
         super("FunctionLiteral", "Function", row, col);
@@ -257,9 +258,11 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
         this.return = "Unknown";
         this.variables = [];
         this.scope = [];
+        this.symbol = null;
     }
     generate(gen: WebAssemblyGenerator, name: string | void): void {
         const funcName = name ? name : `anonymous${~~(Math.random() * 100000)}`;
+        this.symbol = funcName;
 
         if(this.return != "Number") throw new BoltError("Only numbers are supported", this);
 
@@ -506,5 +509,8 @@ export class FunctionCall extends Expression {
         super("FunctionCall", "Unknown", row, col);
         this.parameters = parameters;
         this.caller = caller;
+    }
+    generate(gen: WebAssemblyGenerator): void {
+        gen.call(`fn_${this.caller.symbol}`, ...this.parameters.map(param => () => param.generate(gen)));
     }
 }
