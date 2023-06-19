@@ -1,5 +1,5 @@
 import { BoltError } from "../errors/error";
-import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration, Branch, ParameterList } from "../compiler/expressions";
+import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration, Branch, ParameterList, FunctionCall } from "../compiler/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
 import { WASMVariable } from "./variables";
@@ -180,9 +180,17 @@ export class Inferrer {
                 break;
             }*/
             case "FunctionCall": {
-                // const functioncall = statement as FunctionCall;
-                // find function
-                break;
+                const functioncall = statement as FunctionCall;
+
+                this.inferType(functioncall.caller);
+
+                for(const func of this.ast.functions) {
+                    if(func.symbol == functioncall.caller.symbol) {
+                        return statement.type = func.return;
+                    }
+                }
+
+                throw new BoltError(`'${functioncall.caller.symbol}' is not a function`, functioncall);
             }
             case "FunctionLiteral": {
                 const funcliteral = statement as FunctionLiteral;

@@ -87,18 +87,66 @@
         "symbol": "add"
       },
       "datatype": "let"
+    },
+    {
+      "kind": "Declaration",
+      "type": "Number",
+      "row": 4,
+      "col": 8,
+      "variable": {
+        "kind": "Identifier",
+        "type": "Unknown",
+        "row": 4,
+        "col": 4,
+        "symbol": "sum"
+      },
+      "value": {
+        "kind": "FunctionCall",
+        "type": "Number",
+        "row": 4,
+        "col": 10,
+        "parameters": [
+          {
+            "kind": "NumberLiteral",
+            "type": "Number",
+            "row": 4,
+            "col": 14,
+            "value": 5
+          },
+          {
+            "kind": "NumberLiteral",
+            "type": "Number",
+            "row": 4,
+            "col": 17,
+            "value": 4
+          }
+        ],
+        "caller": {
+          "kind": "Identifier",
+          "type": "Function",
+          "row": 4,
+          "col": 10,
+          "symbol": "add"
+        }
+      },
+      "datatype": "let"
     }
   ],
   "scope": [
     {
       "signature": "",
-      "name": "anonymous21630",
+      "name": "anonymous5826",
       "type": "Function"
     },
     {
       "signature": "",
       "name": "add",
       "type": "Function"
+    },
+    {
+      "signature": "",
+      "name": "sum",
+      "type": "Number"
     }
   ]
 }

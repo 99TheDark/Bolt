@@ -2,4 +2,8 @@ let add = (number a, number b) => {
     return a + b
 }
 
-// let sum = add(5, 4)
+let sum = add(5, 4)
+
+/*let iife = ((number a) => {
+    return a
+})()*/

@@ -25,7 +25,7 @@
 
 ### Inferrer
 - Function call correct parameter detection
-- Function call return type detection 
+- IIFEs
 
 ### WASM Generator
 - Add signatures

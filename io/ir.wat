@@ -9,7 +9,13 @@
   )
  )
  (export "fn_add" (func $fn_add))
- (func $main
+ (func $main (local $sum f64)
+  (local.set $sum
+   (call $fn_add
+    (f64.const 5)
+    (f64.const 4)
+   )
+  )
  )
  (export "main" (func $main))
  (start $main)
