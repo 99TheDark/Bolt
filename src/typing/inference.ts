@@ -160,7 +160,7 @@ export class Inferrer {
                 // ifstatement.type = get return value type
                 break;
             }
-            /*case "WhileLoop": {
+            case "WhileLoop": {
                 const whileloop = statement as IfStatement;
                 const testType = this.inferType(whileloop.test);
 
@@ -169,17 +169,19 @@ export class Inferrer {
                     whileloop
                 );
 
-                this.scope(whileloop);
+                whileloop.body.forEach(statement => this.inferType(statement));
                 break;
             }
             case "ForEachLoop": {
-                this.scope(statement as ForEachLoop);
+                const foreachloop = statement as ForEachLoop;
+                foreachloop.body.forEach(statement => this.inferType(statement));
                 break;
             }
             case "ElseClause": {
-                this.scope(statement as ElseClause);
+                const elseclause = statement as ElseClause;
+                elseclause.body.forEach(statement => this.inferType(statement));
                 break;
-            }*/
+            }
             case "FunctionCall": {
                 const functioncall = statement as FunctionCall;
 
