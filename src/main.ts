@@ -5,6 +5,7 @@ import { Parser } from "./parser/parser";
 import { Inferrer } from "./typing/inference";
 import { Generator } from "./compiler/generator";
 import { ignore } from "./format/ignorer";
+import { exec } from "child_process";
 
 fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     if(error) throw error;
@@ -24,13 +25,23 @@ fs.readFile("./io/script.bolt", "utf8", (error, data) => {
     const typedAST = inferrer.type();
 
     // Builder
-    const builder = new Generator(typedAST, "io/ir");
-    builder.build();
-    builder.generator.compile().then(() => builder.generator.run());
+    const builder = new Generator(typedAST);
+    builder.generate();
 
     // Write intermediate files for debugging purposes
     fs.writeFile("./io/ast.json", JSON.stringify(typedAST, ignore, "  "), err => {
         if(err) throw err;
+    });
+
+    fs.writeFile("./io/script.asm", builder.code, err => {
+        if(err) throw err;
+
+        exec("bash run.sh", (err, stdout, stderr) => {
+            if(err) throw err;
+            if(stderr) throw stderr;
+
+            console.log(stdout);
+        });
     });
 
     const time = performance.now() - start;

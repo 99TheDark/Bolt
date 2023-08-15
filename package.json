@@ -1,8 +1,5 @@
 {
   "devDependencies": {
     "@types/node": "^20.2.1"
-  },
-  "dependencies": {
-    "webassembly-generator": "^1.2.0"
   }
 }

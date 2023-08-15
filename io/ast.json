@@ -5,39 +5,31 @@
       "kind": "Declaration",
       "type": "Function",
       "row": 0,
-      "col": 8,
+      "col": 9,
       "variable": {
         "kind": "Identifier",
         "type": "Unknown",
         "row": 0,
-        "col": 4,
-        "symbol": "add"
+        "col": 5,
+        "symbol": "fib"
       },
       "value": {
         "kind": "FunctionLiteral",
         "type": "Function",
         "row": 0,
-        "col": 31,
+        "col": 22,
         "parameters": {
           "kind": "ParameterList",
           "type": "Unknown",
           "row": 0,
-          "col": 10,
+          "col": 11,
           "values": [
             {
               "kind": "Parameter",
               "type": "Number",
               "row": 0,
-              "col": 10,
-              "variable": "a",
-              "datatype": "number"
-            },
-            {
-              "kind": "Parameter",
-              "type": "Number",
-              "row": 0,
-              "col": 19,
-              "variable": "b",
+              "col": 11,
+              "variable": "n",
               "datatype": "number"
             }
           ]
@@ -49,25 +41,11 @@
             "row": 1,
             "col": 4,
             "value": {
-              "kind": "Binary",
+              "kind": "NumberLiteral",
               "type": "Number",
               "row": 1,
-              "col": 13,
-              "left": {
-                "kind": "Identifier",
-                "type": "Number",
-                "row": 1,
-                "col": 11,
-                "symbol": "a"
-              },
-              "right": {
-                "kind": "Identifier",
-                "type": "Number",
-                "row": 1,
-                "col": 15,
-                "symbol": "b"
-              },
-              "operator": "+"
+              "col": 11,
+              "value": 7
             }
           }
         ],
@@ -75,165 +53,97 @@
         "scope": [
           {
             "signature": "",
-            "name": "a",
-            "type": "Number"
-          },
-          {
-            "signature": "",
-            "name": "b",
+            "name": "n",
             "type": "Number"
           }
         ],
-        "symbol": "add",
+        "symbol": "fib",
         "anonymous": false
       },
-      "datatype": "let"
+      "datatype": "func"
     },
     {
       "kind": "Declaration",
-      "type": "Number",
+      "type": "Function",
       "row": 4,
-      "col": 8,
+      "col": 10,
       "variable": {
         "kind": "Identifier",
         "type": "Unknown",
         "row": 4,
-        "col": 4,
-        "symbol": "sum"
+        "col": 5,
+        "symbol": "main"
       },
       "value": {
-        "kind": "FunctionCall",
-        "type": "Number",
+        "kind": "FunctionLiteral",
+        "type": "Function",
         "row": 4,
-        "col": 10,
-        "parameters": [
-          {
-            "kind": "NumberLiteral",
-            "type": "Number",
-            "row": 4,
-            "col": 14,
-            "value": 5
-          },
-          {
-            "kind": "NumberLiteral",
-            "type": "Number",
-            "row": 4,
-            "col": 17,
-            "value": 4
-          }
-        ],
-        "caller": {
-          "kind": "Identifier",
-          "type": "Function",
+        "col": 15,
+        "parameters": {
+          "kind": "ParameterList",
+          "type": "Unknown",
           "row": 4,
-          "col": 10,
-          "symbol": "add"
-        }
-      },
-      "datatype": "let"
-    },
-    {
-      "kind": "Declaration",
-      "type": "Boolean",
-      "row": 6,
-      "col": 9,
-      "variable": {
-        "kind": "Identifier",
-        "type": "Unknown",
-        "row": 6,
-        "col": 4,
-        "symbol": "iife"
-      },
-      "value": {
-        "kind": "FunctionCall",
-        "type": "Boolean",
-        "row": 6,
-        "col": 21,
-        "parameters": [
+          "col": 13,
+          "values": []
+        },
+        "body": [
           {
-            "kind": "BooleanLiteral",
-            "type": "Boolean",
-            "row": 8,
-            "col": 3,
-            "value": true
+            "kind": "Return",
+            "type": "Number",
+            "row": 5,
+            "col": 4,
+            "value": {
+              "kind": "FunctionCall",
+              "type": "Number",
+              "row": 5,
+              "col": 11,
+              "parameters": [
+                {
+                  "kind": "NumberLiteral",
+                  "type": "Number",
+                  "row": 5,
+                  "col": 15,
+                  "value": 6
+                }
+              ],
+              "caller": {
+                "kind": "Identifier",
+                "type": "Function",
+                "row": 5,
+                "col": 11,
+                "symbol": "fib"
+              }
+            }
           }
         ],
-        "caller": {
-          "kind": "FunctionLiteral",
-          "type": "Function",
-          "row": 6,
-          "col": 21,
-          "parameters": {
-            "kind": "ParameterList",
-            "type": "Unknown",
-            "row": 6,
-            "col": 12,
-            "values": [
-              {
-                "kind": "Parameter",
-                "type": "Boolean",
-                "row": 6,
-                "col": 12,
-                "variable": "a",
-                "datatype": "bool"
-              }
-            ]
-          },
-          "body": [
-            {
-              "kind": "Return",
-              "type": "Boolean",
-              "row": 7,
-              "col": 4,
-              "value": {
-                "kind": "Identifier",
-                "type": "Boolean",
-                "row": 7,
-                "col": 11,
-                "symbol": "a"
-              }
-            }
-          ],
-          "return": "Boolean",
-          "scope": [
-            {
-              "signature": "",
-              "name": "a",
-              "type": "Boolean"
-            }
-          ],
-          "symbol": "anonymous_22143",
-          "anonymous": true
-        }
+        "return": "Number",
+        "scope": [],
+        "symbol": "main",
+        "anonymous": false
       },
-      "datatype": "let"
+      "datatype": "func"
     }
   ],
   "scope": [
     {
       "signature": "",
-      "name": "anonymous_18935",
+      "name": "anonymous_29572",
       "type": "Function"
     },
     {
       "signature": "",
-      "name": "add",
+      "name": "fib",
       "type": "Function"
     },
     {
       "signature": "",
-      "name": "sum",
-      "type": "Number"
-    },
-    {
-      "signature": "",
-      "name": "anonymous_22143",
+      "name": "anonymous_5410",
       "type": "Function"
     },
     {
       "signature": "",
-      "name": "iife",
-      "type": "Boolean"
+      "name": "main",
+      "type": "Function"
     }
   ]
 }

@@ -1,6 +1,6 @@
 import { VariableType } from "./types";
 
-export class WASMVariable {
+export class ASMVariable {
     signature: string;
     name: string;
     type: VariableType;

@@ -1,6 +1,5 @@
 import { Expression, NumberLiteral } from "../compiler/expressions";
 import { BoltLocationlessError } from "../errors/error";
-import { WebAssemblyType } from "webassembly-generator";
 
 export type VariableType =
     "Number" |
@@ -21,11 +20,4 @@ export const literalMap: Record<string, VariableType> = {
     regex: "Regex",
     class: "Class",
     let: "Unknown"
-}
-
-export function fromLiteralToWASMType(type: VariableType): WebAssemblyType {
-    if(type == "Number") return "double";
-    if(type == "Boolean") return "int";
-
-    throw new BoltLocationlessError(`The ${type.toLowerCase()} type has not been implemented`);
 }

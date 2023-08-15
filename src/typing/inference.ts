@@ -2,7 +2,7 @@ import { BoltError } from "../errors/error";
 import { Program, BinaryOperation, UnaryOperation, Assignment, ArrayLiteral, IfStatement, ForEachLoop, Comparator, Scopeable, ElseClause, FunctionLiteral, Identifier, Parameter, Expression, Return, Statement, Declaration, Branch, ParameterList, FunctionCall } from "../compiler/expressions";
 import { VariableType } from "./types";
 import { valid, literalToType } from "./validoperations";
-import { WASMVariable } from "./variables";
+import { ASMVariable } from "./variables";
 
 // Lowercase
 function l(str: string) {
@@ -72,7 +72,7 @@ export class Inferrer {
                     declaration.value
                 );
 
-                const variable = new WASMVariable(declaration.variable.symbol, valueType);
+                const variable = new ASMVariable(declaration.variable.symbol, valueType);
                 declaration.top().push(variable);
                 declaration.push(variable);
 
@@ -206,11 +206,11 @@ export class Inferrer {
 
                 funcliteral.return = "Unknown";
 
-                const variable = new WASMVariable(funcliteral.symbol, funcliteral.type);
+                const variable = new ASMVariable(funcliteral.symbol, funcliteral.type);
                 funcliteral.top().push(variable);
 
                 funcliteral.parameters.values.forEach(param => {
-                    param.top().push(new WASMVariable(param.variable, param.type));
+                    param.top().push(new ASMVariable(param.variable, param.type));
                 });
 
                 funcliteral.body.forEach(statement => this.inferType(statement));

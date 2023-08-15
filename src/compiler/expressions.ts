@@ -1,8 +1,8 @@
-import { VariableType, fromLiteralToWASMType, literalMap } from "../typing/types";
+import { VariableType, literalMap } from "../typing/types";
 import { BoltError, BoltLocationlessError } from "../errors/error";
-import { WebAssemblyGenerator, Parameters } from "webassembly-generator";
-import { WASMVariable } from "../typing/variables";
-import { supportCheck } from "./supported";
+import { ASMVariable } from "../typing/variables";
+import { Generator } from "../compiler/generator";
+import { ASMLine } from "./assembly";
 
 // Types
 export type Node =
@@ -47,19 +47,19 @@ export type Precedence =
 export interface Branch {
     kind: Node;
     parent: Branch;
-    push: (variable: WASMVariable) => void;
+    push: (variable: ASMVariable) => void;
     pushReturn: (type: VariableType) => void;
-    grab: (name: string) => WASMVariable;
-    top: () => WASMVariable[];
+    grab: (name: string) => ASMVariable;
+    top: () => ASMVariable[];
 }
 
 export interface Scopeable {
     body: Statement[];
-    scope: WASMVariable[];
+    scope: ASMVariable[];
 }
 
 export interface Storage {
-    variables: WASMVariable[];
+    variables: ASMVariable[];
 }
 
 // Classes
@@ -77,14 +77,14 @@ export class Statement implements Branch {
         this.col = col;
         this.parent = {} as Branch;
     }
-    top(): WASMVariable[] {
+    top(): ASMVariable[] {
         if("scope" in this.parent) {
             return (this.parent as unknown as Scopeable).scope;
         } else {
             return this.parent.top();
         }
     }
-    push(variable: WASMVariable): void {
+    push(variable: ASMVariable): void {
         if("variables" in this.parent) {
             (this.parent as Storage).variables.push(variable);
         } else {
@@ -103,7 +103,7 @@ export class Statement implements Branch {
             this.parent.pushReturn(type);
         }
     }
-    grab(name: string): WASMVariable {
+    grab(name: string): ASMVariable {
         if("scope" in this.parent) {
             const scopable = this.parent as unknown as Scopeable;
             for(const variable of scopable.scope) {
@@ -113,17 +113,17 @@ export class Statement implements Branch {
 
         return this.parent.grab(name);
     }
-    generate(gen: WebAssemblyGenerator): void {
-        throw `Reached the top. Not yet defined.`;
+    generate(gen: Generator): ASMLine[] {
+        throw new BoltError(`${this.kind} has not been implemented yet`, this);
     }
 }
 
 export class Program implements Branch, Scopeable, Storage {
     kind: Node;
     body: Statement[];
-    variables: WASMVariable[];
+    variables: ASMVariable[];
     functions: FunctionLiteral[];
-    scope: WASMVariable[];
+    scope: ASMVariable[];
     parent: Branch;
 
     constructor() {
@@ -134,16 +134,16 @@ export class Program implements Branch, Scopeable, Storage {
         this.scope = [];
         this.parent = {} as Branch;
     }
-    top(): WASMVariable[] {
+    top(): ASMVariable[] {
         return this.scope;
     }
-    push(variable: WASMVariable): void {
+    push(variable: ASMVariable): void {
         this.variables.push(variable);
     }
     pushReturn(): void {
         throw new BoltLocationlessError("Cannot return outside a function");
     }
-    grab(name: string): WASMVariable {
+    grab(name: string): ASMVariable {
         for(const variable of this.scope) {
             if(variable.name == name) return variable;
         }
@@ -165,9 +165,6 @@ export class Identifier extends Expression {
         super("Identifier", "Unknown", row, col);
         this.symbol = symbol;
     }
-    generate(gen: WebAssemblyGenerator): void {
-        gen.get(this.symbol);
-    }
 }
 
 export class BinaryOperation extends Expression {
@@ -181,17 +178,15 @@ export class BinaryOperation extends Expression {
         this.right = right;
         this.operator = operator;
     }
-    generate(gen: WebAssemblyGenerator): void {
-        const left = () => this.left.generate(gen);
-        const right = () => this.right.generate(gen);
-        switch(this.operator) {
-            default: throw new BoltLocationlessError(`The '${this.operator}' operator has not been implemented yet`);
-            case "+": return gen.add("double", left, right);
-            case "-": return gen.subtract("double", left, right);
-            case "*": return gen.multiply("double", left, right);
-            case "/": return gen.divide("double", left, right);
-            // case "%": return gen.modulo("double", left, right); 
-        }
+    generate(gen: Generator): ASMLine[] {
+        return [
+            ...this.left.generate(gen),
+            ...this.right.generate(gen),
+            {
+                command: "fadd",
+                args: ["s0", "s1", "s0"]
+            }
+        ];
     }
 }
 
@@ -217,19 +212,6 @@ export class Comparator extends Expression {
         this.right = right;
         this.operator = operator;
     }
-    generate(gen: WebAssemblyGenerator): void {
-        const left = () => this.left.generate(gen);
-        const right = () => this.right.generate(gen);
-        switch(this.operator) {
-            default: throw new BoltLocationlessError(`The '${this.operator}' comparator has not been implemented yet`);
-            case "<": gen.lessThan("double", left, right); return;
-            case ">": gen.greaterThan("double", left, right); return;
-            case "<=": gen.lessThanOrEqualTo("double", left, right); return;
-            case ">=": gen.greaterThanOrEqualTo("double", left, right); return;
-            case "==": gen.equalTo("double", left, right); return;
-            case "!=": gen.notEqualTo("double", left, right); return;
-        }
-    }
 }
 
 export class NumberLiteral extends Expression {
@@ -239,8 +221,13 @@ export class NumberLiteral extends Expression {
         super("NumberLiteral", "Number", row, col);
         this.value = value;
     }
-    generate(gen: WebAssemblyGenerator): void {
-        return gen.const("double", this.value);
+    generate(gen: Generator): ASMLine[] {
+        return [
+            {
+                command: "fmov",
+                args: ["s0", `#${this.value}`]
+            }
+        ];
     }
 }
 
@@ -250,9 +237,6 @@ export class BooleanLiteral extends Expression {
     constructor(value: boolean, row: number, col: number) {
         super("BooleanLiteral", "Boolean", row, col);
         this.value = value;
-    }
-    generate(gen: WebAssemblyGenerator): void {
-        return gen.const("int", this.value ? 1 : 0);
     }
 }
 
@@ -269,8 +253,8 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
     parameters: ParameterList;
     return: VariableType;
     body: Statement[];
-    variables: WASMVariable[];
-    scope: WASMVariable[];
+    variables: ASMVariable[];
+    scope: ASMVariable[];
     symbol: string;
     anonymous: boolean;
 
@@ -283,24 +267,6 @@ export class FunctionLiteral extends Expression implements Scopeable, Storage {
         this.scope = [];
         this.symbol = `anonymous_${~~(Math.random() * 100000)}`;
         this.anonymous = true;
-    }
-    generate(gen: WebAssemblyGenerator): void {
-        supportCheck(this.return);
-
-        const params: Parameters = {};
-        this.parameters.values.forEach(param => {
-            supportCheck(param.type);
-            params[param.variable] = fromLiteralToWASMType(param.type);
-        });
-
-        const options: Parameters = {};
-        this.variables.forEach(variable => options[variable.name] = fromLiteralToWASMType(variable.type));
-
-        const name = this.anonymous ? this.symbol : `fn_${this.symbol}`;
-
-        gen.func(name, params, fromLiteralToWASMType(this.return), options, () => {
-            this.body.forEach(statement => statement.generate(gen));
-        });
     }
 }
 
@@ -325,7 +291,7 @@ export class RegexLiteral extends Expression {
 export class ClassLiteral extends Expression implements Scopeable {
     extension: Vector;
     body: Statement[];
-    scope: WASMVariable[];
+    scope: ASMVariable[];
 
     constructor(extension: Vector, row: number, col: number) {
         super("ClassLiteral", "Class", row, col);
@@ -373,15 +339,6 @@ export class Declaration extends Expression {
         this.value = value;
         this.datatype = datatype;
     }
-    generate(gen: WebAssemblyGenerator): void {
-        if(this.value.kind != "FunctionLiteral") {
-            supportCheck(this.value.type);
-
-            gen.set(this.variable.symbol, () => {
-                this.value.generate(gen);
-            });
-        }
-    }
 }
 
 export class Assignment extends Expression {
@@ -401,7 +358,7 @@ export class IfStatement extends Expression implements Scopeable {
     test: Expression;
     next: Expression;
     body: Statement[];
-    scope: WASMVariable[];
+    scope: ASMVariable[];
 
     constructor(test: Expression, body: Statement[], next: Expression, row: number, col: number) {
         super("IfStatement", "Unknown", row, col);
@@ -410,22 +367,12 @@ export class IfStatement extends Expression implements Scopeable {
         this.body = body;
         this.scope = [];
     }
-    generate(gen: WebAssemblyGenerator): void {
-        let elseClause: Function | void = undefined;
-        if("kind" in this.next) elseClause = () => this.next.generate(gen);
-
-        gen.if(null, // TODO: Type check
-            () => this.test.generate(gen),
-            () => this.body.forEach(statement => statement.generate(gen)),
-            elseClause
-        );
-    }
 }
 
 export class WhileLoop extends Expression implements Scopeable {
     test: Expression;
     body: Statement[];
-    scope: WASMVariable[];
+    scope: ASMVariable[];
 
     constructor(test: Expression, body: Statement[], row: number, col: number) {
         super("WhileLoop", "Unknown", row, col);
@@ -437,15 +384,12 @@ export class WhileLoop extends Expression implements Scopeable {
 
 export class ElseClause extends Expression implements Scopeable {
     body: Statement[];
-    scope: WASMVariable[];
+    scope: ASMVariable[];
 
     constructor(body: Statement[], row: number, col: number) {
         super("ElseClause", "Unknown", row, col);
         this.body = body;
         this.scope = [];
-    }
-    generate(gen: WebAssemblyGenerator): void {
-        this.body.forEach(statement => statement.generate(gen));
     }
 }
 
@@ -454,7 +398,7 @@ export class ForLoop extends Expression implements Scopeable {
     test: Expression;
     after: Expression[];
     body: Statement[];
-    scope: WASMVariable[];
+    scope: ASMVariable[];
 
     constructor(declarations: Expression[], test: Expression, body: Statement[], after: Expression[], row: number, col: number) {
         super("ForLoop", "Unknown", row, col);
@@ -469,7 +413,7 @@ export class ForLoop extends Expression implements Scopeable {
 export class ForEachLoop extends Expression implements Scopeable {
     iteration: Iteration;
     body: Statement[];
-    scope: WASMVariable[];
+    scope: ASMVariable[];
 
     constructor(iteration: Iteration, body: Statement[], row: number, col: number) {
         super("ForEachLoop", "Unknown", row, col);
@@ -515,8 +459,14 @@ export class Return extends Expression {
         super("Return", "Unknown", row, col);
         this.value = value;
     }
-    generate(gen: WebAssemblyGenerator): void {
-        gen.return(() => this.value.generate(gen));
+    generate(gen: Generator): ASMLine[] {
+        return [
+            ...this.value.generate(gen),
+            {
+                command: "ret",
+                args: []
+            }
+        ];
     }
 }
 
@@ -540,8 +490,12 @@ export class FunctionCall extends Expression {
         this.parameters = parameters;
         this.caller = caller;
     }
-    generate(gen: WebAssemblyGenerator): void {
-        const name = (this.caller as FunctionLiteral).anonymous ? this.caller.symbol : `fn_${this.caller.symbol}`
-        gen.call(name, ...this.parameters.map(param => () => param.generate(gen)));
+    generate(gen: Generator): ASMLine[] {
+        return [
+            {
+                command: "bl",
+                args: [`_${this.caller.symbol}`]
+            }
+        ];
     }
 }

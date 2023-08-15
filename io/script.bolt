@@ -1,9 +1,7 @@
-let add = (number a, number b) => {
-    return a + b
+func fib = (number n) => {
+    return 7
 }
 
-let sum = add(5, 4)
-
-let iife = ((bool a) => {
-    return a
-})(true)
+func main = () => {    
+    return fib(6)
+}
